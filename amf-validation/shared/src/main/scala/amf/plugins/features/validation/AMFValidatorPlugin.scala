@@ -166,7 +166,8 @@ object AMFValidatorPlugin extends AMFFeaturePlugin with RuntimeValidator with Va
       val jsLibrary = new JSLibraryEmitter(None).emitJS(validations.effective.values.toSeq)
 
       jsLibrary match {
-        case Some(code) => PlatformValidator.instance.registerLibrary(ValidationJSONLDEmitter.validationLibraryUrl, code)
+        case Some(code) =>
+          PlatformValidator.instance.registerLibrary(ValidationJSONLDEmitter.validationLibraryUrl, code)
         case _ => // ignore
       }
     }
