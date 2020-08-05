@@ -93,7 +93,7 @@ class RdflibRdfModel(val model: js.Dynamic = RDF.instance.graph()) extends RdfMo
         if (statements.isEmpty) {
           None
         } else {
-          var resourceProperties = Map[String, Seq[PropertyObject]]()
+          var resourceProperties = Map[String, Seq[RDFTerm]]()
           var resourceClasses    = Seq[String]()
 
           statements

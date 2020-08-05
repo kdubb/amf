@@ -84,7 +84,7 @@ class JenaRdfModel(val model: Model = ModelFactory.createDefaultModel()) extends
         if (node.isResource) {
           val res                = node.asResource()
           val id                 = res.getURI
-          var resourceProperties = Map[String, Seq[PropertyObject]]()
+          var resourceProperties = Map[String, Seq[RDFTerm]]()
           var resourceClasses    = Seq[String]()
           val properties         = res.listProperties()
 
