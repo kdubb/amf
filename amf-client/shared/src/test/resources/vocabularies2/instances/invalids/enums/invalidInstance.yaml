@@ -1,0 +1,13 @@
+#%Enums 1.0
+strings: pepe
+integers: 20000
+booleans: true
+floats: -1.2344e56
+doubles: -10.2344e53
+dateTimes: 2010-10-26T21:32:52+02:00
+dates: 2030-04-29
+anyUris: http://www.w3.org/TR/xmlschema-6/
+uris: http://www.w3.org/TR/xmlschema-6/
+anyTypes: 2033-02-29
+anys: hellowww
+numbers: 10.22

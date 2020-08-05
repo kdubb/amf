@@ -2,6 +2,7 @@ package amf.plugins.features.validation
 
 import java.io.{PrintWriter, StringWriter, Writer => JavaWriter}
 
+import amf.core.model.DataType
 import amf.core.rdf._
 import amf.core.vocabulary.Namespace
 import org.apache.jena.graph.Graph
@@ -10,6 +11,21 @@ import org.apache.jena.riot._
 import org.apache.jena.riot.system.RiotLib
 import org.apache.jena.sparql.util.Context
 import org.mulesoft.common.io.Output
+
+import scala.util.matching.Regex
+
+object DateRegex {
+  private val prefix        = """\-"""
+  private val date          = """\d\d\d\d-\d\d-\d\d"""
+  private val time          = """\d\d:\d\d:\d\d"""
+  private val offsetHours   = """[\+|\-]\d\d"""
+  private val offsetMinutes = """[\+|\-]\d\d:\d\d"""
+  private val timeZone      = s"""Z|$offsetHours|$offsetMinutes"""
+  private val dateTime      = s"($prefix)?($date)(T)($time)($timeZone)?"
+
+  val DateTime: Regex    = dateTime.r
+  val OffsetHours: Regex = offsetHours.r
+}
 
 class JenaRdfModel(val model: Model = ModelFactory.createDefaultModel()) extends RdfModel {
 
@@ -39,12 +55,29 @@ class JenaRdfModel(val model: Model = ModelFactory.createDefaultModel()) extends
         checkAnon(subject),
         model.createProperty(predicate),
         objLiteralType match {
+          case Some(DataType.DateTime) =>
+            val newValue = increaseTimeOffsetPrecision(objLiteralValue)
+            model.createTypedLiteral(newValue, DataType.DateTime)
           case Some(typeId) => model.createTypedLiteral(objLiteralValue, typeId)
           case None         => model.createLiteral(objLiteralValue)
         }
       )
     )
     this
+  }
+
+  // Jena uses higher time offset precision (hh:mm) than SimpleDateTime
+  def increaseTimeOffsetPrecision(value: String): String = {
+    value match {
+      case DateRegex.DateTime(_, _, _, _, timeZone) =>
+        timeZone match {
+          case DateRegex.OffsetHours(_ *) =>
+            s"$value:00"
+          case _ => value
+        }
+      case _ =>
+        value
+    }
   }
 
   protected def checkAnon(s: String): Resource = {

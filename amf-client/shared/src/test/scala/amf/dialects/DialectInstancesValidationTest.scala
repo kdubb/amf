@@ -20,6 +20,15 @@ class DialectInstancesValidationTest extends DialectInstanceValidation {
 
   val basePath       = "file://amf-client/shared/src/test/resources/vocabularies2/validation/"
   val productionPath = "file://amf-client/shared/src/test/resources/vocabularies2/production/"
+  val instancesPath  = "file://amf-client/shared/src/test/resources/vocabularies2/instances"
+
+  test("Valid instance for dialect with enums for literal mappings") {
+    validate("dialect.yaml", "validInstance.yaml", 0, path = s"$instancesPath/invalids/enums/")
+  }
+
+  test("Invalid instance for dialect with enums for literal mappings") {
+    validate("dialect.yaml", "invalidInstance.yaml", 0, path = s"$instancesPath/invalids/enums/")
+  }
 
   test("validation dialect 1 example 1 correct") {
     validate("dialect1.raml", "instance1_correct1.raml", 0)

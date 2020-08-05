@@ -1,0 +1,13 @@
+#%Enums 1.0
+strings: world
+integers: 200
+booleans: false
+floats: 0.45
+doubles: -1.2344E56
+dateTimes: 2001-10-26T21:32:52+02:00
+dates: 2033-04-29
+anyUris: http://www.w3.org/TR/xmlschema-1/
+uris: http://www.w3.org/TR/xmlschema-1/
+anyTypes: 2036-02-29
+anys: hello
+numbers: 10.2

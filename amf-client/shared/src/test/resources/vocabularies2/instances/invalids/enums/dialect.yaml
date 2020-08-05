@@ -1,0 +1,104 @@
+#%Dialect 1.0
+
+dialect: Enums
+version: 1.0
+
+nodeMappings:
+  RootNode:
+    classTerm: tmp.Root
+    mapping:
+      strings:
+        propertyTerm: tmp.string
+        required: false
+        range: string
+        enum:
+          - hello
+          - world
+      integers:
+        propertyTerm: tmp.integer
+        required: false
+        range: integer
+        enum:
+          - 100
+          - 200
+      booleans:
+        propertyTerm: tmp.boolean
+        required: false
+        range: boolean
+        enum:
+          - false
+      floats:
+        propertyTerm: tmp.float
+        required: false
+        range: float
+        enum:
+          - 0.45
+          - -1.2344e6
+      doubles:
+        propertyTerm: tmp.double
+        required: false
+        range: double
+        enum:
+          - 123.456
+          - -1.2344e56
+      dateTimes:
+        propertyTerm: tmp.dateTime
+        required: false
+        range: dateTime
+        enum:
+          - 2001-10-26T21:32:52
+          - 2001-10-26T21:32:52+02:00
+      dates:
+        propertyTerm: tmp.date
+        required: false
+        range: date
+        enum:
+          - 2036-02-29
+          - 2033-04-29
+      anyUris:
+        propertyTerm: tmp.anyUri
+        required: false
+        range: anyUri
+        enum:
+          - http://www.w3.org/TR/xmlschema-0/
+          - http://www.w3.org/TR/xmlschema-1/
+      uris:
+        propertyTerm: tmp.uri
+        required: false
+        range: uri
+        enum:
+          - http://www.w3.org/TR/xmlschema-0/
+          - http://www.w3.org/TR/xmlschema-1/
+      anyTypes:
+        propertyTerm: tmp.anyType
+        required: false
+        range: anyType
+        enum:
+          - 1
+          - hello
+          - true
+          - 1.4
+          - 2036-02-29
+      anys:
+        propertyTerm: tmp.any
+        required: false
+        range: any
+        enum:
+          - 1
+          - hello
+          - true
+          - 1.4
+          - 2036-02-29
+      numbers:
+        propertyTerm: tmp.number
+        required: false
+        range: number
+        enum:
+          - 10
+          - 10.2
+documents:
+  root:
+    encodes: RootNode
+
+external:
+  tmp: http://test.com/tmp#

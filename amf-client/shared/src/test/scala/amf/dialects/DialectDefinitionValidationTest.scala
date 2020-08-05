@@ -1,13 +1,13 @@
 package amf.dialects
-import amf.ProfileName
+import amf.AmlProfile
 import amf.client.parse.DefaultParserErrorHandler
-import amf.core.services.RuntimeValidator
+import amf.core.errorhandling.AmfStaticReportBuilder
 import amf.core.unsafe.PlatformSecrets
+import amf.core.validation.AMFValidationReport
 import amf.core.{AMFCompiler, CompilerContextBuilder}
 import amf.facades.Validation
 import amf.io.FileAssertionTest
 import amf.plugins.document.vocabularies.AMLPlugin
-import amf.plugins.document.vocabularies.model.document.{Dialect, DialectInstance}
 import amf.plugins.features.validation.AMFValidatorPlugin
 import amf.plugins.features.validation.emitters.ValidationReportJSONLDEmitter
 import org.scalatest.{Assertion, AsyncFunSuite, Matchers}
@@ -34,36 +34,57 @@ trait DialectDefinitionValidationTest extends AsyncFunSuite with Matchers with F
     validate("/missing-range-in-mapping/dialect.yaml", Some("/missing-range-in-mapping/report.json"))
   }
 
+  test("Test dialect with enums for literal mappings") {
+    validate("/enums/dialect.yaml")
+  }
+
   private val path: String = "amf-client/shared/src/test/resources/vocabularies2/instances/invalids"
 
-  protected def validate(dialect: String, goldenReport: Option[String]): Future[Assertion] = {
+  protected def validate(dialect: String, goldenReport: Option[String] = None): Future[Assertion] = {
+    // Static initialize
     amf.core.AMF.registerPlugin(AMLPlugin)
     amf.core.AMF.registerPlugin(AMFValidatorPlugin)
-    val report = for {
+
+    // Validate
+    buildParsingReportFor(dialect).flatMap { actualReport =>
+      goldenReport match {
+        case Some(r) =>
+          writeTemporaryFile(path + r)(ValidationReportJSONLDEmitter.emitJSON(actualReport))
+            .flatMap(assertDifferences(_, path + r))
+        case None =>
+          if (!actualReport.conforms) {
+            println(actualReport.toString)
+          }
+          actualReport.conforms should be(true)
+      }
+    }
+  }
+
+  /**
+    * Dialects do not need model validation, model validation is only performed on dialect instances. Dialect definition
+    * errors are reported during parsing
+    * @param dialect dialect path relative to $path
+    * @return
+    */
+  private def buildParsingReportFor(dialect: String): Future[AMFValidationReport] = {
+    for {
       _ <- Validation(platform)
+      ctx <- {
+        val path               = "file://" + this.path + dialect
+        val parserErrorHandler = DefaultParserErrorHandler.withRun()
+        val builder            = new CompilerContextBuilder(path, platform, eh = parserErrorHandler)
+        Future.successful(builder.build())
+      }
       dialect <- {
         new AMFCompiler(
-          new CompilerContextBuilder("file://" + path + dialect, platform, eh = DefaultParserErrorHandler.withRun())
-            .build(),
+          ctx,
           Some("application/yaml"),
           Some(AMLPlugin.ID)
         ).build()
       }
-      r <- {
-        RuntimeValidator(
-          dialect,
-          ProfileName(dialect.asInstanceOf[Dialect].nameAndVersion())
-        )
-      }
-    } yield r
-
-    report.flatMap { re =>
-      goldenReport match {
-        case Some(r) =>
-          writeTemporaryFile(path + r)(ValidationReportJSONLDEmitter.emitJSON(re))
-            .flatMap(assertDifferences(_, path + r))
-        case None => re.conforms should be(true)
-      }
+    } yield {
+      val parsingReport = new AmfStaticReportBuilder(dialect, AmlProfile)
+      parsingReport.buildFromStatic()
     }
   }
 }

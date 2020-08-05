@@ -1,5 +1,6 @@
 package amf.plugins.features.validation
 
+import java.io.StringWriter
 import java.nio.charset.Charset
 
 import amf.AmfProfile
@@ -80,6 +81,19 @@ class SHACLValidator extends amf.core.validation.core.SHACLValidator with Platfo
 
       ExecutionLog.log(s"SHACLValidator#validate: validating...")
       ExecutionLog.log("SHACLValidator#validate: starting script engine")
+
+      val shapesStr = {
+        val writer = new StringWriter()
+        shapesModel.model.write(writer, "JSON-LD")
+        writer.toString
+      }
+
+      val dataStr = {
+        val writer = new StringWriter()
+        dataModel.model.write(writer, "JSON-LD")
+        writer.toString
+      }
+
       val shaclShapes = Shapes.parse(shapesModel.native().asInstanceOf[Model])
       val report      = ShaclValidator.get.validate(shaclShapes, dataModel.native().asInstanceOf[Model].getGraph)
 
