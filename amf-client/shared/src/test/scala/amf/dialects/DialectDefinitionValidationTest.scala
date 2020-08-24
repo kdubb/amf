@@ -1,6 +1,7 @@
 package amf.dialects
 import amf.ProfileName
 import amf.client.parse.DefaultParserErrorHandler
+import amf.core.errorhandling.AmfStaticReportBuilder
 import amf.core.services.RuntimeValidator
 import amf.core.unsafe.PlatformSecrets
 import amf.core.{AMFCompiler, CompilerContextBuilder}
@@ -9,32 +10,17 @@ import amf.io.FileAssertionTest
 import amf.plugins.document.vocabularies.AMLPlugin
 import amf.plugins.document.vocabularies.model.document.{Dialect, DialectInstance}
 import amf.plugins.features.validation.AMFValidatorPlugin
+import amf.plugins.features.validation.AMFValidatorPlugin.profileForUnit
 import amf.plugins.features.validation.emitters.ValidationReportJSONLDEmitter
+import org.mulesoft.common.io.{Fs, Id}
 import org.scalatest.{Assertion, AsyncFunSuite, Matchers}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait DialectDefinitionValidationTest extends AsyncFunSuite with Matchers with FileAssertionTest with PlatformSecrets {
-
   override implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
 
-  test("Test missing version") {
-    validate("/missing-version/dialect.yaml", Some("/missing-version/report.json"))
-  }
-
-  test("Test missing dialect name") {
-    validate("/missing-dialect-name/dialect.yaml", Some("/missing-dialect-name/report.json"))
-  }
-
-  test("Test invalid property term uri for description") {
-    validate("/schema-uri/dialect.yaml", Some("/schema-uri/report.json"))
-  }
-
-  test("Test missing range in property mapping") {
-    validate("/missing-range-in-mapping/dialect.yaml", Some("/missing-range-in-mapping/report.json"))
-  }
-
-  private val path: String = "amf-client/shared/src/test/resources/vocabularies2/instances/invalids"
+  protected val path: String
 
   protected def validate(dialect: String, goldenReport: Option[String]): Future[Assertion] = {
     amf.core.AMF.registerPlugin(AMLPlugin)
@@ -49,13 +35,10 @@ trait DialectDefinitionValidationTest extends AsyncFunSuite with Matchers with F
           Some(AMLPlugin.ID)
         ).build()
       }
-      r <- {
-        RuntimeValidator(
-          dialect,
-          ProfileName(dialect.asInstanceOf[Dialect].nameAndVersion())
-        )
-      }
-    } yield r
+    } yield {
+      val profileName = ProfileName(dialect.asInstanceOf[Dialect].nameAndVersion())
+      new AmfStaticReportBuilder(dialect, profileName).buildFromStatic()
+    }
 
     report.flatMap { re =>
       goldenReport match {

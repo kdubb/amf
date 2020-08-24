@@ -1,0 +1,3 @@
+package amf.dialects
+
+class JsSimpleDialectDefinitionValidationTest extends SimpleDialectDefinitionValidationTest
