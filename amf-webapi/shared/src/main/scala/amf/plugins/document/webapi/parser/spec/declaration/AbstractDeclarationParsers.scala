@@ -80,10 +80,9 @@ case class AbstractDeclarationParser(declaration: AbstractDeclaration, parent: S
       case Left(link) => parseReferenced(declaration, link, entryValue).adopted(parent)
       case Right(value) =>
         val variables = AbstractVariables()
-        val parentUri = s"$parent/$key"
-        // TODO FIX ID USE
-//          if (parent.contains("#")) s"$parent/$key"
-//          else s"$parent#/$key"
+        val parentUri =
+          if (parent.contains("#")) s"$parent/$key"
+          else s"$parent#/$key"
         val filteredNode: YNode = value.tagType match {
           case YType.Map =>
             value

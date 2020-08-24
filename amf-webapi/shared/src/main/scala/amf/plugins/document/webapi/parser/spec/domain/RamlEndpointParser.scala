@@ -140,8 +140,7 @@ abstract class RamlEndpointParser(entry: YMapEntry,
           val operation = RamlOperationParser(entry, endpoint.withOperation, parseOptionalOperations)(operationContext)
             .parse()
           operations += operation
-          // TODO FIX ID USE
-//          ctx.operationContexts.put(operation.id.stripSuffix("%3F"), operationContext)
+          ctx.operationContexts.put(operation.id.stripSuffix("%3F"), operationContext)
         })
         endpoint.set(EndPointModel.Operations, AmfArray(operations))
       }
