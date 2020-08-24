@@ -1,0 +1,64 @@
+#%Dialect 1.0
+
+dialect: Union
+version: 1.0
+
+external:
+  tmp: http://tmp.com/
+
+documents:
+  root:
+    encodes: RootNode
+
+nodeMappings:
+  NodeA:
+    classTerm: tmp.NodeA
+    mapping:
+      name:
+        propertyTerm: tmp.name
+        range: string
+  NodeB:
+    classTerm: tmp.NodeB
+    mapping:
+      name:
+        propertyTerm: tmp.name
+        range: string
+  NodeC:
+    classTerm: tmp.NodeC
+    mapping:
+      name:
+        propertyTerm: tmp.name
+        range: string
+  NodeD:
+    classTerm: tmp.NodeD
+    mapping:
+      name:
+        propertyTerm: tmp.name
+        range: string
+  UnionA:
+    classTerm: tmp.UnionA
+    union:
+      - NodeA
+      - NodeB
+    typeDiscriminatorName: someDiscriminatorA
+    typeDiscriminator:
+      A: NodeA
+      B: NodeB
+  UnionB:
+    classTerm: tmp.UnionB
+    union:
+      - NodeC
+      - NodeD
+    typeDiscriminatorName: someDiscriminatorB
+    typeDiscriminator:
+      C: NodeC
+      D: NodeD
+  RootNode:
+    classTerm: tmp.RootNode
+    union:
+      - UnionA
+      - UnionB
+    typeDiscriminatorName: someDiscriminatorRoot
+    typeDiscriminator:
+      UA: UnionA
+      UB: UnionB

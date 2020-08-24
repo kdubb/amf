@@ -1,0 +1,33 @@
+#%Dialect 1.0
+
+dialect: Union
+version: 1.0
+
+external:
+  tmp: http://tmp.com/
+
+documents:
+  root:
+    encodes: RootNode
+
+nodeMappings:
+  NodeA:
+    classTerm: tmp.NodeA
+    mapping:
+      name:
+        propertyTerm: tmp.name
+        range: string
+  NodeB:
+    classTerm: tmp.NodeB
+    mapping:
+      name:
+        propertyTerm: tmp.name
+        range: string
+  RootNode:
+    classTerm: tmp.RootNode
+    union:
+      - NodeA
+      - NodeB
+    typeDiscriminator:
+      A: NodeA
+      B: NodeB

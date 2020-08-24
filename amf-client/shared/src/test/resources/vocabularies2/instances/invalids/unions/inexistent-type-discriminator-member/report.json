@@ -1,0 +1,22 @@
+{
+  "@type": "http://www.w3.org/ns/shacl#ValidationReport",
+  "http://www.w3.org/ns/shacl#conforms": false,
+  "http://www.w3.org/ns/shacl#result": [
+    {
+      "@type": "http://www.w3.org/ns/shacl#ValidationResult",
+      "http://www.w3.org/ns/shacl#resultSeverity": {
+        "@id": "http://www.w3.org/ns/shacl#Violation"
+      },
+      "http://www.w3.org/ns/shacl#focusNode": {
+        "@id": "file://amf-client/shared/src/test/resources/vocabularies2/instances/invalids/unions/inexistent-type-discriminator-member/dialect.yaml#/declarations/RootNode"
+      },
+      "http://www.w3.org/ns/shacl#resultPath": {
+        "@id": "http://www.w3.org/ns/shacl#node"
+      },
+      "http://www.w3.org/ns/shacl#resultMessage": "Cannot find property range term NodeC",
+      "http://www.w3.org/ns/shacl#sourceShape": {
+        "@id": "http://a.ml/vocabularies/amf/aml#missing-node-mapping-range-term"
+      }
+    }
+  ]
+}
