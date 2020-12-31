@@ -184,6 +184,8 @@ class Raml10EmitterVersionFactory()(implicit val spec: RamlSpecEmitterContext) e
 
   override def responseEmitter: (Response, SpecOrdering, Seq[BaseUnit]) => RamlResponseEmitter =
     Raml10ResponseEmitter.apply
+
+  override def annotationKeyDecorator(key: String): String = s"(${key})"
 }
 
 class Raml08EmitterVersionFactory()(implicit val spec: RamlSpecEmitterContext) extends RamlEmitterVersionFactory {
@@ -302,6 +304,7 @@ class Raml08EmitterVersionFactory()(implicit val spec: RamlSpecEmitterContext) e
   override def responseEmitter: (Response, SpecOrdering, Seq[BaseUnit]) => RamlResponseEmitter =
     Raml08ResponseEmitter.apply
 
+  override def annotationKeyDecorator(key: String): String = s"(${key})"
 }
 
 class Raml10SpecEmitterContext(eh: ErrorHandler,

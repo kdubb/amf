@@ -85,6 +85,8 @@ class Oas2SpecEmitterFactory(override val spec: OasSpecEmitterContext) extends O
   override def securitySchemesEmitters(securitySchemes: Seq[SecurityScheme],
                                        ordering: SpecOrdering): OasSecuritySchemesEmitters =
     new Oas2SecuritySchemesEmitters(securitySchemes, ordering)(spec)
+
+  override def annotationKeyDecorator(key: String): String = s"x-${key}"
 }
 
 /**
@@ -126,6 +128,8 @@ case class Oas3SpecEmitterFactory(override val spec: OasSpecEmitterContext) exte
   override def securitySchemesEmitters(securitySchemes: Seq[SecurityScheme],
                                        ordering: SpecOrdering): OasSecuritySchemesEmitters =
     new Oas3SecuritySchemesEmitters(securitySchemes, ordering)(spec)
+
+  override def annotationKeyDecorator(key: String): String = s"x-${key}"
 }
 
 abstract class OasSpecEmitterContext(eh: ErrorHandler,
