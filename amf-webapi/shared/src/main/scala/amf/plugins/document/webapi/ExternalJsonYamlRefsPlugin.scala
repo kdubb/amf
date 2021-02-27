@@ -20,6 +20,7 @@ import amf.core.parser.{
 }
 import amf.core.remote.Platform
 import amf.core.utils._
+import amf.core.validation.core.ValidationSpecification
 import amf.plugins.features.validation.CoreValidations.UnresolvedReference
 import org.yaml.model._
 
@@ -141,6 +142,8 @@ class ExternalJsonYamlRefsPlugin extends JsonSchemaPlugin {
     * Does references in this type of documents be recursive?
     */
   override val allowRecursiveReferences: Boolean = true
+
+  override def vendorExtensionsValidations(): Seq[ValidationSpecification] = Seq()
 }
 
 object ExternalJsonYamlRefsPlugin extends ExternalJsonYamlRefsPlugin
