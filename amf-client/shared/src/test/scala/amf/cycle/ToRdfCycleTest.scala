@@ -39,13 +39,11 @@ class ToRdfCycleTest
   private def build(path: String): Future[BaseUnit] = {
     val fullPath = basePath + path
     val ctx      = ParserContext(eh = UnhandledParserErrorHandler, plugins = PluginContext())
-    val env      = AMFPluginsRegistry.obtainStaticEnv()
     RuntimeCompiler.apply(fullPath,
                           None,
                           None,
                           Context(platform),
                           Cache(),
-                          env,
                           ctx = Some(ctx),
                           errorHandler = UnhandledParserErrorHandler)
   }

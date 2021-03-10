@@ -50,7 +50,7 @@ class CompatibilityTest extends AsyncFunSuite with FileAssertionTest {
     val environment = ApiEnvironment.webApi()
 
     for {
-      unit <- RuntimeCompiler(
+      unit <- RuntimeCompiler.withBaseEnv(
         "amf://id#",
         Some(mediaType),
         Some(hint.vendor.name),

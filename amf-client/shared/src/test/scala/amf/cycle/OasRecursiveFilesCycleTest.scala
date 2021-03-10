@@ -44,10 +44,9 @@ class OasRecursiveFilesCycleTest extends FunSuiteCycleTests {
         if (config.sourcePath.startsWith("file://")) config.sourcePath else s"file://${config.sourcePath}"
       val compilerContextBuilder = new CompilerContextBuilder(s"$finalPath", platform, UnhandledParserErrorHandler)
 
-      val environment = BaseEnvironment.fromLegacy(ApiEnvironment.webApi(), Environment.apply())
       RuntimeCompiler
         .forContext(
-          compilerContextBuilder.build(environment),
+          compilerContextBuilder.withBaseEnvironment(ApiEnvironment.webApi()).build(),
           None,
           None,
           UnspecifiedReference
