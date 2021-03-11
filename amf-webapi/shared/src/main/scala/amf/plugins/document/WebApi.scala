@@ -32,14 +32,6 @@ object WebApi extends PlatformSecrets {
     amf.Core.registerPlugin(PayloadPlugin)
     amf.Core.registerPlugin(JsonSchemaPlugin)
 
-    AMFPluginsRegistry.registerNewInterfacePlugin(Oas20ParsePlugin)
-    AMFPluginsRegistry.registerNewInterfacePlugin(Oas30ParsePlugin)
-    AMFPluginsRegistry.registerNewInterfacePlugin(Async20ParsePlugin)
-    AMFPluginsRegistry.registerNewInterfacePlugin(Raml10ParsePlugin)
-    AMFPluginsRegistry.registerNewInterfacePlugin(Raml08ParsePlugin)
-    AMFPluginsRegistry.registerNewInterfacePlugin(PayloadParsePlugin)
-    AMFPluginsRegistry.registerNewInterfacePlugin(JsonSchemaParsePlugin)
-
   }
 
 }

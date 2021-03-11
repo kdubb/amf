@@ -26,7 +26,4 @@ class RamlParser private (private val env: Option[Environment] = None)
 
   AMFPluginsRegistry.registerDocumentPlugin(Raml10Plugin)
   AMFPluginsRegistry.registerDocumentPlugin(Raml08Plugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(Raml10ParsePlugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(Raml08ParsePlugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(ExternalJsonYamlRefsParsePlugin)
 }

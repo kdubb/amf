@@ -24,7 +24,4 @@ class YamlPayloadParser private (private val env: Option[Environment])
   def this(environment: Environment) = this(Some(environment))
 
   AMFPluginsRegistry.registerDocumentPlugin(PayloadPlugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(PayloadParsePlugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(ExternalJsonYamlRefsParsePlugin)
-
 }

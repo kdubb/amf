@@ -19,6 +19,4 @@ class Raml08Parser private (private val env: Option[Environment])
   def this(environment: Environment) = this(Some(environment))
 
   AMFPluginsRegistry.registerDocumentPlugin(Raml08Plugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(Raml08ParsePlugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(ExternalJsonYamlRefsParsePlugin)
 }

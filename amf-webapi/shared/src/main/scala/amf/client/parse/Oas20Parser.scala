@@ -18,7 +18,5 @@ class Oas20Parser private (private val env: Option[Environment]) extends Parser(
   def this(environment: Environment) = this(Some(environment))
 
   AMFPluginsRegistry.registerDocumentPlugin(Oas20Plugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(Oas20ParsePlugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(ExternalJsonYamlRefsParsePlugin)
 
 }

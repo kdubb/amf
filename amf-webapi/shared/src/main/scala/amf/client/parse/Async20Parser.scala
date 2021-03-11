@@ -21,6 +21,4 @@ class Async20Parser private (private val env: Option[Environment] = None)
   def this(env: Environment) = this(Some(env))
 
   AMFPluginsRegistry.registerDocumentPlugin(Async20Plugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(Async20ParsePlugin)
-  AMFPluginsRegistry.registerNewInterfacePlugin(ExternalJsonYamlRefsParsePlugin)
 }
