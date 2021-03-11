@@ -1,16 +1,12 @@
 package amf.cycle
 
-import amf.client.remod.BaseEnvironment
-import amf.client.environment.ApiEnvironment
 import amf.core.CompilerContextBuilder
 import amf.core.model.document.BaseUnit
 import amf.core.parser.UnspecifiedReference
 import amf.core.parser.errorhandler.{ParserErrorHandler, UnhandledParserErrorHandler}
-import amf.core.registries.AMFPluginsRegistry
 import amf.core.remote.{Amf, OasYamlHint}
 import amf.core.services.RuntimeCompiler
 import amf.facades.Validation
-import amf.internal.environment.Environment
 import amf.io.FunSuiteCycleTests
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +42,7 @@ class OasRecursiveFilesCycleTest extends FunSuiteCycleTests {
 
       RuntimeCompiler
         .forContext(
-          compilerContextBuilder.withBaseEnvironment(ApiEnvironment.webApi()).build(),
+          compilerContextBuilder.build(),
           None,
           None,
           UnspecifiedReference
