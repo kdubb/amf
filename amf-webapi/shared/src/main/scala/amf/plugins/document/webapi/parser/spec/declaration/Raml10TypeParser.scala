@@ -1,13 +1,12 @@
 package amf.plugins.document.webapi.parser.spec.declaration
 
 import amf.core.annotations._
-import amf.core.metamodel.domain.common.{DisplayNameField, NameFieldSchema}
 import amf.core.metamodel.domain.extensions.PropertyShapeModel
 import amf.core.metamodel.domain.{LinkableElementModel, ShapeModel}
 import amf.core.model.DataType
-import amf.core.model.domain.{ScalarNode => DynamicDataNode, _}
+import amf.core.model.domain._
 import amf.core.model.domain.extensions.PropertyShape
-import amf.core.parser.{Annotations, _}
+import amf.core.parser.{Annotations, ScalarNode => ParserScalarNode, _}
 import amf.core.remote.Raml08
 import amf.core.utils.{AmfStrings, IdCounter}
 import amf.core.vocabulary.Namespace
@@ -29,7 +28,6 @@ import amf.plugins.document.webapi.parser.spec.toOas
 import amf.plugins.document.webapi.parser.{RamlTypeDefMatcher, TypeName}
 import amf.plugins.document.webapi.vocabulary.VocabularyMappings
 import amf.plugins.domain.shapes.metamodel._
-import amf.plugins.domain.shapes.metamodel.common.{DocumentationField, ExamplesField}
 import amf.plugins.domain.shapes.models.TypeDef._
 import amf.plugins.domain.shapes.models.{ScalarType, _}
 import amf.plugins.domain.shapes.parser.XsdTypeDefMapping
@@ -415,7 +413,7 @@ case class SimpleTypeParser(name: String, adopt: Shape => Unit, map: YMap, defau
         var regex = entry.value.as[String]
         if (!regex.startsWith("^")) regex = "^" + regex
         if (!regex.endsWith("$")) regex = regex + "$"
-        val pattern = ScalarNode(regex).text().copy(annotations = Annotations(entry))
+        val pattern = ParserScalarNode(regex).text().copy(annotations = Annotations(entry))
         shape.set(ScalarShapeModel.Pattern, pattern, Annotations(entry))
       }
     )
@@ -424,12 +422,12 @@ case class SimpleTypeParser(name: String, adopt: Shape => Unit, map: YMap, defau
     map.key("maxLength", ScalarShapeModel.MaxLength in shape)
 
     map.key("minimum", entry => { // todo pope
-      val value = ScalarNode(entry.value)
+      val value = ParserScalarNode(entry.value)
       shape.set(ScalarShapeModel.Minimum, value.text(), Annotations(entry))
     })
 
     map.key("maximum", entry => { // todo pope
-      val value = ScalarNode(entry.value)
+      val value = ParserScalarNode(entry.value)
       shape.set(ScalarShapeModel.Maximum, value.text(), Annotations(entry))
     })
 
@@ -751,7 +749,7 @@ sealed abstract class RamlTypeParser(entryOrNode: YMapEntryLike,
           var regex = entry.value.as[String]
           if (!regex.startsWith("^")) regex = "^" + regex
           if (!regex.endsWith("$")) regex = regex + "$"
-          val pattern = ScalarNode(regex).text().copy(annotations = Annotations(entry))
+          val pattern = ParserScalarNode(regex).text().copy(annotations = Annotations(entry))
           shape.set(ScalarShapeModel.Pattern, pattern, Annotations(entry))
         }
       )
@@ -813,7 +811,7 @@ sealed abstract class RamlTypeParser(entryOrNode: YMapEntryLike,
       map.key(
         "minimum",
         entry => { // todo pope
-          val value = ScalarNode(entry.value)
+          val value = ParserScalarNode(entry.value)
           if (ensurePrecision(shape.dataType.option(), entry.value.toString(), entry.value))
             shape.set(ScalarShapeModel.Minimum, value.text(), Annotations(entry))
         }
@@ -822,7 +820,7 @@ sealed abstract class RamlTypeParser(entryOrNode: YMapEntryLike,
       map.key(
         "maximum",
         entry => { // todo pope
-          val value = ScalarNode(entry.value)
+          val value = ParserScalarNode(entry.value)
           if (ensurePrecision(shape.dataType.option(), entry.value.toString(), entry.value))
             shape.set(ScalarShapeModel.Maximum, value.text(), Annotations(entry))
         }
@@ -832,7 +830,7 @@ sealed abstract class RamlTypeParser(entryOrNode: YMapEntryLike,
       map.key(
         "multipleOf",
         entry => { // todo pope
-          val value = ScalarNode(entry.value)
+          val value = ParserScalarNode(entry.value)
           if (ensurePrecision(shape.dataType.option(), entry.value.toString(), entry.value))
             shape.set(ScalarShapeModel.MultipleOf, value.text(), Annotations(entry))
         }
@@ -1043,21 +1041,27 @@ sealed abstract class RamlTypeParser(entryOrNode: YMapEntryLike,
         case _ => // ignore
       }
 
-      map.key("minimum".asRamlAnnotation, entry => { // todo pope
-        val value = ScalarNode(entry.value)
-        shape.set(ScalarShapeModel.Minimum, value.text(), Annotations(entry))
-      })
+      map.key(
+        "minimum".asRamlAnnotation,
+        entry => { // todo pope
+          val value = ParserScalarNode(entry.value)
+          shape.set(ScalarShapeModel.Minimum, value.text(), Annotations(entry))
+        }
+      )
 
-      map.key("maximum".asRamlAnnotation, entry => { // todo pope
-        val value = ScalarNode(entry.value)
-        shape.set(ScalarShapeModel.Maximum, value.text(), Annotations(entry))
-      })
+      map.key(
+        "maximum".asRamlAnnotation,
+        entry => { // todo pope
+          val value = ParserScalarNode(entry.value)
+          shape.set(ScalarShapeModel.Maximum, value.text(), Annotations(entry))
+        }
+      )
 
       map.key("format".asRamlAnnotation, ScalarShapeModel.Format in shape)
       // We don't need to parse (format) extension because in oas must not be emitted, and in raml will be emitted.
 
       map.key("multipleOf", entry => { // todo pope
-        val value = ScalarNode(entry.value)
+        val value = ParserScalarNode(entry.value)
         shape.set(ScalarShapeModel.MultipleOf, value.text(), Annotations(entry))
       })
 
@@ -1541,9 +1545,7 @@ sealed abstract class RamlTypeParser(entryOrNode: YMapEntryLike,
   case class PropertyShapeParser(entry: YMapEntry, producer: String => PropertyShape) {
 
     private def setPathTo(shape: PropertyShape, name: String, annotations: Annotations) = {
-      shape.set(
-        PropertyShapeModel.Path,
-        AmfScalar((Namespace.Data + name.urlComponentEncoded).iri(), annotations))
+      shape.set(PropertyShapeModel.Path, AmfScalar((Namespace.Data + name.urlComponentEncoded).iri(), annotations))
     }
 
     def parse(): Option[PropertyShape] = {
@@ -1568,7 +1570,7 @@ sealed abstract class RamlTypeParser(entryOrNode: YMapEntryLike,
               map.key(
                 "required",
                 entry => {
-                  val required = ScalarNode(entry.value).boolean().value.asInstanceOf[Boolean]
+                  val required = ParserScalarNode(entry.value).boolean().value.asInstanceOf[Boolean]
                   // explicitRequired = Some(Value(AmfScalar(required), Annotations(entry) += ExplicitField()))
                   property.set(PropertyShapeModel.MinCount,
                                AmfScalar(if (required) 1 else 0),
