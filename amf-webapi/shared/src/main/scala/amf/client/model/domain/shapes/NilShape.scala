@@ -1,9 +1,10 @@
-package amf.client.model.domain
-
-import amf.client.convert.WebApiClientConverters._
-import amf.plugins.domain.shapes.models.{NilShape => InternalNilShape}
+package amf.client.model.domain.shapes
 
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
+
+import amf.plugins.domain.shapes.models.{NilShape => InternalNilShape}
+
+import amf.client.convert.shapeconverters.ShapeClientConverters._
 
 @JSExportAll
 case class NilShape(override private[amf] val _internal: InternalNilShape) extends AnyShape(_internal) {

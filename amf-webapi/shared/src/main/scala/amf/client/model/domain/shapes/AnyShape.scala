@@ -1,10 +1,10 @@
-package amf.client.model.domain
+package amf.client.model.domain.shapes
 
-import amf.client.convert.WebApiClientConverters._
 import amf.client.environment.Environment
 import amf.client.execution.BaseExecutionEnvironment
 import amf.client.model.StrField
 import amf.client.model.document.PayloadFragment
+import amf.client.model.domain._
 import amf.client.render.ShapeRenderOptions
 import amf.client.validate.{PayloadValidator, ValidationReport}
 import amf.core.emitter.{ShapeRenderOptions => InternalShapeRenderOptions}
@@ -12,7 +12,9 @@ import amf.core.unsafe.PlatformSecrets
 import amf.plugins.domain.shapes.models.{AnyShape => InternalAnyShape}
 
 import scala.concurrent.ExecutionContext
-import scala.scalajs.js.annotation.{JSExport, JSExportAll, JSExportTopLevel}
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
+
+import amf.client.convert.shapeconverters.ShapeClientConverters._
 
 class AnyShape(override private[amf] val _internal: InternalAnyShape)
     extends Shape

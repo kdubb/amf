@@ -1,0 +1,5 @@
+package amf.client.convert.shapeconverters
+
+import amf.client.convert.CoreBaseClientConverter
+
+trait DataShapesBaseClientConverter extends ShapesBaseConverter with CoreBaseClientConverter

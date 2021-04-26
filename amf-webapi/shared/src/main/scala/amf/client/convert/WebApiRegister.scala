@@ -2,6 +2,22 @@ package amf.client.convert
 
 import amf.client.model.document._
 import amf.client.model.domain._
+import amf.client.model.domain.shapes.{
+  AnyShape,
+  ArrayShape,
+  FileShape,
+  IriTemplateMapping,
+  MatrixShape,
+  NilShape,
+  NodeShape,
+  PropertyDependencies,
+  ScalarShape,
+  SchemaDependencies,
+  SchemaShape,
+  TupleShape,
+  UnionShape,
+  XMLSerializer
+}
 import amf.core.metamodel.document.PayloadFragmentModel
 import amf.core.remote.Platform
 import amf.plugins.document.webapi.metamodel.FragmentsTypesModels._

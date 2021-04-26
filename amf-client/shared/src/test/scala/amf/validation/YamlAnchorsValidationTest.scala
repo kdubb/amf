@@ -5,7 +5,7 @@ import amf.{AMFStyle, Oas20Profile, Raml10Profile, RamlProfile}
 import amf.client.AMF
 import amf.client.convert.NativeOps
 import amf.client.environment.Environment
-import amf.client.model.domain.ScalarShape
+import amf.client.model.domain.shapes.ScalarShape
 import amf.client.parse.{DefaultParserErrorHandler, Oas20YamlParser, Parser, RamlParser}
 import amf.client.resolve.ClientErrorHandlerConverter.ErrorHandlerConverter
 import amf.client.resolve.{Oas20Resolver, Raml10Resolver}

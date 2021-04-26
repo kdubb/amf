@@ -1,4 +1,4 @@
-package amf.client.model.domain
+package amf.client.model.domain.shapes
 
 import amf.client.convert.WebApiClientConverters._
 import amf.client.model.{BoolField, IntField}

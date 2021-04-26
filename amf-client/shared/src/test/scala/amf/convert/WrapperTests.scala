@@ -8,6 +8,7 @@ import amf.client.convert.{CoreClientConverters, NativeOps}
 import amf.client.environment.{DefaultEnvironment, Environment}
 import amf.client.model.document._
 import amf.client.model.domain._
+import amf.client.model.domain.shapes.{AnyShape, NodeShape, ScalarShape, SchemaShape}
 import amf.client.parse._
 import amf.client.remote.Content
 import amf.client.render.{Renderer, _}

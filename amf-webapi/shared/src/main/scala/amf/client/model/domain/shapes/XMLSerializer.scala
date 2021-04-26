@@ -1,11 +1,12 @@
-package amf.client.model.domain
+package amf.client.model.domain.shapes
 
-import amf.client.convert.WebApiClientConverters._
+import amf.client.model.domain.DomainElement
 import amf.client.model.{BoolField, StrField}
-import amf.plugins.domain.shapes.models.{XMLSerializer => InternalXMLSerializer}
 
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
 
+import amf.plugins.domain.shapes.models.{XMLSerializer => InternalXMLSerializer}
+import amf.client.convert.shapeconverters.ShapeClientConverters._
 /**
   * XMLSerializer model class.
   */

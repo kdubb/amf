@@ -1,6 +1,7 @@
 package amf.client.model.domain
 
 import amf.client.convert.WebApiClientConverters._
+import amf.client.model.domain.shapes.{NodeShape, ScalarShape}
 import amf.client.model.{BoolField, StrField}
 import amf.plugins.domain.webapi.models.{Parameter => InternalParameter}
 

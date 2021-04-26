@@ -1,11 +1,12 @@
-package amf.client.model.domain
+package amf.client.model.domain.shapes
 
-import amf.client.convert.WebApiClientConverters._
 import amf.client.model.StrField
-import amf.plugins.domain.shapes.models.{SchemaDependencies => InternalSchemaDependencies}
+import amf.client.model.domain.{DomainElement, Shape}
 
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
 
+import amf.plugins.domain.shapes.models.{SchemaDependencies => InternalSchemaDependencies}
+import amf.client.convert.shapeconverters.ShapeClientConverters._
 /**
   * Schema dependencies model class
   */

@@ -1,10 +1,12 @@
-package amf.client.model.domain
+package amf.client.model.domain.shapes
 
-import amf.client.convert.WebApiClientConverters._
-import amf.client.model._
-import amf.plugins.domain.shapes.models.{ScalarShape => InternalScalarShape}
+import amf.client.model.domain.Shape
+import amf.client.model.{BoolField, DoubleField, IntField, StrField}
 
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
+
+import amf.plugins.domain.shapes.models.{ScalarShape => InternalScalarShape}
+import amf.client.convert.shapeconverters.ShapeClientConverters._
 
 @JSExportAll
 case class ScalarShape(override private[amf] val _internal: InternalScalarShape) extends AnyShape(_internal) {

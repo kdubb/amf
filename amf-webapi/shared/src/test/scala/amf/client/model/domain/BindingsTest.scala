@@ -1,6 +1,7 @@
 package amf.client.model.domain
 
 import amf.client.convert.WebApiClientConverters._
+import amf.client.model.domain.shapes.AnyShape
 import amf.plugins.document.{WebApi => WebApiObject}
 import amf.plugins.domain.webapi.models.{bindings => InternalBindings}
 import org.scalatest.{FunSuite, Matchers}

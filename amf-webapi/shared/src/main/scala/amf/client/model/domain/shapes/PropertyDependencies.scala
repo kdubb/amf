@@ -1,11 +1,13 @@
-package amf.client.model.domain
+package amf.client.model.domain.shapes
 
-import amf.client.convert.WebApiClientConverters._
+import amf.client.convert.WebApiClientConverters.ClientList
 import amf.client.model.StrField
-import amf.plugins.domain.shapes.models.{PropertyDependencies => InternalPropertyDependencies}
+import amf.client.model.domain.DomainElement
 
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
 
+import amf.plugins.domain.shapes.models.{PropertyDependencies => InternalPropertyDependencies}
+import amf.client.convert.shapeconverters.ShapeClientConverters._
 /**
   * Property dependencies model class
   */

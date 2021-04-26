@@ -1,6 +1,7 @@
-package amf.client.model.domain
+package amf.client.model.domain.shapes
 
-import amf.plugins.domain.shapes.models.{ArrayShape => InternalArrayShape, MatrixShape => InternalMatrixShape}
+import amf.client.model.domain.Shape
+import amf.plugins.domain.shapes.models.{ArrayShape => InternalArrayShape}
 
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
 
@@ -17,7 +18,3 @@ class MatrixShape(override private[amf] val _internal: InternalArrayShape) exten
     }
   }
 }
-
-/*object MatrixShape {
-  def apply(matrix: InternalMatrixShape): MatrixShape = { new MatrixShape(matrix.toArrayShape) }
-}*/

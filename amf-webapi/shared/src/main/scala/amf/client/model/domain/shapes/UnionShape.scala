@@ -1,8 +1,10 @@
-package amf.client.model.domain
+package amf.client.model.domain.shapes
 
-import amf.plugins.domain.shapes.models.{UnionShape => InternalUnionShape}
-import amf.client.convert.WebApiClientConverters._
+import amf.client.model.domain.Shape
+
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
+import amf.plugins.domain.shapes.models.{UnionShape => InternalUnionShape}
+import amf.client.convert.shapeconverters.ShapeClientConverters._
 
 @JSExportAll
 case class UnionShape(override private[amf] val _internal: InternalUnionShape) extends AnyShape(_internal) {

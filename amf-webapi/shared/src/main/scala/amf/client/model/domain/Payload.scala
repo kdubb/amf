@@ -2,6 +2,7 @@ package amf.client.model.domain
 
 import amf.client.convert.WebApiClientConverters._
 import amf.client.model.StrField
+import amf.client.model.domain.shapes.{NodeShape, ScalarShape}
 import amf.plugins.domain.webapi.models.{Payload => InternalPayload}
 
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}

@@ -3,6 +3,8 @@ package amf.client.model.domain
 import amf.client.model.{BoolField, StrField}
 import amf.plugins.domain.webapi.models.{Message => InternalMessage}
 import amf.client.convert.WebApiClientConverters._
+import amf.client.model.domain.shapes.NodeShape
+
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
 
 /**

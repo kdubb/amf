@@ -1,12 +1,8 @@
-package amf.client.convert
+package amf.client.convert.shapeconverters
 
-import amf.client.convert.shapeconverters._
+import amf.client.convert.CoreClientConverters
 
-object WebApiClientConverters
-    extends WebApiBaseConverter
-    with ShapesBaseConverter
-    with WebApiBaseClientConverter
-    with DataShapesBaseClientConverter {
+object ShapeClientConverters extends ShapesBaseConverter with DataShapesBaseClientConverter {
   // Overriding to match type
   override type ClientOption[E] = CoreClientConverters.ClientOption[E]
   override type ClientList[E]   = CoreClientConverters.ClientList[E]

@@ -1,5 +1,6 @@
 package amf.client.convert
 
+import amf.client.convert.shapeconverters.ShapesBaseConverter
 import amf.client.model.domain.{
   Amqp091ChannelBinding => ClientAmqp091ChannelBinding,
   Amqp091ChannelExchange => ClientAmqp091ChannelExchange,
@@ -11,7 +12,6 @@ import amf.client.model.domain.{
   ChannelBinding => ClientChannelBinding,
   ChannelBindings => ClientChannelBindings,
   CorrelationId => ClientCorrelationId,
-  CreativeWork => ClientCreativeWork,
   EmptyBinding => ClientEmptyBinding,
   Encoding => ClientEncoding,
   EndPoint => ClientEndPoint,
@@ -19,7 +19,6 @@ import amf.client.model.domain.{
   HttpMessageBinding => ClientHttpMessageBinding,
   HttpOperationBinding => ClientHttpOperationBinding,
   HttpSettings => ClientHttpSettings,
-  IriTemplateMapping => ClientIriTemplatedMaping,
   KafkaMessageBinding => ClientKafkaMessageBinding,
   KafkaOperationBinding => ClientKafkaOperationBinding,
   License => ClientLicense,
@@ -72,12 +71,12 @@ import amf.plugins.domain.webapi.models.templates.{ResourceType, Trait}
 
 trait WebApiBaseConverter
     extends CoreBaseConverter
+    with ShapesBaseConverter
     with EndPointConverter
     with ResourceTypeConverter
     with TraitConverter
     with OrganizationConverter
     with LicenseConverter
-    with CreativeWorkConverter
     with MessageConverter
     with OperationConverter
     with TagConverter
@@ -88,7 +87,6 @@ trait WebApiBaseConverter
     with SettingsConverter
     with ScopeConverter
     with ServerConverter
-    with IriTemplateMappingConverter
     with TemplatedLinkConverter
     with CallbackConverter
     with EncodingConverter
@@ -428,14 +426,6 @@ trait MessageConverter extends PlatformSecrets {
   }
 }
 
-trait CreativeWorkConverter extends PlatformSecrets {
-
-  implicit object CreativeWorkMatcher extends BidirectionalMatcher[CreativeWork, ClientCreativeWork] {
-    override def asClient(from: CreativeWork): ClientCreativeWork   = platform.wrap[ClientCreativeWork](from)
-    override def asInternal(from: ClientCreativeWork): CreativeWork = from._internal
-  }
-}
-
 trait ParametrizedSecuritySchemeConverter extends PlatformSecrets {
 
   implicit object ParametrizedSecuritySchemeMatcher
@@ -527,16 +517,6 @@ trait ScopeConverter extends PlatformSecrets {
   implicit object ScopeMatcher extends BidirectionalMatcher[Scope, ClientScope] {
     override def asClient(from: Scope): ClientScope   = platform.wrap[ClientScope](from)
     override def asInternal(from: ClientScope): Scope = from._internal
-  }
-}
-
-trait IriTemplateMappingConverter extends PlatformSecrets {
-
-  implicit object IriTemplateMappingConverter
-      extends BidirectionalMatcher[IriTemplateMapping, ClientIriTemplatedMaping] {
-    override def asClient(from: IriTemplateMapping): ClientIriTemplatedMaping =
-      platform.wrap[ClientIriTemplatedMaping](from)
-    override def asInternal(from: ClientIriTemplatedMaping): IriTemplateMapping = from._internal
   }
 }
 

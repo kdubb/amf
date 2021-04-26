@@ -1,14 +1,10 @@
 package amf.client.validation
 
 import amf.client.model.DataTypes
-import amf.client.model.domain.{NodeShape, ScalarShape}
+import amf.client.model.domain.shapes.ScalarShape
 import amf.convert.NativeOpsFromJvm
 import amf.core.AMF
 import amf.plugins.document.webapi.validation.PayloadValidatorPlugin
-import org.json.JSONException
-import org.scalatest.Matchers.a
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.Matchers._
 
 class JvmPayloadValidationTest extends ClientPayloadValidationTest with NativeOpsFromJvm {
   test("Test unexpected type error") {
