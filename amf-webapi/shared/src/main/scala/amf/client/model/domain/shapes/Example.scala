@@ -1,10 +1,13 @@
-package amf.client.model.domain
+package amf.client.model.domain.shapes
 
-import amf.client.convert.WebApiClientConverters._
+import amf.client.convert.WebApiClientConverters.ClientOption
+import amf.client.model.domain.{DataNode, DomainElement, Linkable, NamedDomainElement}
 import amf.client.model.{BoolField, StrField}
-import amf.plugins.domain.shapes.models.{Example => InternalExample}
 
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
+import amf.plugins.domain.shapes.models.{Example => InternalExample}
+
+import amf.client.convert.shapeconverters.ShapeClientConverters._
 
 /**
   * Example model class

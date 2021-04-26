@@ -1,7 +1,7 @@
 package amf.client.convert.shapeconverters
 
 import amf.client.convert.{BidirectionalMatcher, CoreBaseConverter}
-import amf.client.model.domain.{shapes, CreativeWork => ClientCreativeWork, Example => ClientExample}
+import amf.client.model.domain.{shapes, CreativeWork => ClientCreativeWork}
 import amf.core.unsafe.PlatformSecrets
 import amf.plugins.domain.shapes.models.{SchemaShape, _}
 import amf.plugins.domain.webapi.models.IriTemplateMapping
@@ -98,9 +98,9 @@ trait XMLSerializerConverter extends PlatformSecrets {
 
 trait ExampleConverter extends PlatformSecrets {
 
-  implicit object ExampleMatcher extends BidirectionalMatcher[Example, ClientExample] {
-    override def asClient(from: Example): ClientExample   = platform.wrap[ClientExample](from)
-    override def asInternal(from: ClientExample): Example = from._internal
+  implicit object ExampleMatcher extends BidirectionalMatcher[Example, shapes.Example] {
+    override def asClient(from: Example): shapes.Example   = platform.wrap[shapes.Example](from)
+    override def asInternal(from: shapes.Example): Example = from._internal
   }
 }
 

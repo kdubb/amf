@@ -1,7 +1,7 @@
 package amf.client.model.domain
 
 import amf.client.convert.WebApiClientConverters._
-import amf.client.model.domain.shapes.{AnyShape, IriTemplateMapping, PropertyDependencies, XMLSerializer}
+import amf.client.model.domain.shapes.{AnyShape, Example, IriTemplateMapping, PropertyDependencies, XMLSerializer}
 import amf.plugins.document.{WebApi => WebApiObject}
 import org.scalatest.{FunSuite, Matchers}
 

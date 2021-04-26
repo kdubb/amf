@@ -5,6 +5,7 @@ import amf.client.model.domain._
 import amf.client.model.domain.shapes.{
   AnyShape,
   ArrayShape,
+  Example,
   FileShape,
   IriTemplateMapping,
   MatrixShape,
