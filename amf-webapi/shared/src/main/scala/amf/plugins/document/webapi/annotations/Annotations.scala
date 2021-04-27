@@ -126,8 +126,6 @@ object LocalLinkPath extends AnnotationGraphLoader {
     Some(LocalLinkPath(value))
 }
 
-case class InlineDefinition() extends Annotation
-
 case class EndPointBodyParameter() extends Annotation
 
 case class DefaultPayload() extends Annotation

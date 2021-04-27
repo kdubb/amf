@@ -13,10 +13,10 @@ import amf.core.remote.{Payload, Platform}
 import amf.core.resolution.pipelines.ResolutionPipeline
 import amf.plugins.document.webapi.contexts.parser.raml.PayloadContext
 import amf.plugins.document.webapi.parser.PayloadParser
-import amf.plugins.document.webapi.parser.spec.common.PayloadEmitter
 import amf.plugins.document.webapi.resolution.pipelines.ValidationResolutionPipeline
 import amf.plugins.domain.shapes.DataShapesDomainPlugin
 import amf.plugins.domain.webapi.APIDomainPlugin
+import amf.plugins.domain.webapi.parser.spec.common.PayloadEmitter
 import org.yaml.builder.{DocBuilder, YDocumentBuilder}
 import org.yaml.model.{YDocument, YMap, YScalar}
 

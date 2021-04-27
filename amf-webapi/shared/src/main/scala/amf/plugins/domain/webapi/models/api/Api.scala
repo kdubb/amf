@@ -6,9 +6,9 @@ import amf.core.model.StrField
 import amf.core.model.domain.NamedDomainElement
 import amf.core.parser.{Annotations, Fields}
 import amf.core.remote.Vendor
-import amf.plugins.domain.shapes.models.CreativeWork
 import amf.plugins.domain.webapi.metamodel.api.BaseApiModel.{License => WebApiLicense, _}
 import amf.plugins.domain.webapi.models.{
+  CreativeWork,
   DocumentedElement,
   EndPoint,
   License,

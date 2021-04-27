@@ -7,6 +7,7 @@ import amf.core.model.domain.extensions.DomainExtension
 import amf.core.parser.Position
 import amf.plugins.document.webapi.contexts.SpecEmitterContext
 import amf.plugins.domain.webapi.annotations.OrphanOasExtension
+import amf.plugins.domain.webapi.parser.spec.declaration.emitters.annotations.DataNodeEmitter
 import org.yaml.model.YDocument.EntryBuilder
 
 /**

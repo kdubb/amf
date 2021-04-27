@@ -19,10 +19,10 @@ import amf.plugins.document.webapi.parser.spec.raml.emitters.{
   Raml08SecuritySchemeEmitter,
   Raml10SecuritySchemeEmitter
 }
-import amf.plugins.domain.shapes.models.{CreativeWork, Example}
+import amf.plugins.domain.shapes.models.Example
 import amf.plugins.domain.webapi.models.security.{ParametrizedSecurityScheme, SecurityRequirement, SecurityScheme}
 import amf.plugins.domain.webapi.models.templates.{ResourceType, Trait}
-import amf.plugins.domain.webapi.models.{EndPoint, Operation, Parameter, Payload, Response}
+import amf.plugins.domain.webapi.models.{CreativeWork, EndPoint, Operation, Parameter, Payload, Response}
 
 case class Raml10EmitterFactory()(implicit val ctx: Raml10SpecEmitterContext) extends RamlEmitterFactory {
 

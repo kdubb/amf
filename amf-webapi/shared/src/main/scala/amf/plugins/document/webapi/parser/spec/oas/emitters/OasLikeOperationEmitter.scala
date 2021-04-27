@@ -6,9 +6,8 @@ import amf.core.parser.{Fields, Position}
 import amf.plugins.document.webapi.contexts.SpecEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
-import amf.plugins.domain.shapes.models.CreativeWork
 import amf.plugins.domain.webapi.metamodel.OperationModel
-import amf.plugins.domain.webapi.models.Operation
+import amf.plugins.domain.webapi.models.{CreativeWork, Operation}
 import org.yaml.model.YDocument
 
 import scala.collection.mutable

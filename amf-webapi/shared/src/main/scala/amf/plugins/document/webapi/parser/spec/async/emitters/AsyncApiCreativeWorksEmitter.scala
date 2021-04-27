@@ -5,7 +5,7 @@ import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.parser.Position
 import amf.plugins.document.webapi.contexts.SpecEmitterContext
 import amf.plugins.domain.shapes.metamodel.CreativeWorkModel
-import amf.plugins.domain.shapes.models.CreativeWork
+import amf.plugins.domain.webapi.models.CreativeWork
 import org.yaml.model.{YDocument, YNode}
 
 import scala.collection.mutable.ListBuffer

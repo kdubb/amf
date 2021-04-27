@@ -12,14 +12,11 @@ import amf.core.parser.{Annotations, FieldEntry, Value}
 import amf.core.vocabulary.Namespace
 import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration._
-import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{
-  AnnotationsEmitter,
-  DataNodeEmitter,
-  FacetsEmitter
-}
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{AnnotationsEmitter, FacetsEmitter}
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.{EnumValuesEmitter, XMLSerializerEmitter, oas}
 import amf.plugins.domain.shapes.metamodel.AnyShapeModel
-import amf.plugins.domain.shapes.models.CreativeWork
+import amf.plugins.domain.webapi.models.CreativeWork
+import amf.plugins.domain.webapi.parser.spec.declaration.emitters.annotations.DataNodeEmitter
 
 import scala.collection.mutable.ListBuffer
 
@@ -79,7 +76,8 @@ abstract class OasShapeEmitter(shape: Shape,
 
     fs.entry(ShapeModel.ReadOnly).map(fe => result += ValueEmitter("readOnly", fe))
 
-    if (spec.schemaVersion.isInstanceOf[OAS30SchemaVersion] || spec.schemaVersion.isBiggerThanOrEqualTo(JSONSchemaDraft7SchemaVersion)) {
+    if (spec.schemaVersion.isInstanceOf[OAS30SchemaVersion] || spec.schemaVersion.isBiggerThanOrEqualTo(
+          JSONSchemaDraft7SchemaVersion)) {
       fs.entry(ShapeModel.Deprecated).map(f => result += ValueEmitter("deprecated", f))
       fs.entry(ShapeModel.WriteOnly).map(fe => result += ValueEmitter("writeOnly", fe))
     }

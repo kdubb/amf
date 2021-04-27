@@ -7,6 +7,7 @@ import amf.core.model.domain.extensions.ShapeExtension
 import amf.core.parser.Position
 import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.contexts.SpecEmitterContext
+import amf.plugins.domain.webapi.parser.spec.declaration.emitters.annotations.DataNodeEmitter
 import org.yaml.model.YDocument.EntryBuilder
 
 case class FacetsEmitter(element: Shape, ordering: SpecOrdering)(implicit spec: SpecEmitterContext) {

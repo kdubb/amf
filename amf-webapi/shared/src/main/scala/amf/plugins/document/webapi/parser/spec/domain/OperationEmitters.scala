@@ -16,9 +16,9 @@ import amf.plugins.document.webapi.parser.spec.declaration.emitters.common.Exter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{Raml10TypePartEmitter, RamlNamedTypeEmitter}
 import amf.plugins.document.webapi.parser.spec.oas.OasDocumentEmitter
 import amf.plugins.document.webapi.parser.spec.oas.emitters.StringArrayTagsEmitter
-import amf.plugins.domain.shapes.models.{AnyShape, CreativeWork}
+import amf.plugins.domain.shapes.models.AnyShape
 import amf.plugins.domain.webapi.metamodel.{OperationModel, RequestModel}
-import amf.plugins.domain.webapi.models.{Callback, Operation, Tag}
+import amf.plugins.domain.webapi.models.{Callback, CreativeWork, Operation, Tag}
 import amf.plugins.features.validation.CoreValidations.ResolutionValidation
 import org.yaml.model.YDocument.{EntryBuilder, PartBuilder}
 import org.yaml.model.YType

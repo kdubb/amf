@@ -12,10 +12,10 @@ import amf.core.parser.Position
 import amf.plugins.document.webapi.annotations.ExternalReferenceUrl
 import amf.plugins.document.webapi.contexts.emitter.raml.{RamlScalarEmitter, RamlSpecEmitterContext}
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.ExamplesEmitter
-import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.DataNodeEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.common.RamlExternalReferenceUrlEmitter
 import amf.plugins.domain.shapes.metamodel.common.ExamplesField
 import amf.plugins.domain.shapes.models.AnyShape
+import amf.plugins.domain.webapi.parser.spec.declaration.emitters.annotations.DataNodeEmitter
 import org.yaml.model.YDocument.PartBuilder
 
 import scala.collection.mutable.ListBuffer
@@ -24,7 +24,9 @@ case class RamlExternalSchemaWrapperEmitter(shape: AnyShape,
                                             ordering: SpecOrdering,
                                             ignored: Seq[Field] = Nil,
                                             references: Seq[BaseUnit],
-                                            forceEntry: Boolean = false)(implicit spec: RamlSpecEmitterContext) extends PartEmitter with ExamplesEmitter{
+                                            forceEntry: Boolean = false)(implicit spec: RamlSpecEmitterContext)
+    extends PartEmitter
+    with ExamplesEmitter {
   override def emit(b: PartBuilder): Unit = {
     val fs = shape.fields
     if (shape.inherits.nonEmpty) {
@@ -34,11 +36,13 @@ case class RamlExternalSchemaWrapperEmitter(shape: AnyShape,
       fs.entry(ShapeModel.Default) match {
         case Some(f) =>
           result += EntryPartEmitter("default",
-            DataNodeEmitter(shape.default, ordering)(spec.eh), position = pos(f.value.annotations))
+                                     DataNodeEmitter(shape.default, ordering)(spec.eh),
+                                     position = pos(f.value.annotations))
         case None => fs.entry(ShapeModel.DefaultValueString).map(dv => result += ValueEmitter("default", dv))
       }
-      emitExamples(shape, result, ordering,references)
-      result ++= shape.inherits.headOption.toSeq.flatMap(s => Raml10TypeEmitter(s, ordering, ignored, references, forceEntry).entries())
+      emitExamples(shape, result, ordering, references)
+      result ++= shape.inherits.headOption.toSeq.flatMap(s =>
+        Raml10TypeEmitter(s, ordering, ignored, references, forceEntry).entries())
       b.obj(traverse(ordering.sorted(result), _))
     } else {
       shape.inherits.headOption.foreach(s => emitReference(s, b))
@@ -58,7 +62,7 @@ case class RamlExternalSchemaWrapperEmitter(shape: AnyShape,
   private def shapeWasParsedFromAnExternalFragment(shape: AnyShape) = {
     shape.fromExternalSource && references.exists {
       case e: ExternalFragment => e.encodes.id.equals(shape.asInstanceOf[AnyShape].externalSourceID.getOrElse(""))
-      case _ => false
+      case _                   => false
     }
   }
 

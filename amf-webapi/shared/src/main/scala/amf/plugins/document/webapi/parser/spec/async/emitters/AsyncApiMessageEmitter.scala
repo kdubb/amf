@@ -13,7 +13,7 @@ import amf.plugins.document.webapi.parser.spec.declaration.emitters.async
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.async.AsyncSchemaEmitter
 import amf.plugins.document.webapi.parser.spec.domain.{ExampleDataNodePartEmitter, NamedMultipleExampleEmitter}
 import amf.plugins.document.webapi.parser.spec.oas.emitters.{OasLikeExampleEmitters, TagsEmitter}
-import amf.plugins.domain.shapes.models.{CreativeWork, Example}
+import amf.plugins.domain.shapes.models.Example
 import amf.plugins.domain.webapi.annotations.OrphanOasExtension
 import amf.plugins.domain.webapi.metamodel.{MessageModel, PayloadModel}
 import amf.plugins.domain.webapi.models._

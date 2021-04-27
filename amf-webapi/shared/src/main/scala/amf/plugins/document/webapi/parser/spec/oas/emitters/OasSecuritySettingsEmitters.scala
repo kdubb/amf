@@ -11,13 +11,13 @@ import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.contexts.SpecEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{
   AnnotationsEmitter,
-  DataNodeEmitter,
   OrphanAnnotationsEmitter
 }
 import amf.plugins.document.webapi.parser.spec.raml.emitters.{RamlApiKeySettingsEmitters, RamlOAuth1SettingsEmitters}
 import amf.plugins.domain.webapi.annotations.OrphanOasExtension
 import amf.plugins.domain.webapi.metamodel.security._
 import amf.plugins.domain.webapi.models.security._
+import amf.plugins.domain.webapi.parser.spec.declaration.emitters.annotations.DataNodeEmitter
 import org.yaml.model.YDocument.EntryBuilder
 import org.yaml.model.YNode
 

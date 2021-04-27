@@ -18,7 +18,7 @@ import amf.plugins.document.webapi.model.DataTypeFragment
 import amf.plugins.document.webapi.parser.spec.WebApiDeclarations._
 import amf.plugins.document.webapi.parser.spec.domain.OasParameter
 import amf.plugins.domain.shapes.metamodel.{CreativeWorkModel, ExampleModel}
-import amf.plugins.domain.shapes.models.{AnyShape, CreativeWork, Example}
+import amf.plugins.domain.shapes.models.{AnyShape, Example}
 import amf.plugins.domain.webapi.metamodel._
 import amf.plugins.domain.webapi.metamodel.bindings.{
   ChannelBindingsModel,

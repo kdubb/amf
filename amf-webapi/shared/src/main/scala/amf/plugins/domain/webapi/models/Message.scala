@@ -4,7 +4,7 @@ import amf.core.metamodel.{Field, Obj}
 import amf.core.model.domain.{DomainElement, Linkable, NamedDomainElement, Shape}
 import amf.core.model.{BoolField, StrField}
 import amf.core.parser.{Annotations, Fields}
-import amf.plugins.domain.shapes.models.{CreativeWork, Example, ExemplifiedDomainElement, NodeShape}
+import amf.plugins.domain.shapes.models.{Example, ExemplifiedDomainElement, NodeShape}
 import amf.plugins.domain.webapi.metamodel.MessageModel
 import amf.plugins.domain.webapi.metamodel.MessageModel._
 import amf.plugins.domain.webapi.models.bindings.{MessageBinding, MessageBindings}

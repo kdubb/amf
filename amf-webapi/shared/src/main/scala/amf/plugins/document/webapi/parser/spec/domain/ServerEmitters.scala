@@ -12,7 +12,7 @@ import amf.plugins.document.webapi.contexts._
 import amf.plugins.document.webapi.contexts.emitter.oas.{Oas3SpecEmitterFactory, OasSpecEmitterContext}
 import amf.plugins.document.webapi.contexts.emitter.raml.{RamlScalarEmitter, RamlSpecEmitterContext}
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.EnumValuesEmitter
-import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{AnnotationsEmitter, DataNodeEmitter}
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.document.webapi.parser.spec.{BaseUriSplitter, toRaml}
 import amf.plugins.domain.shapes.metamodel.ScalarShapeModel
 import amf.plugins.domain.shapes.models.ScalarShape
@@ -20,6 +20,7 @@ import amf.plugins.domain.webapi.metamodel.ServerModel
 import amf.plugins.domain.webapi.metamodel.api.BaseApiModel
 import amf.plugins.domain.webapi.models._
 import amf.plugins.domain.webapi.models.api.Api
+import amf.plugins.domain.webapi.parser.spec.declaration.emitters.annotations.DataNodeEmitter
 import org.yaml.model.YDocument
 import org.yaml.model.YDocument.EntryBuilder
 

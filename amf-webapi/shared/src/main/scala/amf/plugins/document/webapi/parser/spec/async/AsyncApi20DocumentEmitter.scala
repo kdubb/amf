@@ -17,9 +17,8 @@ import amf.plugins.document.webapi.parser.spec.common.DeclarationsEmitterWrapper
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.document.webapi.parser.spec.domain.SecurityRequirementsEmitter
 import amf.plugins.document.webapi.parser.spec.oas.emitters.{InfoEmitter, TagsEmitter}
-import amf.plugins.domain.shapes.models.CreativeWork
 import amf.plugins.domain.webapi.metamodel.api.WebApiModel
-import amf.plugins.domain.webapi.models.Tag
+import amf.plugins.domain.webapi.models.{CreativeWork, Tag}
 import amf.plugins.domain.webapi.models.api.{Api, WebApi}
 import amf.plugins.features.validation.CoreValidations.ResolutionValidation
 import org.yaml.model.{YDocument, YNode, YScalar, YType}

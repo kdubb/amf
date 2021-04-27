@@ -24,7 +24,7 @@ import amf.core.remote.Platform
 import amf.plugins.document.webapi.metamodel.FragmentsTypesModels._
 import amf.plugins.document.webapi.model
 import amf.plugins.domain.{shapes, webapi}
-import amf.plugins.domain.webapi.APIDomainPlugin
+import amf.plugins.domain.webapi.{APIDomainPlugin, models}
 import amf.plugins.domain.webapi.metamodel.bindings._
 import amf.plugins.domain.webapi.metamodel.{CorrelationIdModel, IriTemplateMappingModel, TemplatedLinkModel, templates}
 import amf.plugins.features.validation.CoreValidations
@@ -159,7 +159,7 @@ object WebApiRegister {
       case s: shapes.models.TupleShape => TupleShape(s)
     }
     platform.registerWrapper(shapes.metamodel.CreativeWorkModel) {
-      case s: shapes.models.CreativeWork => CreativeWork(s)
+      case s: models.CreativeWork => CreativeWork(s)
     }
     platform.registerWrapper(shapes.metamodel.ExampleModel) {
       case s: shapes.models.Example => Example(s)

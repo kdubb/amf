@@ -37,11 +37,12 @@ import amf.plugins.document.webapi.parser.spec.oas.emitters.{
   OrganizationPartEmitter,
   TagEmitter
 }
-import amf.plugins.domain.shapes.models.{CreativeWork, Example}
+import amf.plugins.domain.shapes.models.Example
 import amf.plugins.domain.webapi.metamodel.ParameterModel
 import amf.plugins.domain.webapi.models.security.{ParametrizedSecurityScheme, SecurityRequirement, SecurityScheme}
 import amf.plugins.domain.webapi.models.{
   Callback,
+  CreativeWork,
   EndPoint,
   License,
   Organization,

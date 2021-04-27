@@ -24,12 +24,11 @@ import amf.plugins.document.webapi.parser.spec.declaration.{AbstractDeclarations
 import amf.plugins.document.webapi.parser.spec.domain
 import amf.plugins.document.webapi.parser.spec.domain._
 import amf.plugins.document.webapi.vocabulary.VocabularyMappings
-import amf.plugins.domain.shapes.models.CreativeWork
 import amf.plugins.domain.shapes.models.ExampleTracking.tracking
 import amf.plugins.domain.webapi.metamodel.api.WebApiModel
 import amf.plugins.domain.webapi.metamodel.security.SecuritySchemeModel
 import amf.plugins.domain.webapi.metamodel.templates.{ResourceTypeModel, TraitModel}
-import amf.plugins.domain.webapi.models._
+import amf.plugins.domain.webapi.models.{CreativeWork, _}
 import amf.plugins.domain.webapi.models.api.WebApi
 import amf.plugins.domain.webapi.models.security.{SecurityRequirement, SecurityScheme}
 import amf.plugins.domain.webapi.models.templates.{ResourceType, Trait}

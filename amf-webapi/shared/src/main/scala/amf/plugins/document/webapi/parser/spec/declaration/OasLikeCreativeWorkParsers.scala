@@ -5,11 +5,11 @@ import amf.core.remote.{Oas, Raml}
 import amf.plugins.document.webapi.contexts.WebApiContext
 import amf.plugins.document.webapi.parser.spec.common.{AnnotationParser, SpecParserOps}
 import amf.plugins.domain.shapes.metamodel.CreativeWorkModel
-import amf.plugins.domain.shapes.models.CreativeWork
 import org.yaml.model.{YMap, YNode}
 import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.parser.spec.oas.{Oas2Syntax, Oas3Syntax}
 import amf.plugins.document.webapi.vocabulary.VocabularyMappings
+import amf.plugins.domain.webapi.models.CreativeWork
 import amf.validations.ParserSideValidations.UnexpectedVendor
 
 object OasLikeCreativeWorkParser {

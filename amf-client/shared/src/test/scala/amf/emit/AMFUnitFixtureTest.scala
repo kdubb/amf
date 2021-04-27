@@ -3,7 +3,7 @@ package amf.emit
 import amf.core.annotations.SynthesizedField
 import amf.core.model.document.{Document, Module}
 import amf.core.unsafe.PlatformSecrets
-import amf.plugins.domain.shapes.models.{CreativeWork, ScalarShape}
+import amf.plugins.domain.shapes.models.ScalarShape
 import amf.plugins.domain.webapi.models.{License, Organization}
 import amf.plugins.domain.webapi.models.api.WebApi
 

@@ -5,9 +5,9 @@ import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.parser.{FieldEntry, Position}
 import amf.plugins.document.webapi.contexts.SpecEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.{OasEntryCreativeWorkEmitter, RamlCreativeWorkEmitter}
-import amf.plugins.domain.shapes.models.CreativeWork
 import org.yaml.model.YDocument.EntryBuilder
 import amf.core.utils.AmfStrings
+import amf.plugins.domain.webapi.models.CreativeWork
 
 case class UserDocumentationsEmitter(f: FieldEntry, ordering: SpecOrdering)(implicit spec: SpecEmitterContext) {
   def emitters(): Seq[EntryEmitter] = {

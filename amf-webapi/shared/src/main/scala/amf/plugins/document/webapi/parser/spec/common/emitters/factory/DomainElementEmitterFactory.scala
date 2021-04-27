@@ -5,7 +5,7 @@ import amf.core.errorhandling.ErrorHandler
 import amf.core.model.domain.extensions.CustomDomainProperty
 import amf.core.model.domain.{DomainElement, Shape}
 import amf.core.remote.Vendor
-import amf.plugins.domain.shapes.models.{CreativeWork, Example}
+import amf.plugins.domain.shapes.models.Example
 import amf.plugins.domain.webapi.models._
 import amf.plugins.domain.webapi.models.bindings.{ChannelBindings, MessageBindings, OperationBindings, ServerBindings}
 import amf.plugins.domain.webapi.models.security.{ParametrizedSecurityScheme, SecurityRequirement, SecurityScheme}

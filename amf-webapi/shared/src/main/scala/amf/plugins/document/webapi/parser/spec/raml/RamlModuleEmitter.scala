@@ -11,13 +11,14 @@ import amf.core.remote.Raml
 import amf.plugins.document.webapi.contexts.emitter.raml.RamlSpecEmitterContext
 import amf.plugins.document.webapi.model._
 import amf.plugins.document.webapi.parser.spec.declaration._
-import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{AnnotationsEmitter, DataNodeEmitter}
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.Raml10TypeEmitter
 import amf.plugins.document.webapi.parser.spec.domain.NamedExampleEmitter
 import amf.plugins.document.webapi.parser.spec.raml.emitters.Raml10SecuritySchemeEmitter
 import amf.plugins.document.webapi.parser.{RamlFragmentHeader, RamlHeader}
 import amf.plugins.domain.shapes.models.AnyShape
+import amf.plugins.domain.webapi.parser.spec.declaration.emitters.annotations.DataNodeEmitter
 import amf.plugins.features.validation.CoreValidations.ResolutionValidation
 import org.yaml.model.YDocument
 
@@ -31,7 +32,9 @@ case class RamlModuleEmitter(module: Module)(implicit val spec: RamlSpecEmitterC
     val ordering: SpecOrdering = SpecOrdering.ordering(Raml, module.annotations)
 
     // TODO ordering??
-    val emitters = spec.factory.rootLevelEmitters(module, ordering).emitters ++ AnnotationsEmitter(module, ordering).emitters
+    val emitters = spec.factory
+      .rootLevelEmitters(module, ordering)
+      .emitters ++ AnnotationsEmitter(module, ordering).emitters
 
     // TODO invoke traits end resource types
 

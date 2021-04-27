@@ -58,8 +58,7 @@ import amf.client.model.domain.{
 import amf.client.validate.{PayloadValidator => ClientInternalPayloadValidator}
 import amf.core.validation.PayloadValidator
 import amf.core.unsafe.PlatformSecrets
-import amf.plugins.domain.shapes.models.CreativeWork
-import amf.plugins.domain.webapi.models._
+import amf.plugins.domain.webapi.models.{CreativeWork, _}
 import amf.plugins.domain.webapi.models.bindings.amqp._
 import amf.plugins.domain.webapi.models.bindings.http._
 import amf.plugins.domain.webapi.models.bindings.kafka._
