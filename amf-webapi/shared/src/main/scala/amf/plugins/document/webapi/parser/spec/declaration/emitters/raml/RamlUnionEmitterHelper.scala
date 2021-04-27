@@ -1,10 +1,10 @@
 package amf.plugins.document.webapi.parser.spec.declaration.emitters.raml
 
 import amf.core.model.domain.Shape
-import amf.plugins.document.webapi.parser.RamlTypeDefStringValueMatcher
 import amf.plugins.domain.shapes.metamodel.ScalarShapeModel
 import amf.plugins.domain.shapes.models._
 import amf.plugins.domain.shapes.parser.TypeDefXsdMapping
+import amf.plugins.domain.webapi.parser.RamlTypeDefStringValueMatcher
 
 object RamlUnionEmitterHelper {
   def inlinedEmission(shape: UnionShape with ShapeHelpers): Option[String] = {

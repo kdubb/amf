@@ -7,7 +7,7 @@ import amf.core.parser.{Annotations, ScalarNode, _}
 import amf.plugins.document.webapi.annotations.{ExternalReferenceUrl, ParsedJSONExample}
 import amf.plugins.document.webapi.contexts.WebApiContext
 import amf.plugins.document.webapi.contexts.parser.raml.{RamlWebApiContext, RamlWebApiContextType}
-import amf.plugins.document.webapi.parser.RamlTypeDefMatcher.{JSONSchema, XMLSchema}
+import amf.plugins.domain.webapi.parser.RamlTypeDefMatcher.{JSONSchema, XMLSchema}
 import amf.plugins.document.webapi.parser.spec.OasDefinitions
 import amf.plugins.document.webapi.parser.spec.WebApiDeclarations.ErrorNamedExample
 import amf.plugins.document.webapi.parser.spec.common.{

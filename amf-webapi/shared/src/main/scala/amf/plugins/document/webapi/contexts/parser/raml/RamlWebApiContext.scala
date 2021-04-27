@@ -6,10 +6,10 @@ import amf.core.parser.{ParsedReference, ParserContext}
 import amf.core.remote.{Payload, Vendor}
 import amf.plugins.document.webapi.contexts.WebApiContext
 import amf.plugins.document.webapi.contexts.parser.raml.RamlWebApiContextType.RamlWebApiContextType
-import amf.plugins.document.webapi.parser.RamlShapeTypeBeautifier
 import amf.plugins.document.webapi.parser.spec.declaration.TypeInfo
 import amf.plugins.document.webapi.parser.spec.domain.ParsingHelpers
 import amf.plugins.document.webapi.parser.spec.{RamlWebApiDeclarations, SpecSyntax}
+import amf.plugins.domain.webapi.parser.RamlShapeTypeBeautifier
 import amf.plugins.features.validation.CoreValidations.DeclarationNotFound
 import amf.validations.ParserSideValidations.ClosedShapeSpecification
 import org.yaml.model._

@@ -23,8 +23,11 @@ sealed case class ShapeExpander(root: Shape, recursionRegister: RecursionErrorRe
 
   def normalize(): Shape = normalize(root)
 
-  protected val traversal: ModelTraversalRegistry =
-    ModelTraversalRegistry().withAllowedCyclesInstances(Seq(classOf[UnresolvedShape]))
+  protected val traversal: ModelTraversalRegistry = {
+    ModelTraversalRegistry()
+    // TODO: ShapeModule - Uncomment
+  }
+  //      .withAllowedCyclesInstances(Seq(classOf[UnresolvedShape]))
 
   protected def ensureHasId(shape: Shape): Unit = {
     if (Option(shape.id).isEmpty) {

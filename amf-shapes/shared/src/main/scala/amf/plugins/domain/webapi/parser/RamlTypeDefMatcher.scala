@@ -1,4 +1,4 @@
-package amf.plugins.document.webapi.parser
+package amf.plugins.domain.webapi.parser
 
 import amf.plugins.domain.shapes.models.TypeDef
 import amf.plugins.domain.shapes.models.TypeDef._

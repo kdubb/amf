@@ -14,7 +14,7 @@ import amf.core.vocabulary.Namespace.Shapes
 import amf.plugins.document.webapi.annotations._
 import amf.plugins.document.webapi.contexts.WebApiContext
 import amf.plugins.document.webapi.contexts.parser.raml.{Raml08WebApiContext, Raml10WebApiContext, RamlWebApiContext}
-import amf.plugins.document.webapi.parser.RamlTypeDefMatcher.{JSONSchema, XMLSchema}
+import amf.plugins.domain.webapi.parser.RamlTypeDefMatcher.{JSONSchema, XMLSchema}
 import amf.plugins.document.webapi.parser.spec.common._
 import amf.plugins.document.webapi.parser.spec.declaration.RamlTypeDetection.parseFormat
 import amf.plugins.document.webapi.parser.spec.declaration.external.raml.{
@@ -25,13 +25,13 @@ import amf.plugins.document.webapi.parser.spec.domain._
 import amf.plugins.document.webapi.parser.spec.raml.RamlSpecParser
 import amf.plugins.document.webapi.parser.spec.raml.expression.RamlExpressionParser
 import amf.plugins.document.webapi.parser.spec.toOas
-import amf.plugins.document.webapi.parser.{RamlTypeDefMatcher, TypeName}
 import amf.plugins.document.webapi.vocabulary.VocabularyMappings
 import amf.plugins.domain.shapes.metamodel._
 import amf.plugins.domain.shapes.models.TypeDef._
 import amf.plugins.domain.shapes.models.{ScalarType, _}
 import amf.plugins.domain.shapes.parser.XsdTypeDefMapping
 import amf.plugins.domain.webapi.annotations.TypePropertyLexicalInfo
+import amf.plugins.domain.webapi.parser.{RamlTypeDefMatcher, TypeName}
 import amf.validations.ParserSideValidations._
 import org.yaml.model.{YPart, _}
 

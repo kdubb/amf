@@ -9,15 +9,11 @@ import amf.core.parser.{Annotations, Fields}
 import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.contexts.emitter.raml.{RamlScalarEmitter, RamlSpecEmitterContext}
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.NumberTypeToYTypeConverter
-import amf.plugins.document.webapi.parser.{
-  OasTypeDefMatcher,
-  RamlTypeDefMatcher,
-  RamlTypeDefStringValueMatcher,
-  TypeName
-}
+import amf.plugins.document.webapi.parser.OasTypeDefMatcher
 import amf.plugins.domain.shapes.metamodel.ScalarShapeModel
 import amf.plugins.domain.shapes.models.{ScalarShape, TypeDef}
 import amf.plugins.domain.shapes.parser.{TypeDefXsdMapping, TypeDefYTypeMapping}
+import amf.plugins.domain.webapi.parser.{RamlTypeDefMatcher, RamlTypeDefStringValueMatcher, TypeName}
 import org.yaml.model.YType
 
 import scala.collection.mutable.ListBuffer

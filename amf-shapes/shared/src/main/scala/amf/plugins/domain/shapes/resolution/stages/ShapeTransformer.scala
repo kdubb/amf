@@ -5,11 +5,7 @@ import amf.core.errorhandling.ErrorHandler
 import amf.core.model.domain.Shape
 import amf.core.resolution.stages.elements.resolution.ElementStageTransformer
 import amf.plugins.domain.shapes.resolution.stages.recursion.RecursionErrorRegister
-import amf.plugins.domain.shapes.resolution.stages.shape_normalization.{
-  NormalizationContext,
-  ShapeCanonizer,
-  ShapeExpander
-}
+import amf.plugins.domain.shapes.resolution.stages.shape_normalization.{NormalizationContext, ShapeCanonizer, ShapeExpander}
 
 class ShapeTransformer(context: NormalizationContext) extends ElementStageTransformer[Shape] {
 

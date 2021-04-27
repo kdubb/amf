@@ -12,13 +12,10 @@ import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.parser.{Annotations, Value}
 import amf.core.utils.IdCounter
 import amf.plugins.document.webapi.annotations.ParsedJSONSchema
-import amf.plugins.document.webapi.parser.RamlShapeTypeBeautifier
 import amf.plugins.domain.shapes.metamodel._
 import amf.plugins.domain.shapes.models._
-import amf.validations.ResolutionSideValidations.{
-  InvalidTypeInheritanceErrorSpecification,
-  InvalidTypeInheritanceWarningSpecification
-}
+import amf.plugins.domain.webapi.parser.RamlShapeTypeBeautifier
+import amf.validations.ShapeResolutionSideValidations.{InvalidTypeInheritanceErrorSpecification, InvalidTypeInheritanceWarningSpecification}
 import org.yaml.model.YError
 
 import scala.collection.mutable

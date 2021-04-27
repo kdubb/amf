@@ -9,9 +9,9 @@ import amf.core.unsafe.PlatformSecrets
 import amf.core.utils._
 import amf.plugins.document.webapi.annotations.DeclarationKey
 import amf.plugins.document.webapi.contexts.parser.raml.RamlWebApiContext
-import amf.plugins.document.webapi.parser.RamlTypeDefMatcher
 import amf.plugins.document.webapi.parser.spec.declaration.{AbstractDeclarationParser, Raml08TypeParser, _}
 import amf.plugins.domain.webapi.models.templates.{ResourceType, Trait}
+import amf.plugins.domain.webapi.parser.RamlTypeDefMatcher
 import amf.validations.ParserSideValidations.{
   InvalidAbstractDeclarationType,
   InvalidSecuredByType,

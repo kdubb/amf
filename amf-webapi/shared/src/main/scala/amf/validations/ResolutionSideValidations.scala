@@ -23,16 +23,6 @@ object ResolutionSideValidations extends Validations {
     "Missing extension in reference"
   )
 
-  val InvalidTypeInheritanceWarningSpecification = validation(
-    "invalid-type-inheritance-warning",
-    "Invalid inheritance relationship"
-  )
-
-  val InvalidTypeInheritanceErrorSpecification = validation(
-    "invalid-type-inheritance",
-    "Invalid inheritance relationship"
-  )
-
   val NestedEndpoint = validation(
     "nested-endpoint",
     "Nested endpoints"
@@ -64,13 +54,10 @@ object ResolutionSideValidations extends Validations {
   )
 
   override val levels: Map[String, Map[ProfileName, String]] = Map(
-    InvalidTypeInheritanceWarningSpecification.id -> all(WARNING)
-  )
+    )
 
   override val validations: List[ValidationSpecification] = List(
     MissingExtensionInReferences,
-    InvalidTypeInheritanceErrorSpecification,
-    InvalidTypeInheritanceWarningSpecification,
     NestedEndpoint,
     UnequalMediaTypeDefinitionsInExtendsPayloads,
     ParseResourceTypeFail,

@@ -2,17 +2,12 @@ package amf.plugins.domain.shapes.resolution.stages
 
 import amf.ProfileName
 import amf.core.errorhandling.ErrorHandler
-import amf.core.metamodel.MetaModelTypeMapping
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain._
 import amf.core.resolution.stages.ResolutionStage
-import amf.core.resolution.stages.elements.resolution.{ElementResolutionStage, ElementStageTransformer}
+import amf.core.resolution.stages.elements.resolution.ElementStageTransformer
 import amf.core.resolution.stages.selectors.ShapeSelector
-import amf.core.traversal.ModelTraversalRegistry
 import amf.plugins.domain.shapes.resolution.stages.shape_normalization._
-import amf.plugins.features.validation.CoreValidations.RecursiveShapeSpecification
-
-import scala.collection.mutable.ListBuffer
 
 /**
   * Computes the canonical form for all the shapes in the model

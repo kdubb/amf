@@ -2,7 +2,7 @@ package amf.plugins.domain.shapes.resolution.stages
 
 import amf.core.metamodel.domain.ShapeModel
 import amf.core.metamodel.domain.extensions.PropertyShapeModel
-import amf.core.model.domain.{AmfArray, DomainElement, Shape}
+import amf.core.model.domain.{AmfArray, Shape}
 import amf.core.parser.Value
 import amf.core.resolution.stages.elements.resolution.ElementStageTransformer
 import amf.plugins.domain.shapes.metamodel.{ArrayShapeModel, UnionShapeModel}
