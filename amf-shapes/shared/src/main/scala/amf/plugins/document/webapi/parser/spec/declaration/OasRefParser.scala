@@ -5,13 +5,7 @@ import amf.core.metamodel.domain.LinkableElementModel
 import amf.core.model.domain.{AmfScalar, Linkable, Shape}
 import amf.core.parser._
 import amf.core.utils.UriUtils
-import amf.plugins.document.webapi.annotations.ExternalJsonSchemaShape
-import amf.plugins.document.webapi.contexts.parser.OasLikeWebApiContext
-import amf.plugins.document.webapi.contexts.parser.async.Async20WebApiContext
-import amf.plugins.document.webapi.contexts.parser.oas.{Oas2WebApiContext, Oas3WebApiContext}
-import amf.plugins.document.webapi.parser.spec.OasDefinitions
-import amf.plugins.document.webapi.parser.spec.declaration.utils.JsonSchemaParsingHelper
-import amf.plugins.domain.shapes.models.{AnyShape, UnresolvedShape}
+import amf.plugins.domain.shapes.models.AnyShape
 import org.yaml.model.{YMap, YMapEntry, YPart, YType}
 
 /*

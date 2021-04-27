@@ -3,7 +3,6 @@ package amf.plugins.document.webapi.parser.spec.oas.parser.types
 import amf.core.metamodel.Field
 import amf.core.model.domain.Shape
 import amf.core.parser.{Annotations, YMapOps}
-import amf.plugins.document.webapi.contexts.parser.OasLikeWebApiContext
 import amf.plugins.document.webapi.parser.spec.declaration.{OasTypeParser, SchemaVersion}
 import org.yaml.model.YMap
 

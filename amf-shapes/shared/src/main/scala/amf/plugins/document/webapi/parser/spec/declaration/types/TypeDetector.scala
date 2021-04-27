@@ -1,12 +1,10 @@
 package amf.plugins.document.webapi.parser.spec.declaration.types
 
-import amf.core.errorhandling.ErrorHandler
-import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.parser.{YMapOps, YNodeLikeOps}
+import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.plugins.document.webapi.parser.OasTypeDefMatcher.matchType
 import amf.plugins.domain.shapes.models.TypeDef
 import amf.plugins.domain.shapes.models.TypeDef._
-import amf.validations.ParserSideValidations.InvalidJsonSchemaType
 import org.yaml.model.{YMap, YScalar}
 
 object TypeDetector {
@@ -24,6 +22,7 @@ object TypeDetector {
 
   abstract class TypeCriteria {
     def detect(map: YMap): Option[TypeDef]
+
     def chain(criteria: TypeCriteria): TypeCriteria = ChainedCriteria(this, criteria)
   }
 
@@ -33,9 +32,9 @@ object TypeDetector {
 
   case class ExplicitTypeCriteria()(implicit val errorHandler: ParserErrorHandler) extends TypeCriteria {
     override def detect(map: YMap): Option[TypeDef] = map.key("type").flatMap { e =>
-      val typeText          = e.value.as[YScalar].text
+      val typeText = e.value.as[YScalar].text
       val formatTextOrEmpty = map.key("format").flatMap(e => e.value.toOption[YScalar].map(_.text)).getOrElse("")
-      val result            = matchType(typeText, formatTextOrEmpty, UndefinedType)
+      val result = matchType(typeText, formatTextOrEmpty, UndefinedType)
       if (result == UndefinedType) {
         errorHandler.violation(InvalidJsonSchemaType, "", s"Invalid type $typeText", e.value)
         None
@@ -95,4 +94,5 @@ object TypeDetector {
         .orElse(map.key("uniqueItems"))
         .map(_ => ArrayType)
   }
+
 }
