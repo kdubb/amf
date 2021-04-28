@@ -4,6 +4,7 @@ import amf.core.annotations.SynthesizedField
 import amf.core.metamodel.Field
 import amf.core.model.domain._
 import amf.core.parser.{Annotations, ScalarNode, YMapOps}
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.async.AsyncWebApiContext
 import amf.plugins.document.webapi.parser.spec.common.{DataNodeParser, SpecParserOps, YMapEntryLike}
 import amf.plugins.document.webapi.parser.spec.declaration.{JSONSchemaDraft7SchemaVersion, OasTypeParser}
@@ -161,7 +162,7 @@ abstract class AsyncBindingsParser(entryLike: YMapEntryLike, parent: String)(imp
     OasTypeParser(YMapEntryLike(entry.value),
                   "schema",
                   shape => shape.withName("schema"),
-                  JSONSchemaDraft7SchemaVersion)
+                  JSONSchemaDraft7SchemaVersion)(WebApiAdapterShapeParserContext(ctx))
       .parse()
       .foreach { shape =>
         binding.set(field, shape, Annotations(entry))

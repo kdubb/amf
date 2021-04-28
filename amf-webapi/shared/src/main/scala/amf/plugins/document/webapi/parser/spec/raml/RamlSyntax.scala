@@ -1,6 +1,6 @@
 package amf.plugins.document.webapi.parser.spec.raml
 
-import amf.plugins.document.webapi.parser.spec.SpecSyntax
+import amf.plugins.domain.webapi.parser.spec.SpecSyntax
 
 object Raml10Syntax extends RamlSyntax {
 

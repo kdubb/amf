@@ -9,9 +9,10 @@ import amf.core.unsafe.PlatformSecrets
 import amf.core.utils.UriUtils.resolve
 import amf.core.utils.{Absolute, AliasCounter, IdCounter, RelativeToIncludedFile}
 import amf.plugins.document.webapi.annotations.DeclarationKey
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.oas.OasWebApiContext
 import amf.plugins.document.webapi.parser.spec._
-import amf.plugins.document.webapi.parser.spec.common.YMapEntryLike
+import amf.plugins.document.webapi.parser.spec.common.{ParserErrorHandling, YMapEntryLike}
 import amf.plugins.document.webapi.parser.spec.declaration.{
   JSONSchemaDraft4SchemaVersion,
   JSONSchemaVersion,
@@ -20,6 +21,7 @@ import amf.plugins.document.webapi.parser.spec.declaration.{
 import amf.plugins.document.webapi.parser.spec.domain.OasParameter
 import amf.plugins.document.webapi.parser.spec.jsonschema.{AstFinder, AstIndex, AstIndexBuilder, JsonSchemaInference}
 import amf.plugins.domain.shapes.models.AnyShape
+import amf.plugins.domain.webapi.parser.spec.SpecSyntax
 import amf.validations.ParserSideValidations.{ClosedShapeSpecification, ClosedShapeSpecificationWarning}
 import org.yaml.model._
 
@@ -32,6 +34,7 @@ abstract class WebApiContext(val loc: String,
                              declarationsOption: Option[WebApiDeclarations] = None,
                              val nodeRefIds: mutable.Map[YNode, String] = mutable.Map.empty)
     extends ParserContext(loc, refs, wrapped.futureDeclarations, wrapped.eh)
+    with ParserErrorHandling
     with SpecAwareContext
     with PlatformSecrets
     with JsonSchemaInference {
@@ -55,7 +58,7 @@ abstract class WebApiContext(val loc: String,
     case _                  => None
   }
 
-  var jsonSchemaRefGuide: JsonSchemaRefGuide = JsonSchemaRefGuide(loc, refs)(this)
+  var jsonSchemaRefGuide: JsonSchemaRefGuide = JsonSchemaRefGuide(loc, refs)(WebApiAdapterShapeParserContext(this))
 
   var indexCache: mutable.Map[String, AstIndex] = mutable.Map[String, AstIndex]()
 
@@ -66,7 +69,7 @@ abstract class WebApiContext(val loc: String,
       location, {
         val result = AstIndexBuilder.buildAst(value,
                                               AliasCounter(options.getMaxYamlReferences),
-                                              computeJsonSchemaVersion(value))(this)
+                                              computeJsonSchemaVersion(value))(WebApiAdapterShapeParserContext(this))
         indexCache.put(location, result)
         result
       }
@@ -93,7 +96,7 @@ abstract class WebApiContext(val loc: String,
       implicit ctx: OasWebApiContext): Option[OasParameter] = {
     val referenceUrl = getReferenceUrl(fileUrl)
     obtainFragment(fileUrl) flatMap { fragment =>
-      AstFinder.findAst(fragment, referenceUrl).map { node =>
+      AstFinder.findAst(fragment, referenceUrl)(WebApiAdapterShapeParserContext(this)).map { node =>
         ctx.factory.parameterParser(YMapEntryLike(node), parentId, None, new IdCounter()).parse
       }
     }

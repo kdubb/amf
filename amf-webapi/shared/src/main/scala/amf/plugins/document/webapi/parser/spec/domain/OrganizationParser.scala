@@ -2,6 +2,7 @@ package amf.plugins.document.webapi.parser.spec.domain
 
 import amf.core.parser._
 import amf.plugins.document.webapi.contexts.WebApiContext
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.parser.spec._
 import amf.plugins.document.webapi.parser.spec.common.{AnnotationParser, SpecParserOps}
 import amf.plugins.domain.webapi.metamodel.OrganizationModel
@@ -28,7 +29,7 @@ class OrganizationParser(node: YNode)(implicit ctx: WebApiContext) extends SpecP
     map.key("name", OrganizationModel.Name in organization)
     map.key("email", OrganizationModel.Email in organization)
 
-    AnnotationParser(organization, map).parse()
+    AnnotationParser(organization, map)(WebApiAdapterShapeParserContext(ctx)).parse()
 
     ctx.closedShape(organization.id, map, "contact")
 

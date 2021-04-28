@@ -4,7 +4,8 @@ import amf.core.client.ParsingOptions
 import amf.core.parser.{ParsedReference, ParserContext}
 import amf.core.remote.{AsyncApi20, Vendor}
 import amf.plugins.document.webapi.parser.spec.async.Async20Syntax
-import amf.plugins.document.webapi.parser.spec.{AsyncWebApiDeclarations, SpecSyntax}
+import amf.plugins.document.webapi.parser.spec.AsyncWebApiDeclarations
+import amf.plugins.domain.webapi.parser.spec.SpecSyntax
 
 import scala.collection.mutable
 

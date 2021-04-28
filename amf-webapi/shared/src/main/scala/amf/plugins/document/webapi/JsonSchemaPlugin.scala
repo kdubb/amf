@@ -13,7 +13,9 @@ import amf.core.remote.{JsonSchema, Platform}
 import amf.core.resolution.pipelines.ResolutionPipeline
 import amf.core.unsafe.PlatformSecrets
 import amf.plugins.document.webapi.annotations.JSONSchemaRoot
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.oas.{JsonSchemaWebApiContext, OasWebApiContext}
+import amf.plugins.document.webapi.model.DataTypeFragment
 import amf.plugins.document.webapi.parser.spec.OasWebApiDeclarations
 import amf.plugins.document.webapi.parser.spec.common.JsonSchemaEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.{
@@ -52,8 +54,12 @@ class JsonSchemaPlugin extends AMFDocumentPlugin with PlatformSecrets {
     * Parses an accepted document returning an optional BaseUnit
     */
   override def parse(document: Root, parentContext: ParserContext, options: ParsingOptions): BaseUnit = {
-    val ctx = context(document.location, document.references, options, parentContext)
-    new JsonSchemaParser().parse(document, ctx, options)
+    val ctx    = context(document.location, document.references, options, parentContext)
+    val parsed = new JsonSchemaParser().parse(document, (WebApiAdapterShapeParserContext(ctx)), options)
+    val unit: DataTypeFragment =
+      DataTypeFragment().withId(document.location).withLocation(document.location).withEncodes(parsed)
+    unit.withRaw(document.raw)
+    unit
   }
 
   def context(loc: String,

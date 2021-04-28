@@ -4,8 +4,13 @@ import amf.core.annotations.ExternalFragmentRef
 import amf.core.metamodel.domain.LinkableElementModel
 import amf.core.model.domain.{AmfScalar, Linkable, Shape}
 import amf.core.parser._
+import amf.core.remote.{AsyncApi20, Oas, Oas20, Oas30}
 import amf.core.utils.UriUtils
-import amf.plugins.domain.shapes.models.AnyShape
+import amf.plugins.document.webapi.annotations.ExternalJsonSchemaShape
+import amf.plugins.document.webapi.parser.spec.oas.parser.types.ShapeParserContext
+import amf.plugins.domain.shapes.models.{AnyShape, UnresolvedShape}
+import amf.plugins.domain.webapi.parser.spec.OasShapeDefinitions
+import amf.plugins.domain.webapi.parser.spec.declaration.utils.JsonSchemaParsingHelper
 import org.yaml.model.{YMap, YMapEntry, YPart, YType}
 
 /*
@@ -16,7 +21,7 @@ class OasRefParser(map: YMap,
                    nameAnnotations: Annotations,
                    ast: YPart,
                    adopt: Shape => Unit,
-                   version: SchemaVersion)(implicit val ctx: OasLikeWebApiContext) {
+                   version: SchemaVersion)(implicit val ctx: ShapeParserContext) {
 
   private val REF_KEY = "$ref"
 
@@ -34,10 +39,9 @@ class OasRefParser(map: YMap,
 
   private def findDeclarationAndParse(e: YMapEntry) = {
     val ref: String       = e.value
-    val strippedPrefixRef = OasDefinitions.stripDefinitionsPrefix(ref)
+    val strippedPrefixRef = OasShapeDefinitions.stripDefinitionsPrefix(ref)
 
-    ctx.declarations
-      .findType(strippedPrefixRef, SearchScope.All) match { // normal declaration to be used from raml or oas
+    ctx.findType(strippedPrefixRef, SearchScope.All) match { // normal declaration to be used from raml or oas
       case Some(s) => createLinkToDeclaration(strippedPrefixRef, s)
       case _       => // Only enabled for JSON Schema, not OAS. In OAS local references can only point to the #/definitions (#/components in OAS 3) node
         // now we work with canonical JSON schema pointers, not local refs
@@ -139,21 +143,19 @@ class OasRefParser(map: YMap,
     }
   }
 
-  private def isOasLikeContext = ctx match {
-    case _ @(_: OasLikeWebApiContext) => true
-    case _                            => false
-  }
+  private def isOasLikeContext = ctx.vendor.isOas || ctx.vendor.isAsync
 
   private val oas2DeclarationRegex = "^(\\#\\/definitions\\/){1}([^/\\n])+$"
   private val oas3DeclarationRegex =
     "^(\\#\\/components\\/){1}((schemas|parameters|securitySchemes|requestBodies|responses|headers|examples|links|callbacks){1}\\/){1}([^/\\n])+"
 
-  private def isDeclaration(ref: String): Boolean =
-    ctx match {
-      case _: Oas2WebApiContext if ref.matches(oas2DeclarationRegex)                                => true
-      case _ @(_: Oas3WebApiContext | _: Async20WebApiContext) if ref.matches(oas3DeclarationRegex) => true
-      case _                                                                                        => false
+  private def isDeclaration(ref: String): Boolean = {
+    ctx.vendor match {
+      case Oas20 | Oas if ref.matches(oas2DeclarationRegex)        => true
+      case Oas30 | AsyncApi20 if ref.matches(oas3DeclarationRegex) => true
+      case _                                                       => false
     }
+  }
 
   private def searchRemoteJsonSchema(ref: String, text: String, e: YMapEntry) = {
     val fullUrl = UriUtils.resolveRelativeTo(ctx.rootContextDocument, ref)
@@ -170,7 +172,7 @@ class OasRefParser(map: YMap,
             Some(tmpShape)
           case Some(jsonSchemaShape) =>
             jsonSchemaShape.annotations.+=(ExternalJsonSchemaShape(e))
-            if (ctx.declarations.fragments.contains(text)) {
+            if (ctx.fragments.contains(text)) {
               // case when in an OAS spec we point with a regular $ref to something that is external
               // and holds a JSON schema we need to promote an external fragment to data type fragment
               promoteParsedShape(ref, text, fullUrl, jsonSchemaShape)
@@ -203,7 +205,7 @@ class OasRefParser(map: YMap,
                                  text: String,
                                  fullRef: String,
                                  jsonSchemaShape: AnyShape): Option[AnyShape] = {
-    val promotedShape = ctx.declarations.promoteExternaltoDataTypeFragment(text, fullRef, jsonSchemaShape)
+    val promotedShape = ctx.promoteExternaltoDataTypeFragment(text, fullRef, jsonSchemaShape)
     Some(
       promotedShape
         .link(AmfScalar(text), Annotations(ast) += ExternalFragmentRef(ref), Annotations.synthesized())

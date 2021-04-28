@@ -6,6 +6,7 @@ import amf.core.model.domain.{AmfScalar, NamedDomainElement}
 import amf.core.parser.{Annotations, _}
 import amf.plugins.document.webapi.annotations.DeclarationKey
 import amf.plugins.document.webapi.contexts.parser.OasLikeWebApiContext
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.parser.spec.common.DeclarationKeyCollector
 import amf.plugins.document.webapi.parser.spec.declaration.OasTypeParser
 import amf.plugins.domain.shapes.models.NodeShape
@@ -31,7 +32,7 @@ trait OasLikeDeclarationsHelper {
               .buildDeclarationParser(e, shape => {
                 shape.set(ShapeModel.Name, AmfScalar(typeName, Annotations(e.key.value)), Annotations(e.key))
                 shape.adopted(typesPrefix)
-              })(ctx)
+              })(WebApiAdapterShapeParserContext(ctx))
               .parse() match {
               case Some(shape) =>
                 ctx.declarations += shape.add(DeclaredElement())

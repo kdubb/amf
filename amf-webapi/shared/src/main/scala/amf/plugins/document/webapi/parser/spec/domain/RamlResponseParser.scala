@@ -5,6 +5,7 @@ import amf.core.model.domain.{AmfArray, AmfScalar}
 import amf.core.parser.{Annotations, ScalarNode, _}
 import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.annotations.EmptyPayload
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.raml.RamlWebApiContext
 import amf.plugins.document.webapi.parser.spec.common.{AnnotationParser, SpecParserOps}
 import amf.plugins.document.webapi.parser.spec.declaration.{AnyDefaultType, DefaultType}
@@ -25,7 +26,7 @@ case class Raml10ResponseParser(entry: YMapEntry, adopt: Response => Unit, parse
     extends RamlResponseParser(entry, adopt, parseOptional) {
 
   override def parseMap(response: Response, map: YMap): Unit = {
-    AnnotationParser(response, map, List(VocabularyMappings.response)).parse()
+    AnnotationParser(response, map, List(VocabularyMappings.response))(WebApiAdapterShapeParserContext(ctx)).parse()
   }
 
   override def supportsOptionalResponses: Boolean = false

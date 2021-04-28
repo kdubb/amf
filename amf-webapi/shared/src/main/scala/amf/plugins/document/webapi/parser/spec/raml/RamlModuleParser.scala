@@ -6,6 +6,7 @@ import amf.core.metamodel.document.ModuleModel
 import amf.core.model.document.Module
 import amf.core.model.domain.AmfArray
 import amf.core.parser.{Annotations, _}
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.raml.RamlWebApiContext
 import amf.plugins.document.webapi.contexts.parser.raml.RamlWebApiContextType.LIBRARY
 import amf.plugins.document.webapi.parser.spec.common.AnnotationParser
@@ -37,7 +38,7 @@ case class RamlModuleParser(root: Root)(implicit override val ctx: RamlWebApiCon
         module
           .setWithoutId(ModuleModel.References, AmfArray(references.baseUnitReferences()), Annotations.synthesized())
 
-      AnnotationParser(module, rootMap, targetsFor(LIBRARY)).parse()
+      AnnotationParser(module, rootMap, targetsFor(LIBRARY))(WebApiAdapterShapeParserContext(ctx)).parse()
     }
 
     ctx.futureDeclarations.resolve()

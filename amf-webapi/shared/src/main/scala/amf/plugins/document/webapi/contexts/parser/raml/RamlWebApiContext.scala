@@ -1,15 +1,16 @@
 package amf.plugins.document.webapi.contexts.parser.raml
 import amf.core.client.ParsingOptions
 import amf.core.model.domain.Shape
-import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.parser.{ParsedReference, ParserContext}
 import amf.core.remote.{Payload, Vendor}
 import amf.plugins.document.webapi.contexts.WebApiContext
 import amf.plugins.document.webapi.contexts.parser.raml.RamlWebApiContextType.RamlWebApiContextType
-import amf.plugins.document.webapi.parser.spec.declaration.TypeInfo
+import amf.plugins.document.webapi.parser.spec.RamlWebApiDeclarations
+import amf.plugins.document.webapi.parser.spec.common.ParserErrorHandling
 import amf.plugins.document.webapi.parser.spec.domain.ParsingHelpers
-import amf.plugins.document.webapi.parser.spec.{RamlWebApiDeclarations, SpecSyntax}
 import amf.plugins.domain.webapi.parser.RamlShapeTypeBeautifier
+import amf.plugins.domain.webapi.parser.spec.SpecSyntax
+import amf.plugins.domain.webapi.parser.spec.declaration.TypeInfo
 import amf.plugins.features.validation.CoreValidations.DeclarationNotFound
 import amf.validations.ParserSideValidations.ClosedShapeSpecification
 import org.yaml.model._
@@ -23,7 +24,8 @@ abstract class RamlWebApiContext(override val loc: String,
                                  private val ds: Option[RamlWebApiDeclarations] = None,
                                  var contextType: RamlWebApiContextType = RamlWebApiContextType.DEFAULT)
     extends WebApiContext(loc, refs, options, wrapped, ds)
-    with RamlSpecAwareContext {
+    with RamlSpecAwareContext
+    with ParserErrorHandling {
 
   var globalMediatype: Boolean                                  = false
   val operationContexts: mutable.Map[String, RamlWebApiContext] = mutable.Map()

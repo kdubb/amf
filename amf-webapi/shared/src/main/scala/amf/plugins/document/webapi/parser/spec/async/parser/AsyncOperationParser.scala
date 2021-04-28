@@ -3,6 +3,7 @@ package amf.plugins.document.webapi.parser.spec.async.parser
 import amf.core.model.domain.{AmfArray, AmfScalar}
 import amf.core.parser.SearchScope.Named
 import amf.core.parser._
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.async.AsyncWebApiContext
 import amf.plugins.document.webapi.parser.spec.OasDefinitions
 import amf.plugins.document.webapi.parser.spec.WebApiDeclarations.ErrorOperationTrait
@@ -44,7 +45,7 @@ abstract class AsyncOperationParser(entry: YMapEntry, adopt: Operation => Operat
       val bindings = AsyncOperationBindingsParser(YMapEntryLike(entry.value), operation.id).parse()
       operation.set(OperationModel.Bindings, bindings, Annotations(entry))
 
-      AnnotationParser(operation, map).parseOrphanNode("bindings")
+      AnnotationParser(operation, map)(WebApiAdapterShapeParserContext(ctx)).parseOrphanNode("bindings")
     }
 
     parseMessages(map, operation)

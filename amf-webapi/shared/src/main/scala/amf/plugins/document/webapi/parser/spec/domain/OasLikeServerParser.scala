@@ -8,6 +8,7 @@ import amf.core.parser.{Annotations, ScalarNode, YMapOps}
 import amf.core.model.domain.{AmfArray, AmfScalar}
 import amf.core.utils.IdCounter
 import amf.plugins.document.webapi.contexts.parser.OasLikeWebApiContext
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.domain.webapi.metamodel.{ParameterModel, ServerModel}
 import amf.plugins.domain.webapi.models.{Parameter, Server}
 
@@ -32,7 +33,7 @@ class OasLikeServerParser(parent: String, entryLike: YMapEntryLike)(implicit val
       val variables = entry.value.as[YMap].entries.map(ctx.factory.serverVariableParser(_, server.id).parse())
       server.set(ServerModel.Variables, AmfArray(variables, Annotations(entry.value)), Annotations(entry))
     }
-    AnnotationParser(server, map).parse()
+    AnnotationParser(server, map)(WebApiAdapterShapeParserContext(ctx)).parse()
     ctx.closedShape(server.id, map, "server")
     server
   }
@@ -72,11 +73,18 @@ class OasLikeServerVariableParser(entry: YMapEntry, parent: String)(implicit val
       .add(Annotations(map))
       .withDataType(DataType.String, Annotations.synthesized())
     val counter = new IdCounter()
-    map.key("enum", ShapeModel.Values in schema using DataNodeParser.parse(Some(schema.id), counter))
-    map.key("default", entry => {
-      schema.withDefaultStr(entry.value)
-      schema.withDefault(DataNodeParser(entry.value).parse(), Annotations(entry.value))
-    })
+    map.key("enum").foreach { entry =>
+      val parsed = DataNodeParser.parse(Some(schema.id), counter)(entry.value)(WebApiAdapterShapeParserContext(ctx))
+      schema.set(ShapeModel.Values, AmfArray(Seq(parsed), Annotations(entry.value)), Annotations(entry))
+    }
+    map.key(
+      "default",
+      entry => {
+        schema.withDefaultStr(entry.value)
+        schema.withDefault(DataNodeParser(entry.value)(WebApiAdapterShapeParserContext(ctx)).parse(),
+                           Annotations(entry.value))
+      }
+    )
     map.key("description", ShapeModel.Description in schema)
   }
 }

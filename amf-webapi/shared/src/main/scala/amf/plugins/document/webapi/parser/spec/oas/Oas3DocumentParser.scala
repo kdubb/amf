@@ -6,6 +6,7 @@ import amf.core.model.domain.NamedDomainElement
 import amf.core.parser._
 import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.annotations.DeclarationKey
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.oas.OasWebApiContext
 import amf.plugins.document.webapi.parser.spec.common.YamlTagValidator
 import amf.plugins.document.webapi.parser.spec.declaration.AbstractDeclarationsParser
@@ -77,7 +78,7 @@ case class Oas3DocumentParser(root: Root)(implicit override val ctx: OasWebApiCo
       "examples",
       e => {
         addDeclarationKey(DeclarationKey(e))
-        Oas3NamedExamplesParser(e, parent)
+        Oas3NamedExamplesParser(e, parent)(WebApiAdapterShapeParserContext(ctx))
           .parse()
           .foreach(ex => ctx.declarations += ex.add(DeclaredElement()))
       }

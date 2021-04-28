@@ -8,6 +8,7 @@ import amf.core.model.domain.templates.AbstractDeclaration
 import amf.core.parser.{Annotations, _}
 import amf.plugins.document.webapi.annotations.DeclarationKey
 import amf.plugins.document.webapi.contexts.WebApiContext
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.parser.spec.common.{
   AbstractVariables,
   DataNodeParser,
@@ -93,7 +94,8 @@ case class AbstractDeclarationParser(declaration: AbstractDeclaration, parent: S
           case _ =>
             value
         }
-        val dataNode = DataNodeParser(filteredNode, variables, Some(declaration.id)).parse()
+        val dataNode =
+          DataNodeParser(filteredNode, variables, Some(declaration.id))(WebApiAdapterShapeParserContext(ctx)).parse()
         declaration.set(AbstractDeclarationModel.DataNode, dataNode, Annotations(filteredNode))
 
         variables.ifNonEmpty(

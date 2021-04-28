@@ -3,7 +3,8 @@ import amf.core.client.ParsingOptions
 import amf.core.parser.{ParsedReference, ParserContext}
 import amf.core.remote.{Oas30, Vendor}
 import amf.plugins.document.webapi.parser.spec.oas.Oas3Syntax
-import amf.plugins.document.webapi.parser.spec.{OasWebApiDeclarations, SpecSyntax, toOasDeclarations}
+import amf.plugins.document.webapi.parser.spec.{OasWebApiDeclarations, toOasDeclarations}
+import amf.plugins.domain.webapi.parser.spec.SpecSyntax
 
 class Oas3WebApiContext(loc: String,
                         refs: Seq[ParsedReference],

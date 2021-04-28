@@ -27,20 +27,6 @@ object ParsedRamlDatatype extends AnnotationGraphLoader {
     Some(ParsedRamlDatatype(value))
 }
 
-case class ParsedJSONExample(rawText: String) extends SerializableAnnotation with PerpetualAnnotation {
-  override val name: String  = "parsed-json-example"
-  override val value: String = rawText
-}
-
-object ParsedJSONExample extends AnnotationGraphLoader {
-  override def unparse(value: String, objects: Map[String, AmfElement]): Option[Annotation] =
-    Some(ParsedJSONExample(value))
-}
-
-case class SchemaIsJsonSchema() extends Annotation
-
-case class ExternalSchemaWrapper() extends Annotation
-
 case class GeneratedJSONSchema(rawText: String) extends Annotation
 
 /** Represents generated RAML Data Type. */
@@ -48,15 +34,6 @@ case class GeneratedRamlDatatype(rawText: String) extends Annotation
 
 /** Mark the declaration as the root of the JSON schema. */
 case class JSONSchemaRoot() extends Annotation
-
-case class JSONSchemaId(id: String) extends SerializableAnnotation with PerpetualAnnotation {
-  override val name: String  = "json-schema-id"
-  override val value: String = id
-}
-
-object JSONSchemaId extends AnnotationGraphLoader {
-  override def unparse(value: String, objects: Map[String, AmfElement]): Option[Annotation] = Some(JSONSchemaId(value))
-}
 
 case class FormBodyParameter() extends SerializableAnnotation with PerpetualAnnotation {
   override val name: String  = "form-body-parameter"
@@ -142,13 +119,6 @@ case class OperationTraitEntry(range: Range) extends Annotation
 
 // save original text link?
 case class ReferencedElement(parsedUrl: String, referenced: DomainElement) extends Annotation
-
-case class CollectionFormatFromItems() extends Annotation
-
-case class ExternalJsonSchemaShape(original: YMapEntry) extends Annotation
-
-// used internally for emission of links that have been inlined. This annotation is removed in resolution
-case class ExternalReferenceUrl(url: String) extends Annotation
 
 case class ForceEntry() extends Annotation
 

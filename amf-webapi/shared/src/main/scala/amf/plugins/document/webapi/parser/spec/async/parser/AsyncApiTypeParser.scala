@@ -6,11 +6,13 @@ import amf.core.model.domain.{AmfScalar, Shape}
 import amf.core.parser.{Annotations, SearchScope}
 import amf.core.remote.Raml10
 import amf.plugins.document.webapi.contexts.parser.OasLikeWebApiContext
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.parser.spec.common.YMapEntryLike
 import amf.plugins.document.webapi.parser.spec.declaration.SchemaPosition._
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.{WebApiDeclarations, toRaml}
 import amf.plugins.domain.webapi.models.Payload
+import amf.plugins.domain.webapi.parser.spec.declaration.TypeInfo
 import amf.plugins.features.validation.CoreValidations
 import org.yaml.model.YMapEntry
 
@@ -48,7 +50,7 @@ case class AsyncApiTypeParser(entry: YMapEntry, adopt: Shape => Unit, version: S
 
   def parse(): Option[Shape] = version match {
     case RAML10SchemaVersion() => CustomRamlReferenceParser(YMapEntryLike(entry), adopt).parse()
-    case _                     => OasTypeParser(entry, adopt, version).parse()
+    case _                     => OasTypeParser(entry, adopt, version)(WebApiAdapterShapeParserContext(ctx)).parse()
   }
 }
 
@@ -67,7 +69,9 @@ case class CustomRamlReferenceParser(entry: YMapEntryLike, adopt: Shape => Unit)
   private def parseRamlType(entry: YMapEntryLike): Option[Shape] = {
     val context = toRaml(ctx)
     context.declarations.shapes = Map.empty
-    val result = Raml10TypeParser(entry, "schema", adopt, TypeInfo(), AnyDefaultType)(context).parse()
+    val result =
+      Raml10TypeParser(entry, "schema", adopt, TypeInfo(), AnyDefaultType)(WebApiAdapterShapeParserContext(context))
+        .parse()
     context.futureDeclarations.resolve()
     result
   }

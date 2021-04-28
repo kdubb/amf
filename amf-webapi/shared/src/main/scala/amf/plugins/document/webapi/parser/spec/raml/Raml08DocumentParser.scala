@@ -8,16 +8,13 @@ import amf.core.remote.Context
 import amf.core.unsafe.PlatformSecrets
 import amf.core.utils._
 import amf.plugins.document.webapi.annotations.DeclarationKey
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.raml.RamlWebApiContext
 import amf.plugins.document.webapi.parser.spec.declaration.{AbstractDeclarationParser, Raml08TypeParser, _}
 import amf.plugins.domain.webapi.models.templates.{ResourceType, Trait}
 import amf.plugins.domain.webapi.parser.RamlTypeDefMatcher
-import amf.validations.ParserSideValidations.{
-  InvalidAbstractDeclarationType,
-  InvalidSecuredByType,
-  InvalidTypeDefinition,
-  InvalidTypesType
-}
+import amf.validations.ParserSideValidations.{InvalidAbstractDeclarationType, InvalidSecuredByType, InvalidTypesType}
+import amf.validations.ShapeParserSideValidations.InvalidTypeDefinition
 import org.yaml.model.{YMap, YMapEntry, YScalar, YType}
 
 /**
@@ -137,7 +134,7 @@ case class Raml08DocumentParser(root: Root)(implicit override val ctx: RamlWebAp
       Raml08TypeParser(entry,
                        shape => shape.withName(entry.key).adopted(parent),
                        isAnnotation = false,
-                       StringDefaultType)
+                       StringDefaultType)(WebApiAdapterShapeParserContext(ctx))
         .parse() match {
         case Some(shape) =>
           ctx.declarations += shape.add(DeclaredElement())

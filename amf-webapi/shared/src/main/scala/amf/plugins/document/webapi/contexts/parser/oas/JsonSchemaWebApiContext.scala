@@ -5,7 +5,8 @@ import amf.core.remote.{JsonSchema, Vendor}
 import amf.plugins.document.webapi.contexts.parser.raml.{Raml08WebApiContext, RamlWebApiContext}
 import amf.plugins.document.webapi.parser.spec.declaration.{JSONSchemaDraft7SchemaVersion, JSONSchemaVersion}
 import amf.plugins.document.webapi.parser.spec.oas.Oas3Syntax
-import amf.plugins.document.webapi.parser.spec.{OasWebApiDeclarations, SpecSyntax}
+import amf.plugins.document.webapi.parser.spec.OasWebApiDeclarations
+import amf.plugins.domain.webapi.parser.spec.SpecSyntax
 
 class JsonSchemaWebApiContext(loc: String,
                               refs: Seq[ParsedReference],

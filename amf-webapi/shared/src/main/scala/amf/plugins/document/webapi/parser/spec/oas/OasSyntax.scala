@@ -1,6 +1,6 @@
 package amf.plugins.document.webapi.parser.spec.oas
 
-import amf.plugins.document.webapi.parser.spec.SpecSyntax
+import amf.plugins.domain.webapi.parser.spec.SpecSyntax
 
 object Oas3Syntax extends SpecSyntax {
   override val nodes: Map[String, Set[String]] = Map(

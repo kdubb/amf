@@ -12,6 +12,7 @@ import amf.core.remote.Vendor.AMF
 import amf.emit.AMFRenderer
 import amf.facades.Validation
 import amf.io.{FileAssertionTest, MultiJsonldAsyncFunSuite}
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.async.{Async20WebApiContext, AsyncWebApiContext}
 import amf.plugins.document.webapi.parser.spec.async.Subscribe
 import amf.plugins.document.webapi.parser.spec.async.parser.{AsyncMessageParser, AsyncOperationParser}
@@ -126,8 +127,9 @@ class JsonMergePatchTest extends MultiJsonldAsyncFunSuite with Matchers with Fil
 
     def getMerger: JsonMergePatch = AsyncJsonMergePatch()
 
-    def getBogusParserCtx: AsyncWebApiContext =
-      new Async20WebApiContext("loc", Seq(), ParserContext(eh = DefaultParserErrorHandler()))
+    def getBogusParserCtx = new Async20WebApiContext("loc", Seq(), ParserContext(eh = DefaultParserErrorHandler()))
+    def getBogusAdaptedParserCtx =
+      WebApiAdapterShapeParserContext(getBogusParserCtx)
 
     def renderToString(document: Document, renderOptions: RenderOptions = defaultRenderOptions): Future[String] =
       new AMFRenderer(document, AMF, renderOptions, None).renderToString
@@ -188,7 +190,7 @@ class JsonMergePatchTest extends MultiJsonldAsyncFunSuite with Matchers with Fil
       document
         .as[YMap]
         .key("node")
-        .map(entry => DataNodeParser(entry.value)(getBogusParserCtx).parse())
+        .map(entry => DataNodeParser(entry.value)(getBogusAdaptedParserCtx).parse())
         .get
     }
 

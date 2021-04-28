@@ -6,6 +6,7 @@ import amf.core.model.domain.{AmfArray, AmfScalar, DataNode, Shape, ScalarNode =
 import amf.core.parser.{Annotations, _}
 import amf.core.utils.{AmfStrings, IdCounter, TemplateUri}
 import amf.plugins.document.webapi.annotations.{EndPointResourceTypeEntry, EndPointTraitEntry}
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.raml.{
   Raml08WebApiContext,
   Raml10WebApiContext,
@@ -214,7 +215,7 @@ abstract class RamlEndpointParser(entry: YMapEntry,
     AnnotationParser(endpoint,
                      map,
                      if (isResourceType) List(VocabularyMappings.resourceType)
-                     else List(VocabularyMappings.endpoint)).parse()
+                     else List(VocabularyMappings.endpoint))(WebApiAdapterShapeParserContext(ctx)).parse()
 
     val nestedEndpointRegex = "^/.*"
     map.regex(

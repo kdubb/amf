@@ -4,7 +4,8 @@ import amf.core.model.domain.Shape
 import amf.core.remote.Vendor
 import amf.core.validation.SeverityLevels
 import amf.plugins.document.webapi.contexts.parser.{OasLikeSpecVersionFactory, OasLikeWebApiContext}
-import amf.plugins.document.webapi.parser.spec.{CustomSyntax, SpecNode, SpecSyntax}
+import amf.plugins.document.webapi.parser.spec.{CustomSyntax, SpecNode}
+import amf.plugins.domain.webapi.parser.spec.SpecSyntax
 import org.yaml.model.{YMap, YNode, YPart}
 
 class CustomClosedShapeContextDecorator(decorated: OasLikeWebApiContext, customSyntax: CustomSyntax)

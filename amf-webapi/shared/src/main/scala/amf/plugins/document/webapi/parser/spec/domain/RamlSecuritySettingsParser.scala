@@ -4,6 +4,7 @@ import amf.core.annotations.SynthesizedField
 import amf.core.model.domain.{AmfArray, DomainElement, Linkable}
 import amf.core.parser.{Annotations, _}
 import amf.core.utils.{AmfStrings, Lazy}
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.raml.RamlWebApiContext
 import amf.plugins.document.webapi.parser.spec.common.WellKnownAnnotation.isRamlAnnotation
 import amf.plugins.document.webapi.parser.spec.common._
@@ -29,7 +30,8 @@ case class RamlSecuritySettingsParser(node: YNode, `type`: String, scheme: Domai
       case _             => dynamicSettings(scheme.withDefaultSettings())
     }
 
-    AnnotationParser(result, map, List(VocabularyMappings.securitySettings))(ctx).parse()
+    AnnotationParser(result, map, List(VocabularyMappings.securitySettings))(WebApiAdapterShapeParserContext(ctx))
+      .parse()
 
     result.add(Annotations(node))
   }
@@ -44,7 +46,7 @@ case class RamlSecuritySettingsParser(node: YNode, `type`: String, scheme: Domai
 
     if (entries.nonEmpty) {
       val node = DataNodeParser(YNode(YMap(entries, entries.headOption.map(_.sourceName).getOrElse(""))),
-                                parent = Some(settings.id)).parse()
+                                parent = Some(settings.id))(WebApiAdapterShapeParserContext(ctx)).parse()
       settings.set(SettingsModel.AdditionalProperties, node)
     }
     settings

@@ -8,7 +8,7 @@ import amf.plugins.domain.shapes.models.AnyShape
 import org.yaml.model.{YMap, YNode}
 
 case class AllOfParser(array: Seq[YNode], adopt: Shape => Unit, version: SchemaVersion)(
-  implicit ctx: OasLikeWebApiContext) {
+    implicit ctx: ShapeParserContext) {
   def parse(): Seq[Shape] =
     array
       .flatMap(n => {
@@ -21,7 +21,7 @@ case class AllOfParser(array: Seq[YNode], adopt: Shape => Unit, version: SchemaV
     entries
       .key("$ref")
       .flatMap { entry =>
-        ctx.declarations.shapes.get(entry.value.as[String].stripPrefix("#/definitions/")) map { declaration =>
+        ctx.shapes.get(entry.value.as[String].stripPrefix("#/definitions/")) map { declaration =>
           declaration
             .link(ScalarNode(entry.value), Annotations(entry))
             .asInstanceOf[AnyShape]

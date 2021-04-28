@@ -11,7 +11,7 @@ case class InnerShapeParser(key: String,
                             map: YMap,
                             shape: Shape,
                             adopt: Shape => Unit,
-                            version: SchemaVersion)(implicit ctx: OasLikeWebApiContext) {
+                            version: SchemaVersion)(implicit ctx: ShapeParserContext) {
 
   def parse(): Unit = {
     map.key(

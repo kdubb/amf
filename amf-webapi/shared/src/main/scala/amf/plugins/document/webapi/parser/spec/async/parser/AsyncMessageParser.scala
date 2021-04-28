@@ -5,6 +5,7 @@ import amf.core.model.domain.{AmfArray, AmfScalar}
 import amf.core.parser.{Annotations, ScalarNode, SearchScope, YMapOps}
 import amf.core.utils.IdCounter
 import amf.plugins.document.webapi.annotations.ExampleIndex
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.async.AsyncWebApiContext
 import amf.plugins.document.webapi.parser.spec.OasDefinitions
 import amf.plugins.document.webapi.parser.spec.WebApiDeclarations.ErrorMessage
@@ -132,7 +133,8 @@ abstract class AsyncMessagePopulator()(implicit ctx: AsyncWebApiContext) extends
     map.key("description", MessageModel.Description in message)
 
     map.key("externalDocs",
-            MessageModel.Documentation in message using (OasLikeCreativeWorkParser.parse(_, message.id)))
+            MessageModel.Documentation in message using (OasLikeCreativeWorkParser.parse(_, message.id)(
+              WebApiAdapterShapeParserContext(ctx))))
     map.key(
       "tags",
       entry => {
@@ -176,7 +178,7 @@ abstract class AsyncMessagePopulator()(implicit ctx: AsyncWebApiContext) extends
       val bindings: MessageBindings = AsyncMessageBindingsParser(YMapEntryLike(entry.value), message.id).parse()
       message.set(MessageModel.Bindings, bindings, Annotations(entry))
 
-      AnnotationParser(message, map).parseOrphanNode("bindings")
+      AnnotationParser(message, map)(WebApiAdapterShapeParserContext(ctx)).parseOrphanNode("bindings")
     }
 
     parseTraits(map, message)
@@ -185,7 +187,7 @@ abstract class AsyncMessagePopulator()(implicit ctx: AsyncWebApiContext) extends
       parsePayload(map, message)
 
     ctx.closedShape(message.id, map, "message")
-    AnnotationParser(message, map).parse()
+    AnnotationParser(message, map)(WebApiAdapterShapeParserContext(ctx)).parse()
     message
   }
 
@@ -240,7 +242,7 @@ abstract class AsyncMessagePopulator()(implicit ctx: AsyncWebApiContext) extends
     val node = n.value
     val exa  = Example(node).withName(name)
     exa.adopted(parentId)
-    ExampleDataParser(node, exa, Oas3ExampleOptions).parse()
+    ExampleDataParser(node, exa, Oas3ExampleOptions)(WebApiAdapterShapeParserContext(ctx)).parse()
   }
 }
 

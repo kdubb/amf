@@ -32,6 +32,7 @@ import amf.plugins.domain.webapi.models._
 import amf.plugins.domain.webapi.models.bindings.{ChannelBindings, MessageBindings, OperationBindings, ServerBindings}
 import amf.plugins.domain.webapi.models.security.SecurityScheme
 import amf.plugins.domain.webapi.models.templates.{ResourceType, Trait}
+import amf.plugins.domain.webapi.parser.spec.ErrorNamedExample
 import org.yaml.model.{YNode, YPart}
 
 /**
@@ -467,15 +468,7 @@ object WebApiDeclarations {
       ErrorSecurityScheme(idPart, ast)
     override val model: SecuritySchemeModel.type = SecuritySchemeModel
   }
-  case class ErrorNamedExample(idPart: String, ast: YPart)
-      extends Example(Fields(), Annotations(ast))
-      with ErrorDeclaration[ExampleModel.type] {
-    override val namespace: String = "http://amferror.com/#errorNamedExample/"
-    withId(idPart)
 
-    override protected def newErrorInstance: ErrorDeclaration[ExampleModel.type] = ErrorNamedExample(idPart, ast)
-    override val model: ExampleModel.type                                        = ExampleModel
-  }
   case class ErrorCreativeWork(idPart: String, ast: YPart)
       extends CreativeWork(Fields(), Annotations(ast))
       with ErrorDeclaration[CreativeWorkModel.type] {

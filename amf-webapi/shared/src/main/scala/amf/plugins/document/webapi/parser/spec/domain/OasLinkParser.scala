@@ -3,6 +3,7 @@ package amf.plugins.document.webapi.parser.spec.domain
 import amf.core.model.domain.{AmfArray, AmfScalar}
 import amf.core.parser.{Annotations, _}
 import amf.plugins.document.webapi.annotations.ExternalReferenceUrl
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.oas.OasWebApiContext
 import amf.plugins.document.webapi.parser.spec.OasDefinitions
 import amf.plugins.document.webapi.parser.spec.WebApiDeclarations.ErrorLink
@@ -100,7 +101,7 @@ sealed case class OasLinkPopulator(map: YMap, templatedLink: TemplatedLink)(impl
 
     map.key("requestBody", TemplatedLinkModel.RequestBody in templatedLink)
 
-    AnnotationParser(templatedLink, map).parse()
+    AnnotationParser(templatedLink, map)(WebApiAdapterShapeParserContext(ctx)).parse()
 
     ctx.closedShape(templatedLink.id, map, "link")
 

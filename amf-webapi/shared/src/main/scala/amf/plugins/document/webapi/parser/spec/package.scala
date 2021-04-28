@@ -17,27 +17,19 @@ import amf.plugins.document.webapi.contexts.parser.oas.{
   OasWebApiContext
 }
 import amf.plugins.document.webapi.contexts.parser.raml.{Raml10WebApiContext, RamlWebApiContext}
+import amf.plugins.document.webapi.parser.spec.OasDefinitions.{oas2DefinitionsPrefix, oas3DefinitionsPrefix}
+import amf.plugins.domain.webapi.parser.spec.OasShapeDefinitions
 
 /**
   * Oas package object
   */
 package object spec {
 
-  object OasDefinitions {
-    val oas2DefinitionsPrefix = "#/definitions/"
-
-    val oas3DefinitionsPrefix = "#/components/schemas/"
-
-    val oas3ComponentsPrefix = "#/components/"
+  object OasDefinitions extends OasShapeDefinitions {
 
     val parameterDefinitionsPrefix = "#/parameters/"
 
     val responsesDefinitionsPrefix = "#/responses/"
-
-    def stripDefinitionsPrefix(url: String)(implicit ctx: WebApiContext): String = {
-      if (ctx.vendor == Vendor.OAS30 || ctx.vendor == Vendor.ASYNC20) url.stripPrefix(oas3DefinitionsPrefix)
-      else url.stripPrefix(oas2DefinitionsPrefix)
-    }
 
     def stripParameterDefinitionsPrefix(url: String)(implicit ctx: WebApiContext): String = {
       if (ctx.vendor == Vendor.OAS30)
@@ -45,9 +37,6 @@ package object spec {
       else
         url.stripPrefix(parameterDefinitionsPrefix)
     }
-
-    def stripOas3ComponentsPrefix(url: String, fieldName: String): String =
-      url.stripPrefix(oas3ComponentsPrefix + fieldName + "/")
 
     def stripResponsesDefinitionsPrefix(url: String)(implicit ctx: OasWebApiContext): String = {
       if (ctx.vendor == Vendor.OAS30)

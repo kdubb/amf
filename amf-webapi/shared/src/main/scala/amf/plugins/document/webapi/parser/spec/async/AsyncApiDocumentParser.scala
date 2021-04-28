@@ -7,6 +7,7 @@ import amf.core.model.document.Document
 import amf.core.model.domain.{AmfArray, AmfScalar, DomainElement}
 import amf.core.parser.{Annotations, ScalarNode, SyamlParsedDocument, YMapOps}
 import amf.plugins.document.webapi.annotations.DeclarationKey
+import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.async.AsyncWebApiContext
 import amf.plugins.document.webapi.parser.spec.async.parser._
 import amf.plugins.document.webapi.parser.spec.common._
@@ -76,9 +77,12 @@ abstract class AsyncApiDocumentParser(root: Root)(implicit val ctx: AsyncWebApiC
     map.key(
       "externalDocs",
       entry => {
-        api.set(WebApiModel.Documentations,
-                AmfArray(Seq(OasLikeCreativeWorkParser(entry.value, api.id).parse()), Annotations(entry.value)),
-                Annotations(entry))
+        api.set(
+          WebApiModel.Documentations,
+          AmfArray(Seq(OasLikeCreativeWorkParser(entry.value, api.id)(WebApiAdapterShapeParserContext(ctx)).parse()),
+                   Annotations(entry.value)),
+          Annotations(entry)
+        )
       }
     )
     map.key(
@@ -103,8 +107,8 @@ abstract class AsyncApiDocumentParser(root: Root)(implicit val ctx: AsyncWebApiC
       }
     )
 
-    AnnotationParser(api, map).parse()
-    AnnotationParser(api, map).parseOrphanNode("channels")
+    AnnotationParser(api, map)(WebApiAdapterShapeParserContext(ctx)).parse()
+    AnnotationParser(api, map)(WebApiAdapterShapeParserContext(ctx)).parseOrphanNode("channels")
 
     ctx.closedShape(api.id, map, "webApi")
     api
