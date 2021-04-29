@@ -18,6 +18,12 @@ trait OasShapeDefinitions {
 
   def stripOas3ComponentsPrefix(url: String, fieldName: String): String =
     url.stripPrefix(oas3ComponentsPrefix + fieldName + "/")
+
+  def appendOas3ComponentsPrefix(url: String, fieldName: String): String = {
+    appendPrefix(oas3ComponentsPrefix + s"$fieldName/", url)
+  }
+
+  protected def appendPrefix(prefix: String, url: String): String = prefix + url
 }
 
 object OasShapeDefinitions extends OasShapeDefinitions

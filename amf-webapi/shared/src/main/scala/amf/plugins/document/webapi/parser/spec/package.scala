@@ -66,12 +66,6 @@ package object spec {
       else
         appendPrefix(responsesDefinitionsPrefix, url)
     }
-
-    def appendOas3ComponentsPrefix(url: String, fieldName: String): String = {
-      appendPrefix(oas3ComponentsPrefix + s"$fieldName/", url)
-    }
-
-    private def appendPrefix(prefix: String, url: String): String = prefix + url
   }
 
   // TODO oas2? raml10?

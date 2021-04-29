@@ -17,7 +17,7 @@ import amf.plugins.document.webapi.contexts.emitter.oas.{
   OasRefEmitter,
   OasSpecEmitterFactory
 }
-import amf.plugins.document.webapi.contexts.{RefEmitter, SpecEmitterContext, SpecEmitterFactory, TagToReferenceEmitter}
+import amf.plugins.document.webapi.contexts.{RefEmitter, SpecEmitterContext, SpecEmitterFactory}
 import amf.plugins.document.webapi.model.{Extension, Overlay}
 import amf.plugins.document.webapi.parser.RamlHeader
 import amf.plugins.document.webapi.parser.spec.declaration._
@@ -55,39 +55,6 @@ import org.yaml.model.{YNode, YScalar, YType}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-
-private case class RamlScalarValueEmitter(key: String,
-                                          f: FieldEntry,
-                                          extensions: Seq[DomainExtension],
-                                          mediaType: Option[YType] = None)(implicit spec: SpecEmitterContext)
-    extends BaseValueEmitter {
-
-  override def emit(b: EntryBuilder): Unit = sourceOr(f.value, annotatedScalar(b))
-
-  private def annotatedScalar(b: EntryBuilder): Unit = {
-    b.entry(
-      key,
-      _.obj { b =>
-        b.value = YNode(YScalar(f.scalar.value), mediaType.getOrElse(tag))
-        extensions.foreach { e =>
-          spec.factory.annotationEmitter(e, Default).emit(b)
-        }
-      }
-    )
-  }
-}
-
-object RamlScalarEmitter {
-  def apply(key: String, f: FieldEntry, mediaType: Option[YType] = None)(
-      implicit spec: SpecEmitterContext): EntryEmitter = {
-    val extensions = f.value.value.annotations.collect({ case e: DomainExtensionAnnotation => e })
-    if (extensions.nonEmpty && spec.vendor == Raml10) {
-      RamlScalarValueEmitter(key, f, extensions.map(_.extension), mediaType)
-    } else {
-      ValueEmitter(key, f, mediaType)
-    }
-  }
-}
 
 trait RamlEmitterVersionFactory extends SpecEmitterFactory {
 
