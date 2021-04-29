@@ -14,22 +14,22 @@ import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.annotations.{FormBodyParameter, ParameterNameForPayload, RequiredParamPayload}
 import amf.plugins.document.webapi.contexts.SpecEmitterContext
 import amf.plugins.document.webapi.contexts.emitter.oas.{Oas3SpecEmitterFactory, OasSpecEmitterContext}
-import amf.plugins.document.webapi.contexts.emitter.raml.{
-  RamlScalarEmitter,
-  RamlSpecEmitterContext,
-  XRaml10SpecEmitterContext
-}
-import amf.plugins.document.webapi.parser.spec.OasDefinitions
+import amf.plugins.document.webapi.contexts.emitter.raml.{RamlSpecEmitterContext, XRaml10SpecEmitterContext}
 import amf.plugins.document.webapi.parser.spec.WebApiDeclarations.ErrorParameter
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.CommentEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.common.ExternalReferenceUrlEmitter._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.oas.{OasSchemaEmitter, OasTypeEmitter}
-import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{Raml08TypePartEmitter, Raml10TypeEmitter}
-import amf.plugins.document.webapi.parser.spec.raml.CommentEmitter
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{
+  Raml08TypePartEmitter,
+  Raml10TypeEmitter,
+  RamlScalarEmitter
+}
+import amf.plugins.document.webapi.parser.spec.{OasDefinitions, SpecContextShapeAdapter}
 import amf.plugins.domain.shapes.metamodel.{AnyShapeModel, FileShapeModel}
 import amf.plugins.domain.shapes.models._
 import amf.plugins.domain.webapi.annotations.{InvalidBinding, ParameterBindingInBodyLexicalInfo}
-import amf.plugins.domain.webapi.metamodel.{ParameterModel, PayloadModel, ResponseModel}
+import amf.plugins.domain.webapi.metamodel.{ParameterModel, PayloadModel}
 import amf.plugins.domain.webapi.models.{Parameter, Payload}
 import amf.plugins.features.validation.CoreValidations.ResolutionValidation
 import org.yaml.model.YDocument.{EntryBuilder, PartBuilder}
@@ -108,6 +108,8 @@ case class Raml10ParameterPartEmitter(parameter: Parameter, ordering: SpecOrderi
     implicit spec: RamlSpecEmitterContext)
     extends PartEmitter {
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: PartBuilder): Unit = {
     val fs = parameter.fields
     b.obj { b =>
@@ -178,6 +180,8 @@ case class Raml08ParameterEmitter(parameter: Parameter, ordering: SpecOrdering, 
 case class Raml08ParameterPartEmitter(parameter: Parameter, ordering: SpecOrdering, references: Seq[BaseUnit])(
     implicit spec: RamlSpecEmitterContext)
     extends PartEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   override def emit(b: PartBuilder): Unit = {
     parameter.schema match {
@@ -340,6 +344,8 @@ case class ParameterEmitter(parameter: Parameter,
                             asHeader: Boolean)(implicit val spec: OasSpecEmitterContext)
     extends PartEmitter {
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   private def emitLink(b: PartBuilder): Unit = {
     val label = parameter.linkTarget match {
       case Some(e: ErrorParameter) => parameter.linkLabel.value()
@@ -435,6 +441,8 @@ case class OasHeaderEmitter(parameter: Parameter, ordering: SpecOrdering, refere
     implicit spec: OasSpecEmitterContext)
     extends EntryEmitter {
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   protected def emitParameter(b: EntryBuilder): Unit = {
     b.entry(
       parameter.name.option().get,
@@ -513,6 +521,8 @@ case class OasDeclaredHeadersEmitter(parameters: Seq[Parameter], ordering: SpecO
 case class PayloadAsParameterEmitter(payload: Payload, ordering: SpecOrdering, references: Seq[BaseUnit])(
     implicit val spec: OasSpecEmitterContext)
     extends PartEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   override def emit(b: PartBuilder): Unit =
     handleInlinedRefOr(b, payload) {

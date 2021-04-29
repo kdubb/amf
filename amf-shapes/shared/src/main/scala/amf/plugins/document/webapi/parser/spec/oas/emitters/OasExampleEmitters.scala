@@ -1,9 +1,9 @@
 package amf.plugins.document.webapi.parser.spec.oas.emitters
 
-import amf.core.utils.AmfStrings
 import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
+import amf.core.utils.AmfStrings
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.document.webapi.parser.spec.domain.{NamedMultipleExampleEmitter, SingleExampleEmitter}
 import amf.plugins.domain.shapes.models.Example
 
@@ -15,7 +15,7 @@ object OasExampleEmitters {
             exampleOption: Option[Example],
             ordering: SpecOrdering,
             extensions: Seq[Example],
-            references: Seq[BaseUnit])(implicit spec: OasLikeSpecEmitterContext): OasExampleEmitters = {
+            references: Seq[BaseUnit])(implicit spec: ShapeEmitterContext): OasExampleEmitters = {
     val label = if (isHeader) "example".asOasExtension else "example"
     new OasExampleEmitters(label, exampleOption, ordering, extensions, references)
   }
@@ -29,7 +29,7 @@ class OasExampleEmitters(label: String,
                          exampleOption: Option[Example],
                          ordering: SpecOrdering,
                          extensions: Seq[Example],
-                         references: Seq[BaseUnit])(implicit spec: OasLikeSpecEmitterContext)
+                         references: Seq[BaseUnit])(implicit spec: ShapeEmitterContext)
     extends OasLikeExampleEmitters {
 
   def emitters(): ListBuffer[EntryEmitter] = {

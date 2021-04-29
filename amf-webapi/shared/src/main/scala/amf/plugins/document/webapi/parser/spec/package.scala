@@ -45,13 +45,6 @@ package object spec {
         url.stripPrefix(responsesDefinitionsPrefix)
     }
 
-    def appendSchemasPrefix(url: String, vendor: Option[Vendor] = None): String = vendor match {
-      case Some(Vendor.OAS30) | Some(Vendor.ASYNC20) =>
-        if (!url.startsWith(oas3DefinitionsPrefix)) appendPrefix(oas3DefinitionsPrefix, url) else url
-      case _ =>
-        if (!url.startsWith(oas2DefinitionsPrefix)) appendPrefix(oas2DefinitionsPrefix, url) else url
-    }
-
     def appendParameterDefinitionsPrefix(url: String, asHeader: Boolean = false)(
         implicit spec: SpecEmitterContext): String = {
       if (spec.factory.isInstanceOf[Oas3SpecEmitterFactory] || spec.factory.isInstanceOf[Async20SpecEmitterFactory])

@@ -12,6 +12,7 @@ import amf.plugins.document.webapi.contexts.emitter.oas.{
   Oas3SpecEmitterContext,
   OasSpecEmitterContext
 }
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration.OasCreativeWorkEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.oas.OasTypePartEmitter
 import amf.plugins.document.webapi.parser.spec.domain.{
@@ -57,6 +58,8 @@ import amf.plugins.domain.webapi.models.{
 
 case class Oas20EmitterFactory()(implicit val ctx: Oas2SpecEmitterContext) extends OasEmitterFactory {
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(ctx)
+
   override def payloadEmitter(p: Payload): Option[PartEmitter] = {
     if (isParamPayload(p))
       Some(PayloadAsParameterEmitter(p, SpecOrdering.Lexical, Nil))
@@ -89,6 +92,8 @@ object Oas20EmitterFactory {
 }
 
 case class Oas30EmitterFactory()(implicit val ctx: Oas3SpecEmitterContext) extends OasEmitterFactory {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(ctx)
 
   override def exampleEmitter(example: Example): Option[PartEmitter] =
     Some(Oas3ExampleValuesPartEmitter(example, SpecOrdering.Lexical))
@@ -147,6 +152,8 @@ trait OasEmitterFactory extends OasLikeEmitterFactory {
 trait OasLikeEmitterFactory extends DomainElementEmitterFactory {
 
   implicit val ctx: OasLikeSpecEmitterContext
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(ctx)
 
   override def typeEmitter(s: Shape): Option[PartEmitter] =
     Some(OasTypePartEmitter(s, SpecOrdering.Lexical, references = Nil))

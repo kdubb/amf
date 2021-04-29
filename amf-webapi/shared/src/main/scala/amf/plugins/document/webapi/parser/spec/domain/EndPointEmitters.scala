@@ -1,15 +1,17 @@
 package amf.plugins.document.webapi.parser.spec.domain
 
-import amf.core.annotations.{SynthesizedField, VirtualElement}
+import amf.core.annotations.SynthesizedField
 import amf.core.emitter.BaseEmitters._
 import amf.core.emitter.{EntryEmitter, PartEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain.{AmfArray, AmfScalar}
 import amf.core.parser.{FieldEntry, Fields, Position, Value}
 import amf.core.utils._
-import amf.plugins.document.webapi.contexts.emitter.raml.{RamlScalarEmitter, RamlSpecEmitterContext}
+import amf.plugins.document.webapi.contexts.emitter.raml.RamlSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration.ExtendsEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.RamlScalarEmitter
 import amf.plugins.domain.webapi.metamodel.{EndPointModel, ParameterModel}
 import amf.plugins.domain.webapi.models.{EndPoint, Operation, Parameter}
 import org.yaml.model.YDocument
@@ -109,6 +111,8 @@ abstract class RamlEndPointEmitter(ordering: SpecOrdering,
     with PartEmitter {
 
   def endpoint: EndPoint
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   protected def keyParameter: String
 

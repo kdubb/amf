@@ -3,13 +3,12 @@ package amf.plugins.document.webapi.parser.spec.declaration
 import amf.core.emitter.BaseEmitters.{ValueEmitter, _}
 import amf.core.emitter.{EntryEmitter, PartEmitter, SpecOrdering}
 import amf.core.parser.Position
-import amf.plugins.document.webapi.contexts.SpecEmitterContext
-import amf.plugins.domain.shapes.metamodel.CreativeWorkModel
-import org.yaml.model.YDocument.{EntryBuilder, PartBuilder}
 import amf.core.utils.AmfStrings
-import amf.plugins.document.webapi.contexts.emitter.raml.RamlScalarEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.RamlScalarEmitter
+import amf.plugins.domain.shapes.metamodel.CreativeWorkModel
 import amf.plugins.domain.webapi.models.CreativeWork
+import org.yaml.model.YDocument.{EntryBuilder, PartBuilder}
 
 import scala.collection.mutable.ListBuffer
 
@@ -17,7 +16,7 @@ import scala.collection.mutable.ListBuffer
   *
   */
 case class RamlCreativeWorkItemsEmitter(documentation: CreativeWork, ordering: SpecOrdering, withExtention: Boolean)(
-    implicit spec: SpecEmitterContext) {
+    implicit spec: ShapeEmitterContext) {
   def emitters(): Seq[EntryEmitter] = {
     val result = ListBuffer[EntryEmitter]()
 
@@ -36,7 +35,7 @@ case class RamlCreativeWorkItemsEmitter(documentation: CreativeWork, ordering: S
 }
 
 case class RamlCreativeWorkEmitter(documentation: CreativeWork, ordering: SpecOrdering, withExtension: Boolean)(
-    implicit spec: SpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends PartEmitter {
   override def emit(b: PartBuilder): Unit = {
     sourceOr(
@@ -49,7 +48,7 @@ case class RamlCreativeWorkEmitter(documentation: CreativeWork, ordering: SpecOr
 }
 
 case class OasCreativeWorkItemsEmitter(document: CreativeWork, ordering: SpecOrdering)(
-    implicit spec: SpecEmitterContext) {
+    implicit spec: ShapeEmitterContext) {
   def emitters(): Seq[EntryEmitter] = {
     val fs     = document.fields
     val result = ListBuffer[EntryEmitter]()
@@ -66,7 +65,7 @@ case class OasCreativeWorkItemsEmitter(document: CreativeWork, ordering: SpecOrd
   }
 }
 
-case class OasCreativeWorkEmitter(document: CreativeWork, ordering: SpecOrdering)(implicit spec: SpecEmitterContext)
+case class OasCreativeWorkEmitter(document: CreativeWork, ordering: SpecOrdering)(implicit spec: ShapeEmitterContext)
     extends PartEmitter {
   override def emit(b: PartBuilder): Unit = {
     if (document.isLink)
@@ -79,7 +78,7 @@ case class OasCreativeWorkEmitter(document: CreativeWork, ordering: SpecOrdering
 }
 
 case class OasEntryCreativeWorkEmitter(key: String, documentation: CreativeWork, ordering: SpecOrdering)(
-    implicit spec: SpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends EntryEmitter {
   override def emit(b: EntryBuilder): Unit = {
     sourceOr(

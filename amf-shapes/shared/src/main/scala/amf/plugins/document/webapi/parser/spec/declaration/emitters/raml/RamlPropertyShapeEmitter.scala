@@ -7,12 +7,13 @@ import amf.core.metamodel.domain.extensions.PropertyShapeModel
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain.extensions.PropertyShape
 import amf.core.parser.Position
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.domain.shapes.models.AnyShape
 import org.yaml.model.YDocument.EntryBuilder
 import org.yaml.model.{YNode, YScalar, YType}
 
 case class RamlPropertyShapeEmitter(property: PropertyShape, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: RamlSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends EntryEmitter {
 
   override def emit(b: EntryBuilder): Unit = {

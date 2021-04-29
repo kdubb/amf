@@ -4,6 +4,7 @@ import amf.core.emitter.{PartEmitter, SpecOrdering}
 import amf.core.errorhandling.{ErrorHandler, UnhandledErrorHandler}
 import amf.core.model.domain.DomainElement
 import amf.plugins.document.webapi.contexts.emitter.async.Async20SpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.async.emitters.{
   AsyncApiBindingsPartEmitter,
   AsyncApiCorrelationIdContentEmitter,
@@ -30,6 +31,8 @@ import amf.plugins.domain.webapi.models.bindings.{ChannelBindings, MessageBindin
 import amf.plugins.domain.webapi.models.security.SecurityScheme
 
 case class AsyncEmitterFactory()(implicit val ctx: Async20SpecEmitterContext) extends OasLikeEmitterFactory {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(ctx)
 
   override def parameterEmitter(p: Parameter): Option[PartEmitter] =
     Some(AsyncApiSingleParameterPartEmitter(p, SpecOrdering.Lexical))

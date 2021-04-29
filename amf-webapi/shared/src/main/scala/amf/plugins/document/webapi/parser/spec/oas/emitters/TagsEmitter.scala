@@ -4,6 +4,7 @@ import amf.core.emitter.BaseEmitters.{ValueEmitter, pos, traverse}
 import amf.core.emitter.{EntryEmitter, PartEmitter, SpecOrdering}
 import amf.core.parser.{FieldEntry, Position}
 import amf.plugins.document.webapi.contexts.SpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration.OasEntryCreativeWorkEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.domain.webapi.metamodel.TagModel
@@ -27,6 +28,8 @@ case class TagsEmitter(key: String, tags: Seq[Tag], ordering: SpecOrdering)(impl
 }
 
 case class TagEmitter(tag: Tag, ordering: SpecOrdering)(implicit spec: SpecEmitterContext) extends PartEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   override def position(): Position = pos(tag.annotations)
 

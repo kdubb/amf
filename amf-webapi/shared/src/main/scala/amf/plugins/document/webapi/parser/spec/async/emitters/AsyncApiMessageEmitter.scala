@@ -7,7 +7,7 @@ import amf.core.parser.Position.ZERO
 import amf.core.parser.{FieldEntry, Position}
 import amf.plugins.document.webapi.annotations.ExampleIndex
 import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
-import amf.plugins.document.webapi.parser.spec.OasDefinitions
+import amf.plugins.document.webapi.parser.spec.{OasDefinitions, SpecContextShapeAdapter}
 import amf.plugins.document.webapi.parser.spec.declaration.{OasTagToReferenceEmitter, emitters}
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.async
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.async.AsyncSchemaEmitter
@@ -105,6 +105,8 @@ private class AsyncApiOneOfMessageEmitter(fieldEntry: FieldEntry, ordering: Spec
 class AsyncApiMessageContentEmitter(message: Message, isTrait: Boolean = false, ordering: SpecOrdering)(
     implicit val spec: OasLikeSpecEmitterContext)
     extends PartEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   override def emit(b: YDocument.PartBuilder): Unit = {
     val fs = message.fields
@@ -231,12 +233,14 @@ case class MessageExamplePairEmitter(pair: MessageExamplePair,
                                      ordering: SpecOrdering)(implicit val spec: OasLikeSpecEmitterContext)
     extends PartEmitter {
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: YDocument.PartBuilder): Unit = {
     b.obj { entryBuilder =>
       val emitters: List[EntryEmitter] = List("headers" -> pair.headerExample, "payload" -> pair.payloadExample).flatMap {
         case (key, example) =>
           example.map { ex =>
-            EntryPartEmitter(key, ExampleDataNodePartEmitter(ex, ordering)(spec), position = pos(ex.annotations))
+            EntryPartEmitter(key, ExampleDataNodePartEmitter(ex, ordering), position = pos(ex.annotations))
           }
       }
       traverse(ordering.sorted(emitters), entryBuilder)

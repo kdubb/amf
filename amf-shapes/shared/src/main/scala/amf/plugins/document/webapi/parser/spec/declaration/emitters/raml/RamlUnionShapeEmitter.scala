@@ -2,10 +2,11 @@ package amf.plugins.document.webapi.parser.spec.declaration.emitters.raml
 
 import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.domain.shapes.models.UnionShape
 
 case class RamlUnionShapeEmitter(shape: UnionShape, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: RamlSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends RamlAnyShapeEmitter(shape, ordering, references) {
 
   override def emitters(): Seq[EntryEmitter] = {

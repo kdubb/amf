@@ -7,6 +7,7 @@ import amf.core.metamodel.domain.extensions.PropertyShapeModel
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain.{RecursiveShape, Shape}
 import amf.core.utils.AmfStrings
+import amf.plugins.document.webapi.parser.spec.declaration.{OasEntryCreativeWorkEmitter, ShapeEmitterContext}
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{AnnotationsEmitter, FacetsEmitter}
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.{EnumValuesEmitter, XMLSerializerEmitter}
 import amf.plugins.domain.shapes.metamodel.AnyShapeModel
@@ -17,7 +18,7 @@ import org.yaml.model.YType
 import scala.collection.mutable.ListBuffer
 
 abstract class RamlShapeEmitter(shape: Shape, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: RamlSpecEmitterContext) {
+    implicit spec: ShapeEmitterContext) {
 
   val typeName: Option[String]
   var typeEmitted                = false
@@ -54,7 +55,7 @@ abstract class RamlShapeEmitter(shape: Shape, ordering: SpecOrdering, references
 
     fs.entry(ShapeModel.CustomShapePropertyDefinitions)
       .map(f => {
-        result += spec.factory.customFacetsEmitter(f, ordering, references)
+        result += spec.customFacetsEmitter(f, ordering, references)
       })
 
     result ++= AnnotationsEmitter(shape, ordering).emitters

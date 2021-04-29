@@ -4,12 +4,12 @@ import amf.core.emitter.{Emitter, EntryEmitter, PartEmitter, SpecOrdering}
 import amf.core.metamodel.Field
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain.Shape
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 
 abstract class OasTypePartCollector(shape: Shape,
                                     ordering: SpecOrdering,
                                     ignored: Seq[Field],
-                                    references: Seq[BaseUnit])(implicit spec: OasLikeSpecEmitterContext) {
+                                    references: Seq[BaseUnit])(implicit spec: ShapeEmitterContext) {
   private var _emitters: Option[Seq[Emitter]]                          = None
   private var _emitter: Option[Either[PartEmitter, Seq[EntryEmitter]]] = None
 
@@ -19,8 +19,7 @@ abstract class OasTypePartCollector(shape: Shape,
     _emitters match {
       case Some(ems) => ems
       case _ =>
-        _emitters = Some(
-          ordering.sorted(spec.factory.typeEmitters(shape, ordering, ignored, references, pointer, schemaPath)))
+        _emitters = Some(ordering.sorted(spec.typeEmitters(shape, ordering, ignored, references, pointer, schemaPath)))
         _emitters.get
     }
   }

@@ -5,10 +5,12 @@ import amf.core.model.document.BaseUnit
 import amf.core.model.domain.Shape
 import amf.core.parser.Position
 import amf.core.parser.Position.ZERO
+import amf.core.utils.AmfStrings
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import org.yaml.model.YDocument.EntryBuilder
 
 case class RamlAndConstraintEmitter(shape: Shape, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: RamlSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends EntryEmitter {
 
   val emitters: Seq[Raml10TypePartEmitter] = shape.and.map { s =>

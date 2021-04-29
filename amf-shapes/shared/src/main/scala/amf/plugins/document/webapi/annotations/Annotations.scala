@@ -10,6 +10,8 @@ import amf.core.model.domain.{
 }
 import org.yaml.model.YMapEntry
 
+case class ForceEntry() extends Annotation
+
 case class ParsedJSONSchema(rawText: String) extends EternalSerializedAnnotation {
   override val name: String  = "parsed-json-schema"
   override val value: String = rawText

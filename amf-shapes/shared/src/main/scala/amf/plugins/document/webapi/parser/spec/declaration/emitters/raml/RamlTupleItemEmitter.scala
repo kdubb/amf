@@ -5,10 +5,11 @@ import amf.core.emitter.{PartEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain.Shape
 import amf.core.parser.Position
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import org.yaml.model.YDocument.PartBuilder
 
 case class RamlTupleItemEmitter(item: Shape, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: RamlSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends PartEmitter {
   override def emit(b: PartBuilder): Unit = {
     Raml10TypeEmitter(item, ordering, references = references).entries().foreach { e =>

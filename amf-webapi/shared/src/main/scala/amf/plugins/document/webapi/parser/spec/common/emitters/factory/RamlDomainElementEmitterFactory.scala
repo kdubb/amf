@@ -10,6 +10,7 @@ import amf.plugins.document.webapi.contexts.emitter.raml.{
   Raml10SpecEmitterContext,
   RamlSpecEmitterContext
 }
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.common.emitters.EntryToPartEmitterAdapter
 import amf.plugins.document.webapi.parser.spec.declaration.{AbstractDeclarationPartEmitter, RamlCreativeWorkEmitter}
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{Raml08TypePartEmitter, Raml10TypePartEmitter}
@@ -25,6 +26,8 @@ import amf.plugins.domain.webapi.models.templates.{ResourceType, Trait}
 import amf.plugins.domain.webapi.models.{CreativeWork, EndPoint, Operation, Parameter, Payload, Response}
 
 case class Raml10EmitterFactory()(implicit val ctx: Raml10SpecEmitterContext) extends RamlEmitterFactory {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(ctx)
 
   override def typeEmitter(s: Shape): Option[PartEmitter] =
     Some(Raml10TypePartEmitter(s, SpecOrdering.Lexical, None, references = Nil))
@@ -56,6 +59,8 @@ object Raml10EmitterFactory {
 
 case class Raml08EmitterFactory()(implicit val ctx: Raml08SpecEmitterContext) extends RamlEmitterFactory {
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(ctx)
+
   override def typeEmitter(s: Shape): Option[PartEmitter] =
     Some(Raml08TypePartEmitter(s, SpecOrdering.Lexical, None, references = Nil))
 
@@ -84,6 +89,8 @@ object Raml08EmitterFactory {
 trait RamlEmitterFactory extends DomainElementEmitterFactory {
 
   implicit val ctx: RamlSpecEmitterContext
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(ctx)
 
   override def exampleEmitter(example: Example): Option[PartEmitter] =
     Some(RamlExampleValuesEmitter(example, SpecOrdering.Lexical))

@@ -11,7 +11,7 @@ import amf.core.parser.{Annotations, EmptyFutureDeclarations, Position}
 import amf.core.unsafe.PlatformSecrets
 import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.contexts.emitter.oas.OasSpecEmitterContext
-import amf.plugins.document.webapi.parser.spec.WebApiDeclarations
+import amf.plugins.document.webapi.parser.spec.{SpecContextShapeAdapter, WebApiDeclarations}
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.domain._
 import amf.plugins.domain.webapi.models.{Parameter, Payload, Response}
@@ -23,6 +23,9 @@ import scala.collection.mutable.ListBuffer
 case class OasDeclarationsEmitter(declares: Seq[DomainElement], ordering: SpecOrdering, references: Seq[BaseUnit])(
     implicit spec: OasSpecEmitterContext)
     extends PlatformSecrets {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   val emitters: Seq[EntryEmitter] = {
 
     val declarations = WebApiDeclarations(declares, UnhandledParserErrorHandler, EmptyFutureDeclarations())

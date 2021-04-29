@@ -4,6 +4,7 @@ import amf.core.emitter.BaseEmitters.{ValueEmitter, pos, raw, traverse}
 import amf.core.emitter.{EntryEmitter, PartEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
 import amf.core.parser.Position
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.domain.shapes.metamodel.SchemaShapeModel
 import amf.plugins.domain.shapes.models.SchemaShape
 import org.yaml.model.YDocument.PartBuilder
@@ -12,7 +13,7 @@ import org.yaml.model.YNode
 import scala.collection.mutable
 
 case class RamlSchemaShapeEmitter(shape: SchemaShape, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: RamlSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends PartEmitter {
   override def emit(b: PartBuilder): Unit = {
     if (shape.examples.nonEmpty) {

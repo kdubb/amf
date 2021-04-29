@@ -8,6 +8,7 @@ import amf.core.model.document.{BaseUnit, ExternalFragment}
 import amf.core.model.domain.Shape
 import amf.core.parser.Position
 import amf.plugins.document.webapi.annotations.ExternalReferenceUrl
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.ExamplesEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.common.RamlExternalReferenceUrlEmitter
 import amf.plugins.domain.shapes.models.AnyShape
@@ -20,7 +21,7 @@ case class RamlExternalSchemaWrapperEmitter(shape: AnyShape,
                                             ordering: SpecOrdering,
                                             ignored: Seq[Field] = Nil,
                                             references: Seq[BaseUnit],
-                                            forceEntry: Boolean = false)(implicit spec: RamlSpecEmitterContext)
+                                            forceEntry: Boolean = false)(implicit spec: ShapeEmitterContext)
     extends PartEmitter
     with ExamplesEmitter {
   override def emit(b: PartBuilder): Unit = {

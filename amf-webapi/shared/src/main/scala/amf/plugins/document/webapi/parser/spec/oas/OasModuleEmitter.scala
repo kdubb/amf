@@ -12,6 +12,7 @@ import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.contexts.emitter.oas.OasSpecEmitterContext
 import amf.plugins.document.webapi.model._
 import amf.plugins.document.webapi.parser.OasHeader
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.oas
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.oas.OasTypeEmitter
@@ -58,6 +59,9 @@ case class Oas20ModuleEmitter(module: Module)(implicit override val spec: OasSpe
 
 class OasFragmentEmitter(fragment: Fragment)(implicit override val spec: OasSpecEmitterContext)
     extends OasDocumentEmitter(fragment) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override protected def versionEntry(b: YDocument.EntryBuilder): Unit = b.swagger = YNode(YScalar("2.0"), YType.Str)
 
   def emitFragment(): YDocument = {

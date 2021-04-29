@@ -7,6 +7,7 @@ import amf.core.model.document.{BaseUnit, Document}
 import amf.core.parser.FieldEntry
 import amf.core.remote.{AsyncApi20, Vendor}
 import amf.plugins.document.webapi.contexts.emitter.async.AsyncSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.async.emitters.{
   AsyncApiCreativeWorksEmitter,
   AsyncApiEndpointsEmitter,
@@ -74,6 +75,9 @@ class AsyncApi20DocumentEmitter(document: BaseUnit)(implicit val spec: AsyncSpec
     b.asyncapi = YNode(YScalar("2.0.0"), YType.Str) // this should not be necessary but for use the same logic
 
   case class WebApiEmitter(api: Api, ordering: SpecOrdering, vendor: Option[Vendor], references: Seq[BaseUnit]) {
+
+    private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
     val emitters: Seq[EntryEmitter] = {
       val fs     = api.fields
       val result = mutable.ListBuffer[EntryEmitter]()

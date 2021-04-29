@@ -6,6 +6,8 @@ import amf.core.metamodel.Field
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain.Shape
 import amf.core.parser.Position
+import amf.plugins.document.webapi.parser.spec.declaration.ReferenceEmitterHelper.emitLinkOr
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.domain.shapes.models.{AnyShape, ShapeHelpers}
 import amf.plugins.features.validation.CoreValidations.ResolutionValidation
@@ -22,7 +24,7 @@ case class RamlNamedTypeEmitter(shape: AnyShape,
                                     SpecOrdering,
                                     Option[AnnotationsEmitter],
                                     Seq[Field],
-                                    Seq[BaseUnit]) => RamlTypePartEmitter)(implicit spec: SpecEmitterContext)
+                                    Seq[BaseUnit]) => RamlTypePartEmitter)(implicit spec: ShapeEmitterContext)
     extends EntryEmitter {
   override def emit(b: EntryBuilder): Unit = {
     val name = shape.name.option().getOrElse("schema") // this used to throw an exception, but with the resolution optimization, we use the father shape, so it could have not name (if it's from an endpoint for example, and you want to write a new single shape, like a json schema)

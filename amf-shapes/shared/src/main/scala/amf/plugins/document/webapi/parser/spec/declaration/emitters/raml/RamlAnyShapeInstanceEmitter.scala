@@ -3,6 +3,7 @@ package amf.plugins.document.webapi.parser.spec.declaration.emitters.raml
 import amf.core.emitter.BaseEmitters.MapEntryEmitter
 import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.ExamplesEmitter
 import amf.plugins.domain.shapes.models.AnyShape
 
@@ -10,12 +11,12 @@ import scala.collection.mutable.ListBuffer
 
 object RamlAnyShapeInstanceEmitter {
   def apply(shape: AnyShape, ordering: SpecOrdering, references: Seq[BaseUnit])(
-      implicit spec: RamlSpecEmitterContext): RamlAnyShapeInstanceEmitter =
+      implicit spec: ShapeEmitterContext): RamlAnyShapeInstanceEmitter =
     new RamlAnyShapeInstanceEmitter(shape, ordering, references)(spec)
 }
 
 class RamlAnyShapeInstanceEmitter(shape: AnyShape, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: RamlSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends RamlShapeEmitter(shape, ordering, references)
     with ExamplesEmitter {
   override def emitters(): Seq[EntryEmitter] = {

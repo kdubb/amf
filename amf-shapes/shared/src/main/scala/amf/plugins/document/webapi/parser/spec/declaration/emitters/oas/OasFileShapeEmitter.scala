@@ -2,17 +2,17 @@ package amf.plugins.document.webapi.parser.spec.declaration.emitters.oas
 
 import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
+import amf.core.utils.AmfStrings
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.domain.shapes.metamodel.FileShapeModel
 import amf.plugins.domain.shapes.models.{FileShape, TypeDef}
-import amf.core.utils.AmfStrings
 
 import scala.collection.mutable.ListBuffer
 
 case class OasFileShapeEmitter(scalar: FileShape,
                                ordering: SpecOrdering,
                                references: Seq[BaseUnit],
-                               isHeader: Boolean)(override implicit val spec: OasLikeSpecEmitterContext)
+                               isHeader: Boolean)(override implicit val spec: ShapeEmitterContext)
     extends OasAnyShapeEmitter(scalar, ordering, references, isHeader = isHeader)
     with OasCommonOASFieldsEmitter {
 

@@ -5,14 +5,14 @@ import amf.core.model.document.BaseUnit
 import amf.core.model.domain.Shape
 import amf.core.parser.Position
 import amf.core.parser.Position.ZERO
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import org.yaml.model.YDocument.EntryBuilder
 
 case class OasOrConstraintEmitter(shape: Shape,
                                   ordering: SpecOrdering,
                                   references: Seq[BaseUnit],
                                   pointer: Seq[String] = Nil,
-                                  schemaPath: Seq[(String, String)] = Nil)(implicit spec: OasLikeSpecEmitterContext)
+                                  schemaPath: Seq[(String, String)] = Nil)(implicit spec: ShapeEmitterContext)
     extends EntryEmitter {
 
   val emitters: Seq[OasTypePartEmitter] = shape.or.zipWithIndex map {

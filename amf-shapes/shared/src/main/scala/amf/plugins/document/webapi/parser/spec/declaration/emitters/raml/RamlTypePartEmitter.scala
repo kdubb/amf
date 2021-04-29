@@ -8,6 +8,7 @@ import amf.core.model.document.BaseUnit
 import amf.core.model.domain.Shape
 import amf.core.parser.Position
 import amf.core.parser.Position.ZERO
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.features.validation.CoreValidations.ResolutionValidation
 import org.yaml.model.YDocument.PartBuilder
@@ -17,7 +18,7 @@ abstract class RamlTypePartEmitter(shape: Shape,
                                    ordering: SpecOrdering,
                                    annotations: Option[AnnotationsEmitter],
                                    ignored: Seq[Field] = Nil,
-                                   references: Seq[BaseUnit])(implicit spec: SpecEmitterContext)
+                                   references: Seq[BaseUnit])(implicit spec: ShapeEmitterContext)
     extends PartEmitter {
 
   override def emit(b: PartBuilder): Unit = {

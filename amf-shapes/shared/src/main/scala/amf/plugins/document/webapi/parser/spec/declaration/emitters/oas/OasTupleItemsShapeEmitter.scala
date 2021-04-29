@@ -5,7 +5,7 @@ import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
 import amf.core.parser.Position
 import amf.core.parser.Position.ZERO
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.domain.shapes.metamodel.{ArrayShapeModel, TupleShapeModel}
 import amf.plugins.domain.shapes.models.TupleShape
 import org.yaml.model.YDocument.EntryBuilder
@@ -15,7 +15,7 @@ case class OasTupleItemsShapeEmitter(array: TupleShape,
                                      references: Seq[BaseUnit],
                                      additionalEntry: Option[ValueEmitter],
                                      pointer: Seq[String] = Nil,
-                                     schemaPath: Seq[(String, String)] = Nil)(implicit spec: OasLikeSpecEmitterContext)
+                                     schemaPath: Seq[(String, String)] = Nil)(implicit spec: ShapeEmitterContext)
     extends EntryEmitter {
 
   val itemEmitters: Seq[OasTypeEmitter] = {

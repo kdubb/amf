@@ -2,7 +2,6 @@ package amf.plugins.document.webapi.parser.spec.declaration.emitters.common
 
 import amf.core.emitter.BaseEmitters.{ScalarEmitter, pos, traverse}
 import amf.core.emitter.{EntryEmitter, PartEmitter, SpecOrdering}
-import amf.core.model.domain.extensions.PropertyShape
 import amf.core.model.domain.{AmfScalar, Shape}
 import amf.core.parser.Position
 import amf.core.utils.AmfStrings

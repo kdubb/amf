@@ -7,7 +7,7 @@ import amf.core.model.document.BaseUnit
 import amf.core.model.domain.Shape
 import amf.core.parser.Position
 import amf.core.parser.Position.ZERO
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import org.yaml.model.YDocument.PartBuilder
 
 case class OasTypePartEmitter(shape: Shape,
@@ -15,7 +15,7 @@ case class OasTypePartEmitter(shape: Shape,
                               ignored: Seq[Field] = Nil,
                               references: Seq[BaseUnit],
                               pointer: Seq[String] = Nil,
-                              schemaPath: Seq[(String, String)] = Nil)(implicit spec: OasLikeSpecEmitterContext)
+                              schemaPath: Seq[(String, String)] = Nil)(implicit spec: ShapeEmitterContext)
     extends OasTypePartCollector(shape, ordering, ignored, references)
     with PartEmitter {
 

@@ -5,7 +5,6 @@ import amf.core.emitter._
 import amf.core.model.domain._
 import amf.core.model.domain.extensions.DomainExtension
 import amf.core.parser.Position
-import amf.plugins.document.webapi.contexts.SpecEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.domain.webapi.annotations.OrphanOasExtension
 import amf.plugins.domain.webapi.parser.spec.declaration.emitters.annotations.DataNodeEmitter
@@ -18,7 +17,7 @@ case class AnnotationsEmitter(element: CustomizableElement, ordering: SpecOrderi
   def emitters: Seq[EntryEmitter] =
     element.customDomainProperties
       .filter(!isOrphanOasExtension(_))
-      .map(spec.factory.annotationEmitter(_, ordering))
+      .map(spec.annotationEmitter(_, ordering))
 
   private def isOrphanOasExtension(customProperty: DomainExtension) = {
     customProperty.extension.annotations.contains(classOf[OrphanOasExtension])

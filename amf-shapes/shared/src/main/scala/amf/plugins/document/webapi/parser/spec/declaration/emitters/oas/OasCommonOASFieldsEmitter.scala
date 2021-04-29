@@ -5,11 +5,9 @@ import amf.core.emitter.EntryEmitter
 import amf.core.metamodel.Field
 import amf.core.model.domain.AmfScalar
 import amf.core.parser.{Annotations, FieldEntry, Fields, Value}
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
-import amf.plugins.document.webapi.contexts.emitter.jsonschema.JsonSchemaEmitterContext
-import amf.plugins.document.webapi.parser.spec.declaration.JSONSchemaDraft7SchemaVersion
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.NumberTypeToYTypeConverter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.RamlFormatTranslator
+import amf.plugins.document.webapi.parser.spec.declaration.{JSONSchemaDraft7SchemaVersion, ShapeEmitterContext}
 import amf.plugins.domain.shapes.metamodel.ScalarShapeModel
 import amf.plugins.domain.shapes.models.TypeDef
 
@@ -19,7 +17,7 @@ import scala.collection.mutable.ListBuffer
 trait OasCommonOASFieldsEmitter extends RamlFormatTranslator {
 
   def typeDef: Option[TypeDef] = None
-  implicit val spec: OasLikeSpecEmitterContext
+  implicit val spec: ShapeEmitterContext
 
   def emitCommonFields(fs: Fields, result: ListBuffer[EntryEmitter]): Unit = {
 
@@ -42,7 +40,7 @@ trait OasCommonOASFieldsEmitter extends RamlFormatTranslator {
   }
 
   def emitFormatRanges(fs: Fields, result: ListBuffer[EntryEmitter]): Unit = {
-    if (typeDef.exists(_.isNumber) && spec.isInstanceOf[JsonSchemaEmitterContext]) {
+    if (typeDef.exists(_.isNumber) && spec.isJsonContext) {
       fs.entry(ScalarShapeModel.Format) match {
         case Some(fe) =>
           val format = fe.value.toString

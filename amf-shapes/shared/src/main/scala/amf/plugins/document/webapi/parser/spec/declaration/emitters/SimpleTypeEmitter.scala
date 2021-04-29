@@ -8,6 +8,7 @@ import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{
   RamlCommonOASFieldsEmitter,
   RamlScalarEmitter
 }
+import amf.plugins.document.webapi.parser.spec.domain.SingleExampleEmitter
 import amf.plugins.domain.shapes.metamodel.ScalarShapeModel
 import amf.plugins.domain.shapes.models.ScalarShape
 import amf.plugins.domain.shapes.parser.TypeDefXsdMapping

@@ -5,6 +5,7 @@ import amf.core.emitter.{EntryEmitter, PartEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
 import amf.core.parser.Position
 import amf.plugins.document.webapi.annotations.ParsedJSONSchema
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.ExamplesEmitter
 import amf.plugins.domain.shapes.models.AnyShape
 import org.yaml.model.YDocument.PartBuilder
@@ -14,7 +15,7 @@ import scala.collection.mutable
 case class RamlJsonShapeEmitter(shape: AnyShape,
                                 ordering: SpecOrdering,
                                 references: Seq[BaseUnit],
-                                typeKey: String = "type")(implicit spec: SpecEmitterContext)
+                                typeKey: String = "type")(implicit spec: ShapeEmitterContext)
     extends PartEmitter
     with ExamplesEmitter {
 

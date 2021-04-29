@@ -11,7 +11,8 @@ import amf.core.parser.FieldEntry
 import amf.core.remote.{Oas20, Oas30, Vendor}
 import amf.plugins.document.webapi.contexts.emitter.jsonschema.JsonSchemaEmitterContext
 import amf.plugins.document.webapi.contexts.emitter.{OasLikeSpecEmitterContext, OasLikeSpecEmitterFactory}
-import amf.plugins.document.webapi.contexts.{RefEmitter, TagToReferenceEmitter}
+import amf.plugins.document.webapi.contexts.{RefEmitter}
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration.SchemaPosition.Schema
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{
@@ -32,6 +33,9 @@ import org.yaml.model.YDocument.PartBuilder
 abstract class OasSpecEmitterFactory(override implicit val spec: OasSpecEmitterContext)
     extends OasLikeSpecEmitterFactory
     with OasCompactEmitterFactory {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def tagToReferenceEmitter: (DomainElement, Seq[BaseUnit]) => TagToReferenceEmitter =
     (link, _) => OasTagToReferenceEmitter(link)
 
@@ -99,6 +103,8 @@ class Oas2SpecEmitterFactory(override val spec: OasSpecEmitterContext) extends O
   */
 case class InlinedJsonSchemaEmitterFactory()(override implicit val spec: JsonSchemaEmitterContext)
     extends Oas2SpecEmitterFactory(spec) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   override def typeEmitters(shape: Shape,
                             ordering: SpecOrdering,

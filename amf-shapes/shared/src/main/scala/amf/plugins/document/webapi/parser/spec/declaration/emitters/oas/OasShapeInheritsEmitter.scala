@@ -6,12 +6,12 @@ import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain.Shape
 import amf.core.parser.{FieldEntry, Position}
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
-import amf.plugins.document.webapi.parser.spec.OasDefinitions
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
+import amf.plugins.domain.webapi.parser.spec.OasShapeDefinitions
 import org.yaml.model.YDocument.EntryBuilder
 
 case class OasShapeInheritsEmitter(f: FieldEntry, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: OasLikeSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends EntryEmitter {
   override def emit(b: EntryBuilder): Unit = {
     val inherits = f.array.values.map(_.asInstanceOf[Shape])
@@ -20,9 +20,9 @@ case class OasShapeInheritsEmitter(f: FieldEntry, ordering: SpecOrdering, refere
       _.list(b =>
         inherits.foreach { s =>
           if (s.annotations.contains(classOf[DeclaredElement]))
-            spec.ref(b, OasDefinitions.appendSchemasPrefix(s.name.value(), Some(spec.vendor)))
+            spec.ref(b, OasShapeDefinitions.appendSchemasPrefix(s.name.value(), Some(spec.vendor)))
           else if (s.linkTarget.isDefined)
-            spec.ref(b, OasDefinitions.appendSchemasPrefix(s.name.value(), Some(spec.vendor)))
+            spec.ref(b, OasShapeDefinitions.appendSchemasPrefix(s.name.value(), Some(spec.vendor)))
           else OasTypePartEmitter(s, ordering, references = references).emit(b)
       })
     )

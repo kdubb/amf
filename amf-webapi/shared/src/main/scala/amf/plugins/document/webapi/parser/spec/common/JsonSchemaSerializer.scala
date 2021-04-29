@@ -1,10 +1,10 @@
 package amf.plugins.document.webapi.parser.spec.common
 
 import amf.client.execution.BaseExecutionEnvironment
+import amf.client.remod.amfcore.config.{ShapeRenderOptions => ImmutableShapeRenderOptions}
 import amf.core.AMFSerializer
 import amf.core.emitter.BaseEmitters._
 import amf.core.emitter.{EntryEmitter, ShapeRenderOptions, SpecOrdering}
-import amf.client.remod.amfcore.config.{ShapeRenderOptions => ImmutableShapeRenderOptions}
 import amf.core.errorhandling.ErrorHandler
 import amf.core.model.document.Document
 import amf.core.model.domain.{DomainElement, Shape}
@@ -17,12 +17,8 @@ import amf.plugins.document.webapi.contexts.emitter.jsonschema.{
   InlinedJsonSchemaEmitterContext,
   JsonSchemaEmitterContext
 }
-import amf.plugins.document.webapi.contexts.emitter.oas.AliasDefinitions
-import amf.plugins.document.webapi.parser.spec.OasDefinitions
 import amf.plugins.document.webapi.parser.spec.declaration.{
-  JSONSchemaDraft201909SchemaVersion,
   JSONSchemaDraft4SchemaVersion,
-  JSONSchemaDraft7SchemaVersion,
   JSONSchemaUnspecifiedVersion,
   JSONSchemaVersion,
   SchemaVersion

@@ -11,7 +11,8 @@ import amf.core.model.domain.{DomainElement, Linkable, RecursiveShape, Shape}
 import amf.core.parser.FieldEntry
 import amf.core.remote.{AsyncApi20, Vendor}
 import amf.plugins.document.webapi.contexts.emitter.{OasLikeSpecEmitterContext, OasLikeSpecEmitterFactory}
-import amf.plugins.document.webapi.contexts.{RefEmitter, TagToReferenceEmitter}
+import amf.plugins.document.webapi.contexts.RefEmitter
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{
   AnnotationTypeEmitter,
@@ -30,6 +31,8 @@ import org.yaml.model.YDocument.PartBuilder
 
 abstract class AsyncSpecEmitterFactory(override implicit val spec: AsyncSpecEmitterContext)
     extends OasLikeSpecEmitterFactory {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   override def declaredTypesEmitter: (Seq[Shape], Seq[BaseUnit], SpecOrdering) => EntryEmitter =
     AsyncDeclaredTypesEmitters.obtainEmitter

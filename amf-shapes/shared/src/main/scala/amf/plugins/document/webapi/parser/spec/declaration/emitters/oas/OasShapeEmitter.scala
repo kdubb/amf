@@ -10,7 +10,6 @@ import amf.core.model.document.BaseUnit
 import amf.core.model.domain.{AmfScalar, Shape}
 import amf.core.parser.{Annotations, FieldEntry, Value}
 import amf.core.vocabulary.Namespace
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{AnnotationsEmitter, FacetsEmitter}
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.{EnumValuesEmitter, XMLSerializerEmitter, oas}
@@ -24,7 +23,7 @@ abstract class OasShapeEmitter(shape: Shape,
                                ordering: SpecOrdering,
                                references: Seq[BaseUnit],
                                pointer: Seq[String] = Nil,
-                               schemaPath: Seq[(String, String)] = Nil)(implicit spec: OasLikeSpecEmitterContext) {
+                               schemaPath: Seq[(String, String)] = Nil)(implicit spec: ShapeEmitterContext) {
   def emitters(): Seq[EntryEmitter] = {
 
     val emitDocumentation = spec.options.isWithDocumentation
@@ -62,7 +61,7 @@ abstract class OasShapeEmitter(shape: Shape,
 
     fs.entry(ShapeModel.CustomShapePropertyDefinitions)
       .map(f => {
-        result += spec.factory.customFacetsEmitter(f, ordering, references)
+        result += spec.customFacetsEmitter(f, ordering, references)
       })
 
     if (Option(shape.and).isDefined && shape.and.nonEmpty)

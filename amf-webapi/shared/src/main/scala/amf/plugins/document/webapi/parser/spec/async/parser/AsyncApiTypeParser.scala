@@ -10,39 +10,19 @@ import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapePa
 import amf.plugins.document.webapi.parser.spec.common.YMapEntryLike
 import amf.plugins.document.webapi.parser.spec.declaration.SchemaPosition._
 import amf.plugins.document.webapi.parser.spec.declaration._
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.async.AsyncApiKnownSchemaFormats
 import amf.plugins.document.webapi.parser.spec.{WebApiDeclarations, toRaml}
 import amf.plugins.domain.webapi.models.Payload
 import amf.plugins.domain.webapi.parser.spec.declaration.TypeInfo
 import amf.plugins.features.validation.CoreValidations
 import org.yaml.model.YMapEntry
 
-object AsyncSchemaFormats {
-  val async20Schema = List("application/vnd.aai.asyncapi;version=2.0.0",
-                           "application/vnd.aai.asyncapi+json;version=2.0.0",
-                           "application/vnd.aai.asyncapi+yaml;version=2.0.0")
-  val oas30Schema = List("application/vnd.oai.openapi;version=3.0.0",
-                         "application/vnd.oai.openapi+json;version=3.0.0",
-                         "application/vnd.oai.openapi+yaml;version=3.0.0")
-  val draft7JsonSchema = List("application/schema+json;version=draft-07", "application/schema+yaml;version=draft-07")
-  val avroSchema = List("application/vnd.apache.avro;version=1.9.0",
-                        "application/vnd.apache.avro+json;version=1.9.0",
-                        "application/vnd.apache.avro+yaml;version=1.9.0")
-  val ramlSchema = List(
-    "application/raml+yaml;version=1.0"
-  )
+object AsyncSchemaFormats extends AsyncApiKnownSchemaFormats {
 
   def getSchemaVersion(payload: Payload)(implicit errorHandler: ErrorHandler): SchemaVersion = {
     val value = Option(payload.schemaMediaType).map(f => f.value()).orElse(None)
     getSchemaVersion(value)
   }
-
-  def getSchemaVersion(value: Option[String])(implicit errorHandler: ErrorHandler): SchemaVersion =
-    value match {
-      case Some(format) if oas30Schema.contains(format) => OAS30SchemaVersion(Schema)
-      case Some(format) if ramlSchema.contains(format)  => RAML10SchemaVersion()
-      // async20 schemas are handled with draft 7. Avro schema is not supported
-      case _ => JSONSchemaDraft7SchemaVersion
-    }
 }
 
 case class AsyncApiTypeParser(entry: YMapEntry, adopt: Shape => Unit, version: SchemaVersion)(

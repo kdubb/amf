@@ -1,19 +1,14 @@
 package amf.plugins.document.webapi.parser.spec.declaration.emitters.oas
 
-import amf.core.annotations.ExplicitField
 import amf.core.emitter.BaseEmitters.ValueEmitter
 import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
-import amf.core.model.domain.Shape
-import amf.core.parser.FieldEntry
 import amf.plugins.document.webapi.annotations.CollectionFormatFromItems
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
-import amf.plugins.document.webapi.parser.spec.declaration.{JSONSchemaDraft201909SchemaVersion, JSONSchemaDraft7SchemaVersion}
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.FacetsEmitter
-import amf.plugins.document.webapi.parser.spec.jsonschema.emitter.UnevaluatedEmitter.unevaluatedItemsInfo
-import amf.plugins.document.webapi.parser.spec.jsonschema.emitter.{UnevaluatedEmitter, UntranslatableDraft2019FieldsPresentGuard}
+import amf.plugins.document.webapi.parser.spec.declaration.{JSONSchemaDraft7SchemaVersion, ShapeEmitterContext}
+import amf.plugins.document.webapi.parser.spec.emitter.UnevaluatedEmitter.unevaluatedItemsInfo
+import amf.plugins.document.webapi.parser.spec.emitter.{UnevaluatedEmitter, UntranslatableDraft2019FieldsPresentGuard}
 import amf.plugins.domain.shapes.metamodel.ArrayShapeModel.{UnevaluatedItems, UnevaluatedItemsSchema}
-import amf.plugins.domain.shapes.metamodel.NodeShapeModel.{UnevaluatedProperties, UnevaluatedPropertiesSchema}
 import amf.plugins.domain.shapes.metamodel.{ArrayShapeModel, NodeShapeModel}
 import amf.plugins.domain.shapes.models.ArrayShape
 
@@ -24,7 +19,7 @@ case class OasArrayShapeEmitter(shape: ArrayShape,
                                 references: Seq[BaseUnit],
                                 pointer: Seq[String] = Nil,
                                 schemaPath: Seq[(String, String)] = Nil,
-                                isHeader: Boolean = false)(implicit spec: OasLikeSpecEmitterContext)
+                                isHeader: Boolean = false)(implicit spec: ShapeEmitterContext)
     extends OasAnyShapeEmitter(shape, ordering, references, isHeader = isHeader) {
   override def emitters(): Seq[EntryEmitter] = {
     val result = ListBuffer[EntryEmitter](super.emitters(): _*)
@@ -37,7 +32,6 @@ case class OasArrayShapeEmitter(shape: ArrayShape,
     fs.entry(ArrayShapeModel.MinItems).map(f => result += ValueEmitter("minItems", f))
 
     fs.entry(ArrayShapeModel.UniqueItems).map(f => result += ValueEmitter("uniqueItems", f))
-
 
     if (spec.schemaVersion.isBiggerThanOrEqualTo(JSONSchemaDraft7SchemaVersion) && Option(shape.contains).isDefined)
       result += OasEntryShapeEmitter("contains", shape.contains, ordering, references, pointer, schemaPath)
@@ -59,15 +53,14 @@ case class OasArrayShapeEmitter(shape: ArrayShape,
     }
 
     UntranslatableDraft2019FieldsPresentGuard(shape,
-      Seq(UnevaluatedItemsSchema, UnevaluatedItems),
-      Seq("unevaluatedItems")).evaluateOrRun { () =>
-
+                                              Seq(UnevaluatedItemsSchema, UnevaluatedItems),
+                                              Seq("unevaluatedItems")).evaluateOrRun { () =>
       result += new UnevaluatedEmitter(shape, unevaluatedItemsInfo, ordering, references, pointer, schemaPath)
     }
 
     UntranslatableDraft2019FieldsPresentGuard(shape,
-      Seq(ArrayShapeModel.MinContains, ArrayShapeModel.MaxContains),
-      Seq("minContains", "maxContains")).evaluateOrRun { () =>
+                                              Seq(ArrayShapeModel.MinContains, ArrayShapeModel.MaxContains),
+                                              Seq("minContains", "maxContains")).evaluateOrRun { () =>
       fs.entry(ArrayShapeModel.MinContains).map(f => result += ValueEmitter("minContains", f))
       fs.entry(ArrayShapeModel.MaxContains).map(f => result += ValueEmitter("maxContains", f))
     }

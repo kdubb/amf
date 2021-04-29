@@ -5,11 +5,11 @@ import amf.core.emitter.EntryEmitter
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain.extensions.PropertyShape
 import amf.core.parser.{Annotations, FieldEntry, Position}
-import amf.plugins.document.webapi.contexts.SpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import org.yaml.model.YDocument.EntryBuilder
 
 case class OasRequiredPropertiesShapeEmitter(f: FieldEntry, references: Seq[BaseUnit])(
-    implicit spec: SpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends EntryEmitter {
 
   override def emit(b: EntryBuilder): Unit = {

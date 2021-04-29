@@ -6,7 +6,7 @@ import amf.core.model.domain.{AmfElement, DomainElement, Linkable, NamedDomainEl
 import amf.core.parser.Position
 import amf.core.parser.Position.ZERO
 import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
-import amf.plugins.document.webapi.parser.spec.OasDefinitions
+import amf.plugins.document.webapi.parser.spec.{OasDefinitions, SpecContextShapeAdapter}
 import amf.plugins.document.webapi.parser.spec.async.emitters.bindings.{
   AsyncApiChannelBindingsEmitter,
   AsyncApiMessageBindingsEmitter,
@@ -43,6 +43,8 @@ abstract class AsyncApiBindingsEntryEmitter(
 case class AsyncApiBindingsPartEmitter(bindings: AmfElement, ordering: SpecOrdering, extensions: Seq[DomainExtension])(
     implicit val spec: OasLikeSpecEmitterContext)
     extends PartEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   def emit(b: PartBuilder): Unit = {
     val emitters: Seq[EntryEmitter] = obtainBindings(bindings)

@@ -1,14 +1,12 @@
 package amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations
 
-import amf.core.emitter.BaseEmitters.{ValueEmitter}
+import amf.core.emitter.BaseEmitters.ValueEmitter
 import amf.core.emitter.{Emitter, EntryEmitter, PartEmitter, SpecOrdering}
 import amf.core.metamodel.domain.extensions.CustomDomainPropertyModel
 import amf.core.model.domain.extensions.CustomDomainProperty
 import amf.core.model.domain.{AmfArray, AmfScalar, RecursiveShape}
 import amf.core.parser.{FieldEntry, Value}
-import amf.plugins.document.webapi.contexts.SpecEmitterContext
-import amf.plugins.document.webapi.contexts.emitter.oas.OasSpecEmitterContext
-import amf.plugins.document.webapi.contexts.emitter.raml.RamlSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.oas.OasSchemaEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{Raml10TypeEmitter, RamlRecursiveShapeEmitter}
 import amf.plugins.document.webapi.vocabulary.VocabularyMappings
@@ -18,7 +16,7 @@ import amf.validations.RenderSideValidations.RenderValidation
 import scala.collection.mutable.ListBuffer
 
 abstract class AnnotationTypeEmitter(property: CustomDomainProperty, ordering: SpecOrdering)(
-    implicit spec: SpecEmitterContext) {
+    implicit spec: ShapeEmitterContext) {
 
   private val fs = property.fields
   protected val shapeEmitters: Seq[Emitter]
@@ -58,7 +56,7 @@ abstract class AnnotationTypeEmitter(property: CustomDomainProperty, ordering: S
 }
 
 case class OasAnnotationTypeEmitter(property: CustomDomainProperty, ordering: SpecOrdering)(
-    implicit spec: OasSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends AnnotationTypeEmitter(property, ordering) {
 
   private val fs = property.fields
@@ -71,7 +69,7 @@ case class OasAnnotationTypeEmitter(property: CustomDomainProperty, ordering: Sp
 }
 
 case class RamlAnnotationTypeEmitter(property: CustomDomainProperty, ordering: SpecOrdering)(
-    implicit spec: RamlSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends AnnotationTypeEmitter(property, ordering) {
 
   private val fs = property.fields

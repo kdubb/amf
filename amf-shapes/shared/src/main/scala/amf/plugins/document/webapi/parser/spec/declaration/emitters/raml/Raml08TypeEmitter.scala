@@ -4,9 +4,14 @@ import amf.core.emitter.BaseEmitters.{MapEntryEmitter, pos}
 import amf.core.emitter.{Emitter, EntryEmitter, PartEmitter, SpecOrdering}
 import amf.core.model.domain.Shape
 import amf.core.parser.Position
-import amf.plugins.document.webapi.annotations.{ExternalReferenceUrl, ParsedJSONSchema}
+import amf.plugins.document.webapi.annotations.{ExternalReferenceUrl, ForceEntry, ParsedJSONSchema}
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.common.RamlExternalReferenceUrlEmitter
-import amf.plugins.document.webapi.parser.spec.declaration.emitters.{ExamplesEmitter, SimpleTypeEmitter}
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.{
+  CommentEmitter,
+  ExamplesEmitter,
+  SimpleTypeEmitter
+}
 import amf.plugins.domain.shapes.models._
 import amf.plugins.domain.shapes.parser.XsdTypeDefMapping
 import org.yaml.model.YDocument.{EntryBuilder, PartBuilder}
@@ -14,7 +19,7 @@ import org.yaml.model.YType
 
 import scala.collection.mutable
 
-case class Raml08TypeEmitter(shape: Shape, ordering: SpecOrdering)(implicit spec: RamlSpecEmitterContext)
+case class Raml08TypeEmitter(shape: Shape, ordering: SpecOrdering)(implicit spec: ShapeEmitterContext)
     extends ExamplesEmitter {
 
   // TODO: Refactor -> Why does a TypeEmitter extend an ExampleEmitter?

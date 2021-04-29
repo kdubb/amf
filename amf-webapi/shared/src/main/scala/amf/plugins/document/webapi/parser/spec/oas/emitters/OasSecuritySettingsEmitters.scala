@@ -9,6 +9,7 @@ import amf.core.parser.{FieldEntry, Position}
 import amf.core.remote.Vendor
 import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.contexts.SpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{
   AnnotationsEmitter,
   OrphanAnnotationsEmitter
@@ -50,6 +51,9 @@ case class OasSecuritySettingsEmitter(f: FieldEntry, ordering: SpecOrdering)(imp
 
 case class OasOpenIdConnectSettingsEmitters(settings: Settings, ordering: SpecOrdering)(
     implicit spec: SpecEmitterContext) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   def emitters(): Seq[EntryEmitter] = {
     val fs        = settings.fields
     val externals = ListBuffer[EntryEmitter]()
@@ -61,7 +65,11 @@ case class OasOpenIdConnectSettingsEmitters(settings: Settings, ordering: SpecOr
 }
 
 case class OasHttpSettingsEmitters(settings: Settings, ordering: SpecOrdering)(implicit spec: SpecEmitterContext) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   def emitters(): Seq[EntryEmitter] = {
+
     val fs        = settings.fields
     val externals = ListBuffer[EntryEmitter]()
 
@@ -91,6 +99,9 @@ case class OasApiKeySettingsEmitters(apiKey: ApiKeySettings, ordering: SpecOrder
 
 case class OasOAuth2SettingsEmitters(settings: OAuth2Settings, ordering: SpecOrdering)(
     implicit spec: SpecEmitterContext) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   def emitters(): Seq[EntryEmitter] = {
     val fs        = settings.fields
     val externals = ListBuffer[EntryEmitter]()
@@ -148,6 +159,8 @@ private case class Oas3OAuth2FlowEmitter(settings: OAuth2Settings, ordering: Spe
     implicit spec: SpecEmitterContext)
     extends EntryEmitter {
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: EntryBuilder): Unit = {
     val fs                               = settings.fields
     val result: ListBuffer[EntryEmitter] = ListBuffer()
@@ -170,6 +183,8 @@ private case class Oas3OAuthFlowsEmitter(f: FieldEntry,
                                          ordering: SpecOrdering,
                                          orphanAnnotations: Seq[DomainExtension])(implicit spec: SpecEmitterContext)
     extends EntryEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   override def emit(b: EntryBuilder): Unit = {
 
@@ -224,6 +239,9 @@ case class OasOAuth2ScopeEmitter(key: String,
                                  ordering: SpecOrdering,
                                  orphanAnnotations: Seq[DomainExtension])(implicit spec: SpecEmitterContext)
     extends EntryEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: EntryBuilder): Unit = {
     val emitters = OasScopeValuesEmitters(f).emitters() ++ scopesElementAnnotations()
     b.entry(key, _.obj(traverse(ordering.sorted(emitters), _)))

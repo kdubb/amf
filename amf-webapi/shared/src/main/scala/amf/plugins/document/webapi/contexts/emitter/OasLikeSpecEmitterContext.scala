@@ -13,6 +13,7 @@ import amf.core.utils._
 import amf.plugins.document.webapi.contexts.emitter.oas.OasRefEmitter
 import amf.plugins.document.webapi.contexts.{RefEmitter, SpecEmitterContext, SpecEmitterFactory}
 import amf.plugins.document.webapi.parser.OasTypeDefStringValueMatcher
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.async.emitters.Draft6ExamplesEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{
   AnnotationEmitter,
@@ -30,6 +31,8 @@ import org.yaml.model.YType
 import scala.collection.mutable
 
 abstract class OasLikeSpecEmitterFactory(implicit val spec: OasLikeSpecEmitterContext) extends SpecEmitterFactory {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   def typeEmitters(shape: Shape,
                    ordering: SpecOrdering,

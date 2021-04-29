@@ -7,7 +7,6 @@ import amf.core.model.document.BaseUnit
 import amf.core.model.domain.Shape
 import amf.core.parser.FieldEntry
 import amf.core.utils.AmfStrings
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.common.{
   Draft2019DependenciesEmitter,
   Draft4DependenciesEmitter,
@@ -16,13 +15,11 @@ import amf.plugins.document.webapi.parser.spec.declaration.emitters.common.{
 import amf.plugins.document.webapi.parser.spec.declaration.{
   JSONSchemaDraft201909SchemaVersion,
   JSONSchemaDraft7SchemaVersion,
-  OAS30SchemaVersion
+  OAS30SchemaVersion,
+  ShapeEmitterContext
 }
-import amf.plugins.document.webapi.parser.spec.jsonschema.emitter.{
-  UnevaluatedEmitter,
-  UntranslatableDraft2019FieldsPresentGuard
-}
-import amf.plugins.document.webapi.parser.spec.jsonschema.emitter.UnevaluatedEmitter.unevaluatedPropertiesInfo
+import amf.plugins.document.webapi.parser.spec.emitter.UnevaluatedEmitter.unevaluatedPropertiesInfo
+import amf.plugins.document.webapi.parser.spec.emitter.{UnevaluatedEmitter, UntranslatableDraft2019FieldsPresentGuard}
 import amf.plugins.domain.shapes.metamodel.NodeShapeModel
 import amf.plugins.domain.shapes.metamodel.NodeShapeModel.{
   AdditionalPropertiesSchema,
@@ -31,7 +28,6 @@ import amf.plugins.domain.shapes.metamodel.NodeShapeModel.{
 }
 import amf.plugins.domain.shapes.models.NodeShape
 
-import scala.collection.immutable.ListMap
 import scala.collection.mutable.ListBuffer
 
 case class OasNodeShapeEmitter(node: NodeShape,
@@ -39,7 +35,7 @@ case class OasNodeShapeEmitter(node: NodeShape,
                                references: Seq[BaseUnit],
                                pointer: Seq[String] = Nil,
                                schemaPath: Seq[(String, String)] = Nil,
-                               isHeader: Boolean = false)(implicit spec: OasLikeSpecEmitterContext)
+                               isHeader: Boolean = false)(implicit spec: ShapeEmitterContext)
     extends OasAnyShapeEmitter(node, ordering, references, isHeader = isHeader) {
   override def emitters(): Seq[EntryEmitter] = {
     val isOas3 = spec.schemaVersion.isInstanceOf[OAS30SchemaVersion]

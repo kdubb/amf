@@ -4,6 +4,8 @@ import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
 import amf.core.parser.Annotations
 import amf.core.utils.IdCounter
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
+import amf.plugins.document.webapi.parser.spec.domain.{SafeNamedMultipleExampleEmitter, SingleExampleEmitter}
 import amf.plugins.domain.shapes.metamodel.{AnyShapeModel, ExampleModel}
 import amf.plugins.domain.shapes.models.{AnyShape, Example}
 
@@ -13,7 +15,7 @@ trait ExamplesEmitter {
   def emitExamples(shape: AnyShape,
                    results: ListBuffer[EntryEmitter],
                    ordering: SpecOrdering,
-                   references: Seq[BaseUnit])(implicit spec: SpecEmitterContext): Unit = {
+                   references: Seq[BaseUnit])(implicit spec: ShapeEmitterContext): Unit = {
     shape.fields
       .entry(AnyShapeModel.Examples)
       .foreach(f => {

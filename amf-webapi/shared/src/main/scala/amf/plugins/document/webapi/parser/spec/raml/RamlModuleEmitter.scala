@@ -10,6 +10,7 @@ import amf.core.model.domain.templates.AbstractDeclaration
 import amf.core.remote.Raml
 import amf.plugins.document.webapi.contexts.emitter.raml.RamlSpecEmitterContext
 import amf.plugins.document.webapi.model._
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml
@@ -26,6 +27,8 @@ import org.yaml.model.YDocument
   *
   */
 case class RamlModuleEmitter(module: Module)(implicit val spec: RamlSpecEmitterContext) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   def emitModule(): YDocument = {
 
@@ -46,6 +49,9 @@ case class RamlModuleEmitter(module: Module)(implicit val spec: RamlSpecEmitterC
 }
 
 class RamlFragmentEmitter(fragment: Fragment)(implicit val spec: RamlSpecEmitterContext) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   def emitFragment(): YDocument = {
 
     val ordering: SpecOrdering = SpecOrdering.ordering(Raml, fragment.encodes.annotations)

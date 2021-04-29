@@ -8,8 +8,10 @@ import amf.plugins.domain.webapi.metamodel.{RequestModel, ResponseModel}
 import amf.plugins.domain.webapi.models.Response
 import org.yaml.model.YDocument.{EntryBuilder, PartBuilder}
 import amf.core.utils.AmfStrings
-import amf.plugins.document.webapi.contexts.emitter.raml.{RamlScalarEmitter, RamlSpecEmitterContext}
+import amf.plugins.document.webapi.contexts.emitter.raml.{RamlSpecEmitterContext}
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.RamlScalarEmitter
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -53,6 +55,8 @@ case class Raml10ResponsePartEmitter(response: Response, ordering: SpecOrdering,
     implicit spec: RamlSpecEmitterContext)
     extends RamlResponsePartEmitter(response, ordering, references) {
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override protected def emitters(fs: Fields): ListBuffer[EntryEmitter] = {
     val result = ListBuffer[EntryEmitter]()
 
@@ -86,6 +90,8 @@ abstract class RamlResponseEmitter(response: Response, ordering: SpecOrdering, r
     implicit spec: RamlSpecEmitterContext)
     extends EntryEmitter {
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   protected def emitters(fs: Fields): ListBuffer[EntryEmitter] = {
     val result = mutable.ListBuffer[EntryEmitter]()
 
@@ -116,6 +122,8 @@ abstract class RamlResponseEmitter(response: Response, ordering: SpecOrdering, r
 abstract class RamlResponsePartEmitter(response: Response, ordering: SpecOrdering, references: Seq[BaseUnit])(
     implicit spec: RamlSpecEmitterContext)
     extends PartEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   protected def emitters(fs: Fields): ListBuffer[EntryEmitter] = {
     val result = mutable.ListBuffer[EntryEmitter]()

@@ -11,7 +11,7 @@ import amf._
 // noinspection TypeAnnotation
 object PayloadValidations extends Validations {
   override val specification: String = PAYLOAD_VALIDATION
-  override val namespace: Namespace  = AmfValidation
+  override val namespace: Namespace = AmfValidation
 
   val UnsupportedExampleMediaTypeWarningSpecification = validation(
     "unsupported-example-media-type-warning",
@@ -36,13 +36,13 @@ object PayloadValidations extends Validations {
   override val levels: Map[String, Map[ProfileName, String]] = Map(
     UnsupportedExampleMediaTypeWarningSpecification.id -> all(WARNING),
     ExampleValidationErrorSpecification.id -> Map(
-      RamlProfile   -> VIOLATION,
+      RamlProfile -> VIOLATION,
       Raml10Profile -> VIOLATION,
       Raml08Profile -> VIOLATION,
-      OasProfile    -> WARNING,
-      Oas20Profile  -> WARNING,
-      Oas30Profile  -> WARNING,
-      AmfProfile    -> VIOLATION
+      OasProfile -> WARNING,
+      Oas20Profile -> WARNING,
+      Oas30Profile -> WARNING,
+      AmfProfile -> VIOLATION
     ),
     SchemaException.id -> all(VIOLATION),
     UntranslatableDraft2019Fields.id -> all(WARNING)

@@ -2,12 +2,13 @@ package amf.plugins.document.webapi.parser.spec.declaration.emitters.schema.json
 
 import amf.core.emitter.SpecOrdering
 import amf.core.model.domain.RecursiveShape
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.oas.OasRecursiveShapeEmitter
 import org.yaml.model.YDocument.EntryBuilder
 
 class CompactOasRecursiveShapeEmitter(recursive: RecursiveShape,
                                       ordering: SpecOrdering,
-                                      schemaPath: Seq[(String, String)])(implicit spec: OasSpecEmitterContext)
+                                      schemaPath: Seq[(String, String)])(implicit spec: ShapeEmitterContext)
     extends OasRecursiveShapeEmitter(recursive, ordering, schemaPath) {
 
   override def emit(b: EntryBuilder): Unit = {

@@ -1,14 +1,14 @@
 package amf.plugins.document.webapi.parser.spec.emitter
 
-import amf.core.errorhandling.ErrorHandler
 import amf.core.metamodel.Field
 import amf.core.model.domain.Shape
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
-import amf.plugins.document.webapi.parser.spec.declaration.JSONSchemaDraft201909SchemaVersion
+import amf.plugins.document.webapi.parser.spec.declaration.{JSONSchemaDraft201909SchemaVersion, ShapeEmitterContext}
 import amf.validations.PayloadValidations.UntranslatableDraft2019Fields
 
-case class UntranslatableDraft2019FieldsPresentGuard[T <: Shape](shape: T, fields: Seq[Field], fieldNames: Seq[String])(
-    implicit spec: OasLikeSpecEmitterContext) {
+case class UntranslatableDraft2019FieldsPresentGuard[T <: Shape](
+    shape: T,
+    fields: Seq[Field],
+    fieldNames: Seq[String])(implicit spec: ShapeEmitterContext) {
 
   def evaluateOrRun(toRun: () => Unit): Unit = {
     val fieldsSeq                      = shape.fields.fields().map(_.field).toSeq

@@ -23,6 +23,13 @@ trait OasShapeDefinitions {
     appendPrefix(oas3ComponentsPrefix + s"$fieldName/", url)
   }
 
+  def appendSchemasPrefix(url: String, vendor: Option[Vendor] = None): String = vendor match {
+    case Some(Vendor.OAS30) | Some(Vendor.ASYNC20) =>
+      if (!url.startsWith(oas3DefinitionsPrefix)) appendPrefix(oas3DefinitionsPrefix, url) else url
+    case _ =>
+      if (!url.startsWith(oas2DefinitionsPrefix)) appendPrefix(oas2DefinitionsPrefix, url) else url
+  }
+
   protected def appendPrefix(prefix: String, url: String): String = prefix + url
 }
 

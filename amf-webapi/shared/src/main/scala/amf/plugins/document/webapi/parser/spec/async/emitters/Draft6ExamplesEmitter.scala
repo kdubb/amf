@@ -5,6 +5,7 @@ import amf.core.emitter.{EntryEmitter, PartEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
 import amf.core.parser.Position
 import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.domain.ExampleDataNodePartEmitter
 import amf.plugins.document.webapi.parser.spec.oas.emitters.OasLikeExampleEmitters
 import amf.plugins.domain.shapes.models.Example
@@ -17,6 +18,9 @@ case class Draft6ExamplesEmitter(examples: Seq[Example], ordering: SpecOrdering)
     implicit spec: OasLikeSpecEmitterContext)
     extends OasLikeExampleEmitters
     with EntryEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   private def entryEmitter: EntryEmitter =
     EntryPartEmitter("examples",
                      ExamplesArrayPartEmitter(examples, ordering),
@@ -32,9 +36,12 @@ case class Draft6ExamplesEmitter(examples: Seq[Example], ordering: SpecOrdering)
 case class ExamplesArrayPartEmitter(examples: Seq[Example], ordering: SpecOrdering)(
     implicit spec: OasLikeSpecEmitterContext)
     extends PartEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: YDocument.PartBuilder): Unit = {
     b.list { listBuilder =>
-      examples.foreach(ex => ExampleDataNodePartEmitter(ex, ordering)(spec).emit(listBuilder))
+      examples.foreach(ex => ExampleDataNodePartEmitter(ex, ordering).emit(listBuilder))
     }
   }
   override def position(): Position = examples.headOption.map(ex => pos(ex.annotations)).getOrElse(Position.ZERO)

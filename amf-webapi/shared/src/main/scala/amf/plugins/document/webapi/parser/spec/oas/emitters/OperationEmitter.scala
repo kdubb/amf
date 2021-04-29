@@ -10,6 +10,7 @@ import amf.core.utils._
 import amf.plugins.document.webapi.annotations.FormBodyParameter
 import amf.plugins.document.webapi.contexts.emitter.oas.{Oas3SpecEmitterFactory, OasSpecEmitterContext}
 import amf.plugins.document.webapi.contexts.emitter.raml.Raml10SpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{
@@ -43,6 +44,8 @@ case class OasOperationPartEmitter(operation: Operation,
                                    endpointPayloadEmitted: Boolean,
                                    references: Seq[BaseUnit])(override implicit val spec: OasSpecEmitterContext)
     extends OasLikeOperationPartEmitter(operation, ordering) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   override def emit(p: PartBuilder): Unit = {
     p.obj { eb =>
@@ -144,7 +147,7 @@ case class OasOperationPartEmitter(operation: Operation,
                        a: Option[AnnotationsEmitter],
                        fs: Seq[Field],
                        us: Seq[BaseUnit]): RamlTypePartEmitter = {
-    Raml10TypePartEmitter(s, o, a, fs, us)(new Raml10SpecEmitterContext(spec.eh))
+    Raml10TypePartEmitter(s, o, a, fs, us)(SpecContextShapeAdapter(new Raml10SpecEmitterContext(spec.eh)))
   }
 
 }

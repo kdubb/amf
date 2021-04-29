@@ -5,7 +5,6 @@ import amf.core.emitter.BaseEmitters.{ValueEmitter, _}
 import amf.core.emitter._
 import amf.core.metamodel.document.{BaseUnitModel, ExtensionLikeModel}
 import amf.core.model.document._
-import amf.core.model.domain._
 import amf.core.model.domain.extensions.CustomDomainProperty
 import amf.core.parser.Position.ZERO
 import amf.core.parser.errorhandler.UnhandledParserErrorHandler
@@ -13,24 +12,22 @@ import amf.core.parser.{EmptyFutureDeclarations, FieldEntry, Position}
 import amf.core.remote._
 import amf.core.utils.TSort.tsort
 import amf.core.utils.{AmfStrings, IdCounter}
-import amf.plugins.document.webapi.contexts.ReferenceEmitterHelper.emitLinkOr
 import amf.plugins.document.webapi.contexts.SpecEmitterContext
-import amf.plugins.document.webapi.contexts.emitter.raml.{RamlScalarEmitter, RamlSpecEmitterContext}
+import amf.plugins.document.webapi.contexts.emitter.raml.RamlSpecEmitterContext
 import amf.plugins.document.webapi.parser.spec._
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.RamlScalarEmitter
 import amf.plugins.document.webapi.parser.spec.domain._
 import amf.plugins.document.webapi.parser.spec.oas.emitters.{LicenseEmitter, OrganizationEmitter, TagsEmitter}
 import amf.plugins.document.webapi.parser.spec.oas.{OasDeclaredParametersEmitter, OasDeclaredResponsesEmitter}
 import amf.plugins.document.webapi.parser.spec.raml.emitters.{NamedPropertyTypeEmitter, RamlSecuritySchemesEmitters}
 import amf.plugins.domain.webapi.metamodel._
 import amf.plugins.domain.webapi.metamodel.api.WebApiModel
-import amf.plugins.domain.webapi.models.{CreativeWork, _}
 import amf.plugins.domain.webapi.models.api.WebApi
-import amf.plugins.features.validation.CoreValidations.ResolutionValidation
-import org.yaml.model.YDocument.{EntryBuilder, PartBuilder}
-import org.yaml.model.{YDocument, YNode}
-import org.yaml.render.YamlRender
+import amf.plugins.domain.webapi.models.{CreativeWork, _}
+import org.yaml.model.YDocument
+import org.yaml.model.YDocument.EntryBuilder
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -256,6 +253,8 @@ case class RamlDocumentEmitter(document: BaseUnit)(implicit val spec: RamlSpecEm
                            vendor: Option[Vendor],
                            references: Seq[BaseUnit] = Seq())(implicit val spec: RamlSpecEmitterContext) {
 
+    private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
     val emitters: Seq[EntryEmitter] = {
       val fs     = api.fields
       val result = mutable.ListBuffer[EntryEmitter]()
@@ -350,6 +349,9 @@ case class RamlDocumentEmitter(document: BaseUnit)(implicit val spec: RamlSpecEm
 
 case class UserDocumentationsEmitter(f: FieldEntry, ordering: SpecOrdering)(implicit spec: RamlSpecEmitterContext)
     extends EntryEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: EntryBuilder): Unit = {
     b.entry(
       "documentation",
@@ -371,6 +373,9 @@ case class UserDocumentationsEmitter(f: FieldEntry, ordering: SpecOrdering)(impl
 
 case class OasExtCreativeWorkEmitter(f: FieldEntry, ordering: SpecOrdering)(implicit val spec: SpecEmitterContext)
     extends EntryEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: EntryBuilder): Unit = {
     sourceOr(
       f.value.annotations,
@@ -382,14 +387,4 @@ case class OasExtCreativeWorkEmitter(f: FieldEntry, ordering: SpecOrdering)(impl
   }
 
   override def position(): Position = pos(f.value.annotations)
-}
-
-case class CommentEmitter(element: AmfElement, message: String) extends PartEmitter {
-  override def emit(b: PartBuilder): Unit = {
-    b += YNode.Empty
-    b.comment(message)
-    element.annotations.find(classOf[SourceAST]).map(_.ast).foreach(a => b.comment(YamlRender.render(a)))
-  }
-
-  override def position(): Position = Position.ZERO
 }

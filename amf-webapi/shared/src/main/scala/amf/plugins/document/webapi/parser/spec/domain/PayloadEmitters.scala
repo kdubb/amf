@@ -9,7 +9,7 @@ import amf.core.model.domain.Shape
 import amf.core.parser.{FieldEntry, Position}
 import amf.plugins.document.webapi.annotations.ParsedJSONSchema
 import amf.plugins.document.webapi.contexts.emitter.raml.RamlSpecEmitterContext
-import amf.plugins.document.webapi.parser.spec.declaration._
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{
   Raml08TypePartEmitter,
@@ -17,8 +17,7 @@ import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{
   Raml10TypePartEmitter,
   RamlRequiredShapeEmitter
 }
-import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml
-import amf.plugins.document.webapi.parser.spec.raml.CommentEmitter
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.{CommentEmitter, raml}
 import amf.plugins.domain.shapes.models.{AnyShape, NodeShape}
 import amf.plugins.domain.webapi.metamodel.PayloadModel
 import amf.plugins.domain.webapi.models.Payload
@@ -32,6 +31,9 @@ import org.yaml.model.{YMap, YNode, YType}
 case class Raml10PayloadEmitter(payload: Payload, ordering: SpecOrdering, references: Seq[BaseUnit])(
     implicit spec: RamlSpecEmitterContext)
     extends EntryEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: EntryBuilder): Unit = {
     val fs = payload.fields
     Option(payload.schema) match {
@@ -122,6 +124,8 @@ case class Raml10PayloadPartEmitter(payload: Payload, ordering: SpecOrdering, re
 
 case class Raml08PayloadEmitter(payload: Payload, ordering: SpecOrdering)(implicit spec: RamlSpecEmitterContext) {
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   def emitters: Seq[Emitter] = {
     payload.fields.entry(PayloadModel.MediaType) match {
       case Some(_) =>
@@ -182,6 +186,9 @@ case class Raml08PayloadEmitter(payload: Payload, ordering: SpecOrdering)(implic
 case class Raml08FormPropertiesEmitter(nodeShape: NodeShape, ordering: SpecOrdering)(
     implicit spec: RamlSpecEmitterContext)
     extends EntryEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: EntryBuilder): Unit = {
     b.entry(
       "formParameters",
@@ -250,6 +257,9 @@ case class Raml10PayloadsEmitter(key: String, f: FieldEntry, ordering: SpecOrder
 
 case class Raml10Payloads(payload: Payload, ordering: SpecOrdering, references: Seq[BaseUnit])(
     implicit spec: RamlSpecEmitterContext) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   def emitters(): Seq[Emitter] = {
     if (payload.fields.entry(PayloadModel.MediaType).isDefined) {
       Seq(Raml10PayloadEmitter(payload, ordering, references = references))

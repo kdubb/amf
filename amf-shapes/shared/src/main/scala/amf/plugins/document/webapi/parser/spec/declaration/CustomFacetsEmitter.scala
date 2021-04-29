@@ -5,16 +5,13 @@ import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain.extensions.PropertyShape
 import amf.core.parser.{FieldEntry, Position}
-import amf.plugins.document.webapi.contexts.SpecEmitterContext
-import org.yaml.model.YDocument.EntryBuilder
 import amf.core.utils.AmfStrings
-import amf.plugins.document.webapi.contexts.emitter.oas.OasSpecEmitterContext
-import amf.plugins.document.webapi.contexts.emitter.raml.RamlSpecEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.oas.OasPropertyShapeEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.RamlPropertyShapeEmitter
+import org.yaml.model.YDocument.EntryBuilder
 
 case class RamlCustomFacetsEmitter(f: FieldEntry, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: RamlSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends CustomFacetsEmitter(f, ordering, references) {
 
   override val key: String = "facets"
@@ -24,7 +21,7 @@ case class RamlCustomFacetsEmitter(f: FieldEntry, ordering: SpecOrdering, refere
 }
 
 case class OasCustomFacetsEmitter(f: FieldEntry, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: OasSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends CustomFacetsEmitter(f, ordering, references) {
 
   override val key: String = "facets".asOasExtension
@@ -34,7 +31,7 @@ case class OasCustomFacetsEmitter(f: FieldEntry, ordering: SpecOrdering, referen
 }
 
 abstract class CustomFacetsEmitter(f: FieldEntry, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: SpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends EntryEmitter {
 
   val key: String

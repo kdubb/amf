@@ -5,9 +5,6 @@ import amf.core.emitter.PartEmitter
 import amf.core.model.domain.DomainElement
 import amf.core.parser.Position
 import amf.plugins.document.webapi.annotations.ExternalReferenceUrl
-import amf.plugins.document.webapi.contexts.SpecEmitterContext
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
-import amf.plugins.document.webapi.contexts.emitter.raml.RamlSpecEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import org.yaml.model.YDocument.PartBuilder
 import org.yaml.model.{YDocument, YNode}
@@ -44,7 +41,7 @@ object ExternalReferenceUrlEmitter {
     spec match {
       case _ if spec.isOasLike => OasExternalReferenceUrlEmitter(element)(fallback).emit(b)
       case _ if spec.isRaml    => RamlExternalReferenceUrlEmitter(element)(fallback).emit(b)
-      case _                            =>
+      case _                   =>
     }
 
 }

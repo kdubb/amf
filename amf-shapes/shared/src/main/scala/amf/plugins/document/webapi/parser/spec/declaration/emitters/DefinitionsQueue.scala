@@ -1,27 +1,15 @@
-package amf.plugins.document.webapi.contexts.emitter.oas
+package amf.plugins.document.webapi.parser.spec.declaration.emitters
 
-import amf.core.model.domain.{DomainElement, Shape}
+import amf.core.model.domain.Shape
 import amf.core.utils.IdCounter
-import amf.plugins.document.webapi.contexts.emitter.oas.AliasDefinitions.{Id, Label}
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.AliasDefinitions.{Id, Label}
+import amf.plugins.document.webapi.parser.spec.oas.emitters.CompactEmissionContext
 
 import scala.collection.mutable
-import scala.util.matching.Regex
 
-trait CompactEmissionContext {
-  //  regex used to validate if the name of the shape is a valid label for referencing and declaring in definitions
-  val nameRegex: Regex = """^[^/]+$""".r
-
-  val definitionsQueue: DefinitionsQueue = DefinitionsQueue()(this)
-
-  var forceEmission: Option[String] = None
-
-  // oas emission emits schemas to the definitions, so we need the schemas to emit all their examples
-  def filterLocal[T <: DomainElement](elements: Seq[T]): Seq[T] = elements
-}
-
-case class DefinitionsQueue(
-    pendingEmission: mutable.Queue[LabeledShape] = new mutable.Queue(),
-    queuedIdsWithLabel: mutable.Map[Id, Label] = mutable.Map[String, String]())(ctx: CompactEmissionContext) {
+case class DefinitionsQueue(pendingEmission: mutable.Queue[LabeledShape] = new mutable.Queue(),
+                             queuedIdsWithLabel: mutable.Map[Id, Label] = mutable.Map[String, String]())(ctx: CompactEmissionContext) {
 
   def enqueue(shape: Shape): String =
     queuedIdsWithLabel.getOrElse( // if the shape has already been queued the assigned label is returned
@@ -54,3 +42,4 @@ object AliasDefinitions {
   type Label = String
   type Id    = String
 }
+

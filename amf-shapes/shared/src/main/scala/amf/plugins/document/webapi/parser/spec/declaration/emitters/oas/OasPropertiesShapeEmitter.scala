@@ -6,14 +6,14 @@ import amf.core.model.document.BaseUnit
 import amf.core.model.domain.AmfElement
 import amf.core.model.domain.extensions.PropertyShape
 import amf.core.parser.{FieldEntry, Position}
-import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import org.yaml.model.YDocument.EntryBuilder
 
 case class OasPropertiesShapeEmitter(f: FieldEntry,
                                      ordering: SpecOrdering,
                                      references: Seq[BaseUnit],
                                      pointer: Seq[String] = Nil,
-                                     schemaPath: Seq[(String, String)] = Nil)(implicit spec: OasLikeSpecEmitterContext)
+                                     schemaPath: Seq[(String, String)] = Nil)(implicit spec: ShapeEmitterContext)
     extends EntryEmitter {
   override def emit(b: EntryBuilder): Unit = {
     val properties = f.array.values.partition(_.asInstanceOf[PropertyShape].patternName.option().isDefined)

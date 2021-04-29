@@ -13,8 +13,12 @@ import amf.plugins.document.webapi.contexts.emitter.async.Async20SpecEmitterCont
 import amf.plugins.document.webapi.contexts.emitter.jsonschema.JsonSchemaEmitterContext
 import amf.plugins.document.webapi.contexts.emitter.oas.OasSpecEmitterContext
 import amf.plugins.document.webapi.contexts.emitter.raml.RamlSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.oas.OasNamedTypeEmitter
-import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{RamlNamedTypeEmitter, RamlRecursiveShapeTypeEmitter}
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{
+  RamlNamedTypeEmitter,
+  RamlRecursiveShapeTypeEmitter
+}
 import amf.plugins.domain.shapes.models.AnyShape
 import amf.validations.RenderSideValidations.RenderValidation
 import org.yaml.model.YDocument.EntryBuilder
@@ -22,6 +26,9 @@ import org.yaml.model.YDocument.EntryBuilder
 case class RamlDeclaredTypesEmitters(types: Seq[Shape], references: Seq[BaseUnit], ordering: SpecOrdering)(
     implicit spec: RamlSpecEmitterContext)
     extends DeclaredTypesEmitters(types: Seq[Shape], references: Seq[BaseUnit], ordering: SpecOrdering) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emitTypes(b: EntryBuilder): Unit = {
     b.entry(
       spec.factory.typesKey,
@@ -49,6 +56,9 @@ case class RamlDeclaredTypesEmitters(types: Seq[Shape], references: Seq[BaseUnit
 case class OasDeclaredTypesEmitters(types: Seq[Shape], references: Seq[BaseUnit], ordering: SpecOrdering)(
     implicit spec: OasLikeSpecEmitterContext)
     extends DeclaredTypesEmitters(types, references, ordering) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emitTypes(b: EntryBuilder): Unit = {
     if (types.nonEmpty)
       b.entry(
@@ -72,6 +82,8 @@ object AsyncDeclaredTypesEmitters {
 case class CompactOasTypesEmitters(types: Seq[Shape], references: Seq[BaseUnit], ordering: SpecOrdering)(
     implicit spec: OasSpecEmitterContext)
     extends DeclaredTypesEmitters(types, references, ordering) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   override def emitTypes(b: EntryBuilder): Unit = {
     if (types.nonEmpty || spec.definitionsQueue.nonEmpty)

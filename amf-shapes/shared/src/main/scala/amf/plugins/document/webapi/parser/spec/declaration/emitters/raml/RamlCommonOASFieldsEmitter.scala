@@ -4,12 +4,14 @@ import amf.core.emitter.BaseEmitters.ValueEmitter
 import amf.core.emitter.EntryEmitter
 import amf.core.model.domain.AmfScalar
 import amf.core.parser.{FieldEntry, Fields, Value}
+import amf.core.utils.AmfStrings
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.domain.shapes.metamodel.ScalarShapeModel
 
 import scala.collection.mutable.ListBuffer
 
 trait RamlCommonOASFieldsEmitter {
-  def emitOASFields(fs: Fields, result: ListBuffer[EntryEmitter])(implicit spec: SpecEmitterContext): Unit = {
+  def emitOASFields(fs: Fields, result: ListBuffer[EntryEmitter])(implicit spec: ShapeEmitterContext): Unit = {
     fs.entry(ScalarShapeModel.MinLength).map(f => result += RamlScalarEmitter("minLength", f))
 
     fs.entry(ScalarShapeModel.MaxLength).map(f => result += RamlScalarEmitter("maxLength", f))

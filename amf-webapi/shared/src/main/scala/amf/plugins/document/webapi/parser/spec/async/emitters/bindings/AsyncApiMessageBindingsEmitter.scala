@@ -5,6 +5,7 @@ import amf.core.emitter.{EntryEmitter, SpecOrdering}
 import amf.core.model.domain.Shape
 import amf.core.parser.Position
 import amf.plugins.document.webapi.contexts.emitter.OasLikeSpecEmitterContext
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.async
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.async.AsyncSchemaEmitter
@@ -45,6 +46,9 @@ class AsyncApiMessageBindingsEmitter(binding: MessageBinding, ordering: SpecOrde
 class HttpMessageEmitter(binding: HttpMessageBinding, ordering: SpecOrdering)(
     implicit val spec: OasLikeSpecEmitterContext)
     extends AsyncApiCommonBindingEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: EntryBuilder): Unit = {
     b.entry(
       YNode("http"),
@@ -67,6 +71,9 @@ class HttpMessageEmitter(binding: HttpMessageBinding, ordering: SpecOrdering)(
 class KafkaMessageEmitter(binding: KafkaMessageBinding, ordering: SpecOrdering)(
     implicit val spec: OasLikeSpecEmitterContext)
     extends AsyncApiCommonBindingEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def emit(b: EntryBuilder): Unit = {
     b.entry(
       YNode("kafka"),

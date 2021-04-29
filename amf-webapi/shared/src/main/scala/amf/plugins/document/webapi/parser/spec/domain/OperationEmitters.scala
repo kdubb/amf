@@ -8,12 +8,16 @@ import amf.core.model.document.BaseUnit
 import amf.core.parser.{Annotations, FieldEntry, Fields, Position}
 import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.contexts.emitter.oas.OasSpecEmitterContext
-import amf.plugins.document.webapi.contexts.emitter.raml.{RamlScalarEmitter, RamlSpecEmitterContext}
+import amf.plugins.document.webapi.contexts.emitter.raml.{RamlSpecEmitterContext}
 import amf.plugins.document.webapi.parser.spec._
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.AnnotationsEmitter
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.common.ExternalReferenceUrlEmitter.handleInlinedRefOr
-import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{Raml10TypePartEmitter, RamlNamedTypeEmitter}
+import amf.plugins.document.webapi.parser.spec.declaration.emitters.raml.{
+  Raml10TypePartEmitter,
+  RamlNamedTypeEmitter,
+  RamlScalarEmitter
+}
 import amf.plugins.document.webapi.parser.spec.oas.OasDocumentEmitter
 import amf.plugins.document.webapi.parser.spec.oas.emitters.StringArrayTagsEmitter
 import amf.plugins.domain.shapes.models.AnyShape
@@ -72,6 +76,9 @@ case class Raml08OperationPartEmitter(operation: Operation, ordering: SpecOrderi
 case class Raml10OperationPartEmitter(operation: Operation, ordering: SpecOrdering, references: Seq[BaseUnit])(
     implicit spec: RamlSpecEmitterContext)
     extends RamlOperationPartEmitter(operation, ordering, references) {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override protected val baseUriParameterKey: String = "baseUriParameters".asRamlAnnotation
 
   override protected def entries(fs: Fields): Seq[EntryEmitter] = {
@@ -107,6 +114,8 @@ case class Raml10OperationPartEmitter(operation: Operation, ordering: SpecOrderi
 abstract class RamlOperationPartEmitter(operation: Operation, ordering: SpecOrdering, references: Seq[BaseUnit])(
     implicit spec: RamlSpecEmitterContext)
     extends PartEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   protected val baseUriParameterKey: String
 
@@ -225,6 +234,8 @@ case class OasCallbacksEmitter(callbacks: Seq[Callback],
 case class OasCallbackEmitter(callbacks: Seq[Callback], ordering: SpecOrdering, references: Seq[BaseUnit])(
     implicit spec: OasSpecEmitterContext)
     extends PartEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
 
   override def emit(p: PartBuilder): Unit =
     callbacks.headOption foreach { firstCallback =>

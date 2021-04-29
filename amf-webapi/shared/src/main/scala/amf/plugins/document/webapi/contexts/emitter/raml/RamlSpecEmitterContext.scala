@@ -20,6 +20,7 @@ import amf.plugins.document.webapi.contexts.emitter.oas.{
 import amf.plugins.document.webapi.contexts.{RefEmitter, SpecEmitterContext, SpecEmitterFactory}
 import amf.plugins.document.webapi.model.{Extension, Overlay}
 import amf.plugins.document.webapi.parser.RamlHeader
+import amf.plugins.document.webapi.parser.spec.SpecContextShapeAdapter
 import amf.plugins.document.webapi.parser.spec.declaration._
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.annotations.{
   AnnotationEmitter,
@@ -60,6 +61,8 @@ trait RamlEmitterVersionFactory extends SpecEmitterFactory {
 
   implicit val spec: RamlSpecEmitterContext
 
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   def retrieveHeader(document: BaseUnit): Option[String]
 
   def endpointEmitter
@@ -99,6 +102,9 @@ trait RamlEmitterVersionFactory extends SpecEmitterFactory {
 }
 
 class Raml10EmitterVersionFactory()(implicit val spec: RamlSpecEmitterContext) extends RamlEmitterVersionFactory {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def retrieveHeader(document: BaseUnit): Option[String] = document match {
     case _: Extension => Some(RamlHeader.Raml10Extension.text)
     case _: Overlay   => Some(RamlHeader.Raml10Overlay.text)
@@ -155,6 +161,9 @@ class Raml10EmitterVersionFactory()(implicit val spec: RamlSpecEmitterContext) e
 }
 
 class Raml08EmitterVersionFactory()(implicit val spec: RamlSpecEmitterContext) extends RamlEmitterVersionFactory {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   override def retrieveHeader(document: BaseUnit): Option[String] = document match {
     case _: Document => Some(RamlHeader.Raml08.text)
     case _ =>

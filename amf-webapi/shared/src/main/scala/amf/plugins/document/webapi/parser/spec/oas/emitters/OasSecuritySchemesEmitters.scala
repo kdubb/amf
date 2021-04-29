@@ -13,7 +13,7 @@ import amf.plugins.document.webapi.parser.spec.oas.{
   SecuritySchemeType
 }
 import amf.plugins.document.webapi.parser.spec.raml.emitters.Raml10DescribedByEmitter
-import amf.plugins.document.webapi.parser.spec.toRaml
+import amf.plugins.document.webapi.parser.spec.{SpecContextShapeAdapter, toRaml}
 import amf.plugins.domain.webapi.metamodel.security.SecuritySchemeModel
 import amf.plugins.domain.webapi.models.security.SecurityScheme
 import amf.plugins.features.validation.CoreValidations.ResolutionValidation
@@ -126,6 +126,9 @@ case class Oas3NamedSecuritySchemeEmitter(securityScheme: SecurityScheme,
 class OasSecuritySchemeEmitter(securityScheme: SecurityScheme, mappedType: SecuritySchemeType, ordering: SpecOrdering)(
     implicit spec: OasSpecEmitterContext)
     extends PartEmitter {
+
+  private implicit val shapeCtx = SpecContextShapeAdapter(spec)
+
   def emitters(): Seq[EntryEmitter] = {
 
     val results = ListBuffer[EntryEmitter]()

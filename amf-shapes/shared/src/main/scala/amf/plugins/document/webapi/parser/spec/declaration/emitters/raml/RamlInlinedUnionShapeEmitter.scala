@@ -2,11 +2,12 @@ package amf.plugins.document.webapi.parser.spec.declaration.emitters.raml
 
 import amf.core.emitter.{EntryEmitter, PartEmitter, SpecOrdering}
 import amf.core.model.document.BaseUnit
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.domain.shapes.models.UnionShape
 import org.yaml.model.YDocument.PartBuilder
 
 case class RamlInlinedUnionShapeEmitter(shape: UnionShape, ordering: SpecOrdering, references: Seq[BaseUnit])(
-    implicit spec: RamlSpecEmitterContext)
+    implicit spec: ShapeEmitterContext)
     extends RamlAnyShapeEmitter(shape, ordering, references) {
 
   def partEmitters(): MixedEmitters = {

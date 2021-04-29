@@ -7,7 +7,9 @@ import amf.core.metamodel.Field
 import amf.core.model.document.BaseUnit
 import amf.core.model.domain.{RecursiveShape, Shape}
 import amf.core.parser.Position
+import amf.plugins.document.webapi.parser.spec.declaration.ShapeEmitterContext
 import amf.plugins.document.webapi.parser.spec.declaration.emitters.oas.OasTypeEmitter
+import amf.plugins.domain.webapi.parser.spec.OasShapeDefinitions
 import org.yaml.model.YDocument
 
 case class CompactOasTypeEmitter(shape: Shape,
@@ -15,15 +17,15 @@ case class CompactOasTypeEmitter(shape: Shape,
                                  ignored: Seq[Field],
                                  references: Seq[BaseUnit],
                                  pointer: Seq[String],
-                                 schemaPath: Seq[(String, String)])(implicit spec: OasSpecEmitterContext) {
+                                 schemaPath: Seq[(String, String)])(implicit spec: ShapeEmitterContext) {
   def emitters(): Seq[Emitter] = {
     val definitionQueue = spec.definitionsQueue
     if (spec.forceEmission.contains(shape.id) || emitInlined()) {
-      spec.forceEmission = None
+      spec.setForceEmission(None)
       OasTypeEmitter(shape, ordering, ignored, references, pointer, schemaPath).emitters()
     } else {
       val label = definitionQueue.enqueue(shape)
-      val tag   = OasDefinitions.appendSchemasPrefix(label, Some(spec.vendor))
+      val tag   = OasShapeDefinitions.appendSchemasPrefix(label, Some(spec.vendor))
       Seq(refEmitter(tag))
     }
   }
