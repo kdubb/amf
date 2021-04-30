@@ -21,8 +21,6 @@ case class RamlXmlSchemaExpression(key: YNode,
     extends RamlExternalTypesParser
     with RamlShapeParser {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   override def parseValue(origin: ValueAndOrigin): SchemaShape = {
     val (maybeReferenceId, maybeLocation, maybeFragmentLabel): (Option[String], Option[String], Option[String]) =
       origin.originalUrlText.map(ReferenceFragmentPartition.apply) match {

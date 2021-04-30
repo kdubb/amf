@@ -57,8 +57,6 @@ case class Draft4ShapeDependenciesParser(shape: NodeShape, map: YMap, parentId: 
 case class Draft2019ShapeDependenciesParser(shape: NodeShape, map: YMap, parentId: String, version: SchemaVersion)(
     implicit ctx: ShapeParserContext) {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   def parse(): Unit = {
     map.key("dependentSchemas").foreach { entry =>
       val schemaDependencies = entry.value
@@ -89,8 +87,6 @@ trait SpecializedDependencyParser {
 case class SchemaDependencyParser(node: YNode, version: SchemaVersion)(implicit ctx: ShapeParserContext)
     extends SpecializedDependencyParser {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   override def create(entry: YMapEntry): Dependencies = SchemaDependencies(entry)
 
   override def parse(dependency: Dependencies): Dependencies = {
@@ -105,8 +101,6 @@ case class SchemaDependencyParser(node: YNode, version: SchemaVersion)(implicit 
 
 case class PropertyDependencyParser(node: YNode)(implicit ctx: ShapeParserContext)
     extends SpecializedDependencyParser {
-
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   override def create(entry: YMapEntry): Dependencies = PropertyDependencies(entry)
 
@@ -123,8 +117,6 @@ case class PropertyDependencyParser(node: YNode)(implicit ctx: ShapeParserContex
 
 case class DependenciesParser(entry: YMapEntry, parentId: String, parser: SpecializedDependencyParser)(
     implicit ctx: ShapeParserContext) {
-
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   def parse(): Dependencies = {
     val dependency = parser.create(entry)

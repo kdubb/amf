@@ -29,7 +29,7 @@ import org.yaml.model.{YMap, YNode, YPart}
 import scala.collection.mutable
 
 abstract class ShapeParserContext(eh: ParserErrorHandler)
-    extends ParserErrorHandling()(eh)
+    extends ParserErrorHandling(eh)
     with FutureDeclarationComponents {
 
   def rootContextDocument: String

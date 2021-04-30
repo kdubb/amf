@@ -63,8 +63,6 @@ case class OasExamplesParser(map: YMap, exemplifiedDomainElement: ExemplifiedDom
 
 case class Oas3NamedExamplesParser(entry: YMapEntry, parentId: String)(implicit ctx: ShapeParserContext) {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   def parse(): Seq[Example] = {
     entry.value
       .as[YMap]
@@ -107,8 +105,6 @@ case class RamlMultipleExampleParser(key: String,
                                      producer: Option[String] => Example,
                                      options: ExampleOptions)(implicit ctx: ShapeParserContext) {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   def parse(): Seq[Example] = {
     val examples = ListBuffer[Example]()
 
@@ -143,8 +139,6 @@ case class RamlMultipleExampleParser(key: String,
 case class RamlNamedExampleParser(entry: YMapEntry, producer: Option[String] => Example, options: ExampleOptions)(
     implicit ctx: ShapeParserContext) {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   def parse(): Example = {
     val name           = ScalarNode(entry.key)
     val simpleProducer = () => producer(Some(name.text().toString))
@@ -164,8 +158,6 @@ case class RamlSingleExampleParser(key: String,
                                    map: YMap,
                                    producer: Option[String] => Example,
                                    options: ExampleOptions)(implicit ctx: ShapeParserContext) {
-
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   def parse(): Option[Example] = {
     val newProducer = () => producer(None)
@@ -202,8 +194,6 @@ case class RamlSingleExampleValueParser(entry: YMapEntry, producer: () => Exampl
     implicit ctx: ShapeParserContext)
     extends QuickFieldParsingOps {
 
-  private implicit val errorHandler: ParserErrorHandler = ctx.eh
-
   def parse(): Example = {
 
     val example = producer().add(Annotations(entry))
@@ -238,8 +228,6 @@ case class RamlSingleExampleValueParser(entry: YMapEntry, producer: () => Exampl
 case class Oas3NameExampleParser(entry: YMapEntry, parentId: String, options: ExampleOptions)(
     implicit ctx: ShapeParserContext)
     extends QuickFieldParsingOps {
-
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   def parse(): Example = {
     val map = entry.value.as[YMap]
@@ -282,8 +270,6 @@ case class Oas3NameExampleParser(entry: YMapEntry, parentId: String, options: Ex
 case class Oas3ExampleValueParser(map: YMap, example: Example, options: ExampleOptions)(
     implicit ctx: ShapeParserContext)
     extends QuickFieldParsingOps {
-
-  private implicit val errorHandler: ParserErrorHandler = ctx.eh
 
   def parse(): Example = {
     map.key("summary", (ExampleModel.Summary in example).allowingAnnotations)

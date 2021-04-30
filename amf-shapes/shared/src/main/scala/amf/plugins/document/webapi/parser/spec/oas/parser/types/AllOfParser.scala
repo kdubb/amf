@@ -11,8 +11,6 @@ import org.yaml.model.{YMap, YNode}
 case class AllOfParser(array: Seq[YNode], adopt: Shape => Unit, version: SchemaVersion)(
     implicit ctx: ShapeParserContext) {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   def parse(): Seq[Shape] =
     array
       .flatMap(n => {

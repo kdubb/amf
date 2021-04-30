@@ -40,7 +40,7 @@ class JsonSchemaParser {
         val shapeId: String                  = deriveShapeIdFrom(document)
         val JsonReference(url, hashFragment) = JsonReference.buildReference(document.location)
         val jsonSchemaContext                = makeJsonSchemaContext(document, parentContext, url, options)
-        val rootAst                          = getPointedAstOrNode(parsedDoc.document.node, shapeId, hashFragment, url, jsonSchemaContext)
+        val rootAst                          = getPointedAstOrNode(parsedDoc.document.node, shapeId, hashFragment, url)(jsonSchemaContext)
         val version                          = optionalVersion.getOrElse(jsonSchemaContext.computeJsonSchemaVersion(parsedDoc.document.node))
         val parsed =
           OasTypeParser(rootAst,

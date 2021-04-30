@@ -20,37 +20,33 @@ object AstFinder {
   private def findAst(doc: Root, context: ShapeParserContext): Option[YNode] = {
     doc.parsed match {
       case parsedDoc: SyamlParsedDocument =>
-        val shapeId: String = if (doc.location.contains("#")) doc.location else doc.location + "#/"
+        val shapeId: String                  = if (doc.location.contains("#")) doc.location else doc.location + "#/"
         val JsonReference(url, hashFragment) = JsonReference.buildReference(doc.location)
-        val rootAst = getPointedAstOrNode(parsedDoc.document.node, shapeId, hashFragment, url, context)
+        val rootAst                          = getPointedAstOrNode(parsedDoc.document.node, shapeId, hashFragment, url)(context)
         Some(rootAst.value)
       case _ => None
     }
   }
 
   // TODO: having shapeId and url params here is quite ugly. They are only used for the error. It smells.
-  def getPointedAstOrNode(node: YNode,
-                          shapeId: String,
-                          hashFragment: Option[String],
-                          url: String,
-                          ctx: ShapeParserContext): YMapEntryLike = {
-
-    implicit val errorHandler: ParserErrorHandler = ctx.eh
+  def getPointedAstOrNode(node: YNode, shapeId: String, hashFragment: Option[String], url: String)(
+      implicit ctx: ShapeParserContext): YMapEntryLike = {
 
     ctx.setJsonSchemaAST(node)
     val rootAst = hashFragment match {
       case Some(fragment) => findNodeInIndex(fragment, ctx)
-      case None => Some(YMapEntryLike(node))
+      case None           => Some(YMapEntryLike(node))
     }
     rootAst.getOrElse {
       ctx.eh.violation(UnableToParseJsonSchema,
-        shapeId,
-        s"Cannot find path ${hashFragment.getOrElse("")} in JSON schema $url",
-        node)
+                       shapeId,
+                       s"Cannot find path ${hashFragment.getOrElse("")} in JSON schema $url",
+                       node)
       YMapEntryLike(node)
     }
   }
 
   // TODO: maybe we should decouple the JsonSchemaIndex from the ctx. Just a thought as it doesn't make sense t pass a ctx to a findNodeInIndex method.
-  private def findNodeInIndex(path: String, ctx: ShapeParserContext): Option[YMapEntryLike] = ctx.findLocalJSONPath(path)
+  private def findNodeInIndex(path: String, ctx: ShapeParserContext): Option[YMapEntryLike] =
+    ctx.findLocalJSONPath(path)
 }

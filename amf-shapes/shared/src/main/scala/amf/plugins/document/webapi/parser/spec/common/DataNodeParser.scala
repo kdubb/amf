@@ -30,8 +30,6 @@ class DataNodeParser private (node: YNode,
                               parent: Option[String] = None,
                               idCounter: IdCounter = new IdCounter)(implicit ctx: ShapeParserContext) {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   def parse(): DataNode = {
     if (refsCounter.exceedsThreshold(node)) {
       ctx.violation(
@@ -98,8 +96,6 @@ class DataNodeParser private (node: YNode,
 case class ScalarNodeParser(parameters: AbstractVariables = AbstractVariables(),
                             parent: Option[String] = None,
                             idCounter: IdCounter = new IdCounter)(implicit ctx: ShapeParserContext) {
-
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   private def newScalarNode(value: amf.core.parser.ScalarNode,
                             dataType: String,

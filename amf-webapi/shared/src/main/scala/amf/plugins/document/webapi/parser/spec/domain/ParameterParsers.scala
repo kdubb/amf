@@ -81,8 +81,7 @@ case class Raml10ParameterParser(entry: YMapEntry,
     extends RamlParameterParser(entry, adopted)
     with QuickFieldParsingOps {
 
-  private implicit val shapesCtx                          = WebApiAdapterShapeParserContext(ctx)
-  private implicit val errorHandling: ParserErrorHandling = ctx
+  private val shapesCtx = WebApiAdapterShapeParserContext(ctx)
 
   override def parse(): Parameter = {
     val nameNode = ScalarNode(entry.key)
@@ -98,11 +97,11 @@ case class Raml10ParameterParser(entry: YMapEntry,
         map.key("binding".asRamlAnnotation, (FieldOps(ParameterModel.Binding)(ctx) in parameter).explicit)
         Raml10TypeParser(entry,
                          shape => shape.withName("schema").adopted(parameter.id),
-                         TypeInfo(isPropertyOrParameter = true))
+                         TypeInfo(isPropertyOrParameter = true))(shapesCtx)
           .parse()
           .foreach(s => parameter.set(ParameterModel.Schema, tracking(s, parameter.id), Annotations(entry)))
 
-        AnnotationParser(parameter, map).parse()
+        AnnotationParser(parameter, map)(shapesCtx).parse()
 
         parameter
       case _ =>
@@ -115,7 +114,7 @@ case class Raml10ParameterParser(entry: YMapEntry,
             Raml10TypeParser(
               entry,
               shape => shape.withName("schema").adopted(parameter.id)
-            ).parse().foreach { schema =>
+            )(shapesCtx).parse().foreach { schema =>
               tracking(schema, parameter.id).annotations += SynthesizedField()
               parameter.set(ParameterModel.Schema, schema, Annotations(entry))
             }
@@ -134,7 +133,7 @@ case class Raml10ParameterParser(entry: YMapEntry,
                   entry,
                   shape => shape.withName("schema", Annotations(SynthesizedField())).adopted(parameter.id),
                   TypeInfo(isPropertyOrParameter = true),
-                  StringDefaultType)
+                  StringDefaultType)(shapesCtx)
                   .parse() match {
                   case Some(schema) =>
                     parameter.set(ParameterModel.Schema, tracking(schema, parameter.id), Annotations(entry))
@@ -181,7 +180,7 @@ case class Raml08ParameterParser(entry: YMapEntry,
                                  binding: String)(implicit ctx: RamlWebApiContext)
     extends RamlParameterParser(entry, adopted) {
 
-  private implicit val shapesCtx = WebApiAdapterShapeParserContext(ctx)
+  private val shapesCtx = WebApiAdapterShapeParserContext(ctx)
 
   def parse(): Parameter = {
     val nameNode = ScalarNode(entry.key)
@@ -196,7 +195,7 @@ case class Raml08ParameterParser(entry: YMapEntry,
         Raml10TypeParser(
           entry,
           shape => shape.withName("schema").adopted(parameter.id)
-        ).parse().foreach { schema =>
+        )(shapesCtx).parse().foreach { schema =>
           tracking(schema, parameter.id).annotations += SynthesizedField()
           parameter.set(ParameterModel.Schema, schema, Annotations(entry))
         }
@@ -205,7 +204,7 @@ case class Raml08ParameterParser(entry: YMapEntry,
         Raml08TypeParser(entry,
                          (s: Shape) => s.withName(nameNode.text().toString).adopted(parameter.id),
                          isAnnotation = false,
-                         StringDefaultType)
+                         StringDefaultType)(shapesCtx)
           .parse()
           .foreach(s => parameter.set(ParameterModel.Schema, tracking(s, parameter.id), Annotations(entry)))
     }
@@ -252,7 +251,7 @@ case class Oas2ParameterParser(entryOrNode: YMapEntryLike,
 
   protected val map: YMap = entryOrNode.asMap
 
-  private implicit val shapesCtx = WebApiAdapterShapeParserContext(ctx)
+  private val shapesCtx = WebApiAdapterShapeParserContext(ctx)
 
   protected def setName(p: DomainElement with NamedDomainElement): DomainElement = {
     p match {
@@ -396,7 +395,7 @@ case class Oas2ParameterParser(entryOrNode: YMapEntryLike,
     map.key("required", (FieldOps(ParameterModel.Required)(ctx) in parameter).explicit)
 
     ctx.closedShape(parameter.id, map, "parameter")
-    AnnotationParser(parameter, map).parse()
+    AnnotationParser(parameter, map)(shapesCtx).parse()
     parameter
   }
 
@@ -471,7 +470,7 @@ case class Oas2ParameterParser(entryOrNode: YMapEntryLike,
       payload.annotations += RequiredParamPayload(req, Range(entry.range))
     })
     map.key("description", FieldOps(PayloadModel.Description)(ctx) in payload)
-    AnnotationParser(payload, map).parse()
+    AnnotationParser(payload, map)(shapesCtx).parse()
     payload
   }
 
@@ -555,7 +554,7 @@ case class Oas2ParameterParser(entryOrNode: YMapEntryLike,
               case Some(oasParameter) =>
                 for {
                   param <- oasParameter.parameter
-                  name  <- nameNode.map(ScalarNode(_).text())
+                  name  <- nameNode.map(ScalarNode(_)(shapesCtx).text())
                 } yield {
                   param.set(ParameterModel.Name, name).adopted(parentId)
                 }
@@ -583,7 +582,7 @@ class Oas3ParameterParser(entryOrNode: YMapEntryLike,
                           nameGenerator: IdCounter)(implicit ctx: WebApiContext)
     extends Oas2ParameterParser(entryOrNode, parentId, nameNode, nameGenerator) {
 
-  private implicit val shapesCtx = WebApiAdapterShapeParserContext(ctx)
+  private val shapesCtx = WebApiAdapterShapeParserContext(ctx)
 
   override def parse(): OasParameter = {
     map.key("$ref") match {
@@ -638,7 +637,7 @@ class Oas3ParameterParser(entryOrNode: YMapEntryLike,
         .map(entry => param.set(PayloadModel.Examples, AmfArray(examples), Annotations(entry)))
         .getOrElse(param.set(PayloadModel.Examples, AmfArray(examples)))
 
-    OasExamplesParser(map, param).parse()
+    OasExamplesParser(map, param)(shapesCtx).parse()
   }
 
   private def parseContent(param: Parameter): Unit = {

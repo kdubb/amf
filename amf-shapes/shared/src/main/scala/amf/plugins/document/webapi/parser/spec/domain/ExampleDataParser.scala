@@ -61,8 +61,6 @@ case class ExampleDataParser(node: YNode, example: Example, options: ExampleOpti
 case class ExamplesDataParser(seq: YSequence, options: ExampleOptions, parentId: String)(
     implicit ctx: ShapeParserContext) {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   def parse(): Seq[Example] = {
     val counter = new IdCounter()
     seq.nodes.map { n =>

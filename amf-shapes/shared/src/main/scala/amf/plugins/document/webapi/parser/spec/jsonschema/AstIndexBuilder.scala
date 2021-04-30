@@ -39,8 +39,6 @@ object AstIndexBuilder {
 
 case class AstIndexBuilder private (private val refCounter: AliasCounter)(implicit ctx: ShapeParserContext) {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   def build(node: YNode, scopes: Seq[ResolutionScope], resolvers: Seq[ReferenceResolver]): AstIndex = {
     val acc = mutable.Map.empty[String, YMapEntryLike]
     scopes.foreach(_.resolve("", YMapEntryLike(node), acc))

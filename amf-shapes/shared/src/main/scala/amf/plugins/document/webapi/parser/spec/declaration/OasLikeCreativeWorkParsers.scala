@@ -19,8 +19,6 @@ object OasLikeCreativeWorkParser {
 case class OasLikeCreativeWorkParser(node: YNode, parentId: String)(implicit val ctx: ShapeParserContext)
     extends QuickFieldParsingOps {
 
-  private implicit val errorHandler = ctx.eh
-
   def parse(): CreativeWork = {
     val map          = node.as[YMap]
     val creativeWork = CreativeWork(node)
@@ -40,8 +38,6 @@ case class OasLikeCreativeWorkParser(node: YNode, parentId: String)(implicit val
 }
 
 case class RamlCreativeWorkParser(node: YNode)(implicit val ctx: ShapeParserContext) extends QuickFieldParsingOps {
-
-  private implicit val errorHandler = ctx.eh
 
   def parse(): CreativeWork = {
 

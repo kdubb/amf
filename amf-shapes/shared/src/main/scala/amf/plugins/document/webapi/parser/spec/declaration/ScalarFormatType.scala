@@ -28,9 +28,9 @@ object FormatValidator {
   val VALID_NUMBER_FORMATS = List("int", "int8", "int16", "int32", "int64", "long", "float", "double")
 }
 
-case class ScalarFormatType(shape: Shape, typeDef: TypeDef)(implicit ctx: ShapeParserContext) extends QuickFieldParsingOps {
-  def parse(map: YMap): TypeDef = {
-    implicit val errorHandler: ParserErrorHandler = ctx.eh
+case class ScalarFormatType(shape: Shape, typeDef: TypeDef)(implicit ctx: ShapeParserContext)
+    extends QuickFieldParsingOps {
+  def parse(map: YMap): TypeDef =
     map
       .key("format")
       .map { n =>
@@ -46,7 +46,6 @@ case class ScalarFormatType(shape: Shape, typeDef: TypeDef)(implicit ctx: ShapeP
         fromFormat(format)
       }
       .getOrElse(typeDef)
-  }
 
   private def fromFormat(format: String) = {
     if (typeDef.isNumber) formatType(format).getOrElse(typeDef)

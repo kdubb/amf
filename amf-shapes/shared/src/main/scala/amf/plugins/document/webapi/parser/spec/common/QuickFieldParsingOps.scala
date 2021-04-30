@@ -3,9 +3,8 @@ package amf.plugins.document.webapi.parser.spec.common
 import amf.core.annotations.{DomainExtensionAnnotation, ExplicitField, SingleValueArray}
 import amf.core.metamodel.Type.ArrayLike
 import amf.core.metamodel.{Field, Obj, Type}
-import amf.core.model.domain.extensions.DomainExtension
 import amf.core.model.domain._
-import amf.core.parser.errorhandler.ParserErrorHandler
+import amf.core.model.domain.extensions.DomainExtension
 import amf.core.parser.{
   Annotations,
   ArrayNode,
@@ -15,7 +14,6 @@ import amf.core.parser.{
   ScalarNode,
   TypedNode
 }
-import amf.plugins.document.webapi.parser.spec.oas.parser.types.ShapeParserContext
 import amf.validations.ShapeParserSideValidations.{DuplicatePropertySpecification, UnexpectedRamlScalarKey}
 import org.yaml.model._
 
@@ -175,36 +173,37 @@ trait QuickFieldParsingOps {
 }
 
 /** Scalar valued raml node (based on obj node). */
-private case class RamlScalarValuedNode(obj: YMap, scalar: ScalarNode) extends ScalarNode {
+private case class RamlScalarValuedNode(obj: YMap, scalar: ScalarNode)(implicit iv: IllegalTypeHandler)
+    extends ScalarNode {
 
-  override def string()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.string())
+  override def string(): AmfScalar = as(_.string())
 
-  override def text()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.text())
+  override def text(): AmfScalar = as(_.text())
 
-  override def integer()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.integer())
+  override def integer(): AmfScalar = as(_.integer())
 
-  override def double()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.double())
+  override def double(): AmfScalar = as(_.double())
 
-  override def boolean()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.boolean())
+  override def boolean(): AmfScalar = as(_.boolean())
 
-  override def negated()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.negated())
+  override def negated(): AmfScalar = as(_.negated())
 
   private def as(fn: ScalarNode => AmfScalar) = fn(scalar)
 }
 
-private case class RamlSingleArrayNode(node: YNode) extends ArrayNode {
+private case class RamlSingleArrayNode(node: YNode)(implicit iv: IllegalTypeHandler) extends ArrayNode {
 
-  override def string()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).string())
+  override def string(): AmfArray = as(ScalarNode(node).string())
 
-  override def text()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).text())
+  override def text(): AmfArray = as(ScalarNode(node).text())
 
-  override def integer()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).integer())
+  override def integer(): AmfArray = as(ScalarNode(node).integer())
 
-  override def double()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).double())
+  override def double(): AmfArray = as(ScalarNode(node).double())
 
-  override def boolean()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).boolean())
+  override def boolean(): AmfArray = as(ScalarNode(node).boolean())
 
-  override def negated()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).negated())
+  override def negated(): AmfArray = as(ScalarNode(node).negated())
 
   override def obj(fn: YNode => AmfElement): AmfArray = as(fn(node))
 

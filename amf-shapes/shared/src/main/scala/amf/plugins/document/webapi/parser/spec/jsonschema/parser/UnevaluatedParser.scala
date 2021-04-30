@@ -31,7 +31,6 @@ object UnevaluatedParser {
 class UnevaluatedParser(version: SchemaVersion, info: UnevaluatedInfo)(implicit ctx: ShapeParserContext) extends QuickFieldParsingOps {
 
   private val UnevaluatedInfo(key, booleanField, schemaField, error, message) = info
-  private implicit val errorHandler: ParserErrorHandler = ctx.eh
 
   def parse(map: YMap, shape: AnyShape) {
     map.key(key).foreach { entry =>

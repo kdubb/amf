@@ -149,7 +149,7 @@ abstract class RamlDocumentParser(root: Root)(implicit val ctx: RamlWebApiContex
     extends RamlBaseDocumentParser
     with DeclarationKeyCollector {
 
-  private implicit val shapeCtx = WebApiAdapterShapeParserContext(ctx)
+  private val shapeCtx = WebApiAdapterShapeParserContext(ctx)
 
   def parseDocument[T <: Document](document: T): T = {
     document.adopted(root.location).withLocation(root.location)
@@ -234,14 +234,14 @@ abstract class RamlDocumentParser(root: Root)(implicit val ctx: RamlWebApiContex
       entry => {
         api.set(
           WebApiModel.Documentations,
-          AmfArray(UserDocumentationsParser(entry.value.as[Seq[YNode]], ctx.declarations, api.id).parse(),
+          AmfArray(UserDocumentationsParser(entry.value.as[Seq[YNode]], ctx.declarations, api.id)(shapeCtx).parse(),
                    Annotations(entry.value)),
           Annotations(entry)
         )
       }
     )
 
-    AnnotationParser(api, map, targetsFor(ctx.contextType)).parse()
+    AnnotationParser(api, map, targetsFor(ctx.contextType))(shapeCtx).parse()
 
     api
   }
@@ -288,7 +288,7 @@ abstract class RamlBaseDocumentParser(implicit ctx: RamlWebApiContext)
     with RamlTypeSyntax
     with DeclarationKeyCollector {
 
-  private implicit val shapeCtx = WebApiAdapterShapeParserContext(ctx)
+  private val shapeCtx = WebApiAdapterShapeParserContext(ctx)
 
   protected def parseSecuritySchemeDeclarations(map: YMap, parent: String): Unit
 
@@ -367,7 +367,7 @@ abstract class RamlBaseDocumentParser(implicit ctx: RamlWebApiContext)
                                        Annotations(entry.key))
                     customProperty.adopted(customProperties)
                   }
-                )
+                )(shapeCtx)
                 ctx.declarations += customProperty.add(DeclaredElement())
               }
           case YType.Null =>
@@ -402,7 +402,7 @@ abstract class RamlBaseDocumentParser(implicit ctx: RamlWebApiContext)
                 shape.set(ShapeModel.Name, AmfScalar(typeName, Annotations(entry.key.value)), Annotations(entry.key))
                 shape.adopted(parent)
               }
-            )
+            )(shapeCtx)
             parser.parse() match {
               case Some(shape) =>
                 if (entry.value.tagType == YType.Null) shape.annotations += SynthesizedField()

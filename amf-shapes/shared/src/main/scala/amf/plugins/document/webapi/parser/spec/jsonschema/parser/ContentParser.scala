@@ -35,17 +35,13 @@ sealed trait EntryParser[T] {
 }
 
 private[this] object ContentEncodingParser extends EntryParser[ScalarShape] with QuickFieldParsingOps {
-  override def parse(node: ScalarShape, map: YMap)(implicit ctx: ShapeParserContext): Unit = {
-    implicit val errorHandler: ParserErrorHandler = ctx.eh
+  override def parse(node: ScalarShape, map: YMap)(implicit ctx: ShapeParserContext): Unit =
     map.key("contentEncoding", Encoding in node)
-  }
 }
 
 private[this] object ContentMediaTypeParser extends EntryParser[ScalarShape] with QuickFieldParsingOps {
-  override def parse(node: ScalarShape, map: YMap)(implicit ctx: ShapeParserContext): Unit = {
-    implicit val errorHandler: ParserErrorHandler = ctx.eh
+  override def parse(node: ScalarShape, map: YMap)(implicit ctx: ShapeParserContext): Unit =
     map.key("contentMediaType", MediaType in node)
-  }
 }
 
 private[this] case class ContentSchemaParser(adopt: Shape => Unit, version: SchemaVersion)

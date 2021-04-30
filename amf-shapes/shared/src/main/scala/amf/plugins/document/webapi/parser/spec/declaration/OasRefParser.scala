@@ -24,8 +24,7 @@ class OasRefParser(map: YMap,
                    adopt: Shape => Unit,
                    version: SchemaVersion)(implicit val ctx: ShapeParserContext) {
 
-  private val REF_KEY                                   = "$ref"
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
+  private val REF_KEY = "$ref"
 
   def parse(): Option[AnyShape] = {
     map

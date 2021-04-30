@@ -22,7 +22,6 @@ import org.yaml.model._
 object OasTypeParser {
 
   def apply(entry: YMapEntry, adopt: Shape => Unit)(implicit ctx: ShapeParserContext): OasTypeParser = {
-    implicit val errorHandler: ParserErrorHandler = ctx.eh
     new OasTypeParser(
       YMapEntryLike(entry),
       key(entry),
@@ -33,17 +32,14 @@ object OasTypeParser {
   }
 
   def apply(entry: YMapEntry, adopt: Shape => Unit, version: SchemaVersion)(
-      implicit ctx: ShapeParserContext): OasTypeParser = {
-    implicit val errorHandler: ParserErrorHandler = ctx.eh
+      implicit ctx: ShapeParserContext): OasTypeParser =
     new OasTypeParser(YMapEntryLike(entry), entry.key.as[String], entry.value.as[YMap], adopt, version)
-  }
 
   def apply(node: YMapEntryLike, name: String, adopt: Shape => Unit, version: SchemaVersion)(
       implicit ctx: ShapeParserContext): OasTypeParser =
     new OasTypeParser(node, name, node.asMap, adopt, version)
 
-  def buildDeclarationParser(entry: YMapEntry, adopt: Shape => Unit)(implicit ctx: ShapeParserContext): OasTypeParser = {
-    implicit val errorHandler: ParserErrorHandler = ctx.eh
+  def buildDeclarationParser(entry: YMapEntry, adopt: Shape => Unit)(implicit ctx: ShapeParserContext): OasTypeParser =
     new OasTypeParser(
       YMapEntryLike(entry),
       key(entry),
@@ -52,7 +48,6 @@ object OasTypeParser {
       getSchemaVersion(ctx),
       true
     )
-  }
 
   private def key(entry: YMapEntry)(implicit errorHandler: IllegalTypeHandler) = entry.key.as[YScalar].text
 

@@ -17,8 +17,6 @@ import org.yaml.model._
 case class AnnotationParser(element: AmfObject, map: YMap, target: List[String] = Nil)(
     implicit val ctx: ShapeParserContext) {
 
-  implicit private val errorHandler: ParserErrorHandler = ctx.eh
-
   def parse(): Unit = {
     val extensions = parseExtensions(element.id, map, target)
     setExtensions(extensions)

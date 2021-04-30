@@ -100,8 +100,6 @@ case class InlineOasTypeParser(entryOrNode: YMapEntryLike,
                                isDeclaration: Boolean = false)(implicit val ctx: ShapeParserContext)
     extends QuickFieldParsingOps {
 
-  implicit val errorHandler = ctx.eh
-
   private val ast: YPart                   = entryOrNode.ast
   private val nameAnnotations: Annotations = entryOrNode.key.map(n => Annotations(n)).getOrElse(Annotations())
 

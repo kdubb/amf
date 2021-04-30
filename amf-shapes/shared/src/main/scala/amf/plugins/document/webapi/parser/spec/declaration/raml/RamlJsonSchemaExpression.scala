@@ -166,8 +166,6 @@ case class RamlJsonSchemaExpression(key: YNode,
 
   case class RamlExternalOasLibParser(ctx: ShapeParserContext, text: String, valueAST: YNode, path: String) {
 
-    private implicit val errorHandler: IllegalTypeHandler = ctx.eh
-
     def parse(): Unit = {
       // todo: should we add string begin position to each node position? in order to have the positions relatives to root api intead of absolut to text
       // todo: this should be migrated to JsonSchemaParser
