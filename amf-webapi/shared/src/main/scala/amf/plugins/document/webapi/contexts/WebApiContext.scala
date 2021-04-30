@@ -6,13 +6,11 @@ import amf.core.model.domain.Shape
 import amf.core.parser.{Annotations, ParsedReference, ParserContext}
 import amf.core.remote._
 import amf.core.unsafe.PlatformSecrets
-import amf.core.utils.UriUtils.resolve
-import amf.core.utils.{Absolute, AliasCounter, IdCounter, RelativeToIncludedFile}
-import amf.plugins.document.webapi.annotations.DeclarationKey
+import amf.core.utils.{AliasCounter, IdCounter}
 import amf.plugins.document.webapi.contexts.parser.adapters.WebApiAdapterShapeParserContext
 import amf.plugins.document.webapi.contexts.parser.oas.OasWebApiContext
 import amf.plugins.document.webapi.parser.spec._
-import amf.plugins.document.webapi.parser.spec.common.{ParserErrorHandling, YMapEntryLike}
+import amf.plugins.document.webapi.parser.spec.common.YMapEntryLike
 import amf.plugins.document.webapi.parser.spec.declaration.{
   JSONSchemaDraft4SchemaVersion,
   JSONSchemaVersion,
@@ -34,7 +32,6 @@ abstract class WebApiContext(val loc: String,
                              declarationsOption: Option[WebApiDeclarations] = None,
                              val nodeRefIds: mutable.Map[YNode, String] = mutable.Map.empty)
     extends ParserContext(loc, refs, wrapped.futureDeclarations, wrapped.eh)
-    with ParserErrorHandling
     with SpecAwareContext
     with PlatformSecrets
     with JsonSchemaInference {
@@ -136,7 +133,7 @@ abstract class WebApiContext(val loc: String,
     }
   }
 
-  def findJsonPathIn(index: AstIndex, path: String) = index.getNode(normalizeJsonPath(path))
+  def findJsonPathIn(index: AstIndex, path: String) = index.getNode(normalizeJsonPath(path))(eh)
 
   def findLocalJSONPath(path: String): Option[YMapEntryLike] = {
     jsonSchemaIndex.flatMap(index => findJsonPathIn(index, path))

@@ -12,12 +12,13 @@ import amf.core.parser.{
   FutureDeclarations,
   ParsedReference,
   ParserContext,
+  ParserErrorHandling,
   SearchScope
 }
 import amf.core.remote.Vendor
 import amf.core.validation.core.ValidationSpecification
 import amf.plugins.document.webapi.contexts.JsonSchemaRefGuide
-import amf.plugins.document.webapi.parser.spec.common.{ParserErrorHandling, YMapEntryLike}
+import amf.plugins.document.webapi.parser.spec.common.{YMapEntryLike}
 import amf.plugins.document.webapi.parser.spec.declaration.{JSONSchemaVersion, SchemaVersion}
 import amf.plugins.document.webapi.parser.spec.jsonschema.AstIndex
 import amf.plugins.domain.shapes.models.{AnyShape, Example}
@@ -27,16 +28,17 @@ import org.yaml.model.{YMap, YNode, YPart}
 
 import scala.collection.mutable
 
-trait ShapeParserContext extends FutureDeclarationComponents with ParserErrorHandling {
+abstract class ShapeParserContext(eh: ParserErrorHandler)
+    extends ParserErrorHandling()(eh)
+    with FutureDeclarationComponents {
 
   def rootContextDocument: String
   def loc: String
-  def eh: ParserErrorHandler
   def vendor: Vendor
   def refs: Seq[ParsedReference]
   def fragments: Map[String, FragmentRef]
   def maxYamlReferences: Option[Long]
-  def shapes: Map[String, Shape] = Map()
+  def shapes: Map[String, Shape]
   def futureDeclarations: FutureDeclarations
   def refBuilder: LocalReferencedDeclaration
   def closer: ShapeCloser
@@ -124,4 +126,10 @@ trait ShapeParserContext extends FutureDeclarationComponents with ParserErrorHan
                         indexCache: mutable.Map[String, AstIndex]): ShapeParserContext
 
   def indexCache: mutable.Map[String, AstIndex]
+
+  def toOasNext: ShapeParserContext
+  def toRamlNext: ShapeParserContext
+
+  def toJsonSchema: ShapeParserContext
+  def toJsonSchema(root: String, refs: Seq[ParsedReference]): ShapeParserContext
 }

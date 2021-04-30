@@ -1,10 +1,16 @@
 package amf.plugins.document.webapi.parser.spec.declaration
 
 import amf.core.model.domain.{AmfArray, AmfScalar}
+import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.parser.{Annotations, _}
 import amf.plugins.document.webapi.parser.spec.common.{SingleArrayNode, YMapEntryLike}
 import amf.plugins.document.webapi.parser.spec.oas.parser.types.ShapeParserContext
-import amf.plugins.domain.shapes.metamodel.{DependenciesModel, NodeShapeModel, PropertyDependenciesModel, SchemaDependenciesModel}
+import amf.plugins.domain.shapes.metamodel.{
+  DependenciesModel,
+  NodeShapeModel,
+  PropertyDependenciesModel,
+  SchemaDependenciesModel
+}
 import amf.plugins.domain.shapes.models.{Dependencies, NodeShape, PropertyDependencies, SchemaDependencies}
 import org.yaml.model._
 
@@ -50,6 +56,9 @@ case class Draft4ShapeDependenciesParser(shape: NodeShape, map: YMap, parentId: 
 
 case class Draft2019ShapeDependenciesParser(shape: NodeShape, map: YMap, parentId: String, version: SchemaVersion)(
     implicit ctx: ShapeParserContext) {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
+
   def parse(): Unit = {
     map.key("dependentSchemas").foreach { entry =>
       val schemaDependencies = entry.value
@@ -80,6 +89,8 @@ trait SpecializedDependencyParser {
 case class SchemaDependencyParser(node: YNode, version: SchemaVersion)(implicit ctx: ShapeParserContext)
     extends SpecializedDependencyParser {
 
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
+
   override def create(entry: YMapEntry): Dependencies = SchemaDependencies(entry)
 
   override def parse(dependency: Dependencies): Dependencies = {
@@ -94,6 +105,8 @@ case class SchemaDependencyParser(node: YNode, version: SchemaVersion)(implicit 
 
 case class PropertyDependencyParser(node: YNode)(implicit ctx: ShapeParserContext)
     extends SpecializedDependencyParser {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   override def create(entry: YMapEntry): Dependencies = PropertyDependencies(entry)
 
@@ -110,6 +123,9 @@ case class PropertyDependencyParser(node: YNode)(implicit ctx: ShapeParserContex
 
 case class DependenciesParser(entry: YMapEntry, parentId: String, parser: SpecializedDependencyParser)(
     implicit ctx: ShapeParserContext) {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
+
   def parse(): Dependencies = {
     val dependency = parser.create(entry)
     dependency.set(DependenciesModel.PropertySource, AmfScalar(dependencyKey), Annotations(entry.key))

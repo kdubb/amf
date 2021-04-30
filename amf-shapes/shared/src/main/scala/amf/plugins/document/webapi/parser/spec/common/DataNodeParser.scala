@@ -6,6 +6,7 @@ import amf.core.model.DataType
 import amf.core.model.document.{EncodesModel, ExternalFragment}
 import amf.core.model.domain.ScalarNode.forDataType
 import amf.core.model.domain.{DataNode, LinkNode, ScalarNode, ArrayNode => DataArrayNode, ObjectNode => DataObjectNode}
+import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.parser.{Annotations, _}
 import amf.core.utils._
 import amf.plugins.document.webapi.parser.spec.oas.parser.types.ShapeParserContext
@@ -28,6 +29,8 @@ class DataNodeParser private (node: YNode,
                               parameters: AbstractVariables = AbstractVariables(),
                               parent: Option[String] = None,
                               idCounter: IdCounter = new IdCounter)(implicit ctx: ShapeParserContext) {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   def parse(): DataNode = {
     if (refsCounter.exceedsThreshold(node)) {
@@ -95,6 +98,8 @@ class DataNodeParser private (node: YNode,
 case class ScalarNodeParser(parameters: AbstractVariables = AbstractVariables(),
                             parent: Option[String] = None,
                             idCounter: IdCounter = new IdCounter)(implicit ctx: ShapeParserContext) {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   private def newScalarNode(value: amf.core.parser.ScalarNode,
                             dataType: String,
@@ -227,10 +232,8 @@ case class ScalarNodeParser(parameters: AbstractVariables = AbstractVariables(),
 
 object DataNodeParser {
   def parse(parent: Option[String], idCounter: IdCounter)(node: YNode)(implicit ctx: ShapeParserContext): DataNode =
-    new DataNodeParser(node,
-                       refsCounter = AliasCounter(ctx.maxYamlReferences),
-                       parent = parent,
-                       idCounter = idCounter).parse()
+    new DataNodeParser(node, refsCounter = AliasCounter(ctx.maxYamlReferences), parent = parent, idCounter = idCounter)
+      .parse()
 
   def apply(node: YNode, parameters: AbstractVariables = AbstractVariables(), parent: Option[String] = None)(
       implicit ctx: ShapeParserContext): DataNodeParser = {

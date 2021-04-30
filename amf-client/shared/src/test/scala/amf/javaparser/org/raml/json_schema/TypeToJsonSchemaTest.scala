@@ -4,6 +4,7 @@ import amf.core.emitter.ShapeRenderOptions
 import amf.core.model.document.{BaseUnit, DeclaresModel}
 import amf.core.remote.{Hint, OasJsonHint, Vendor}
 import amf.javaparser.org.raml.ModelValidationTest
+import amf.plugins.document.webapi.parser.spec.common.JsonSchemaBuilder
 import amf.plugins.domain.shapes.models.AnyShape
 
 import scala.concurrent.Future
@@ -34,21 +35,21 @@ trait TypeToJsonSchemaTest extends ModelValidationTest {
 }
 
 class RamlTypeToNormalJsonSchemaTest extends TypeToJsonSchemaTest {
-  override def path: String                         = "amf-client/shared/src/test/resources/org/raml/json_schema/"
-  override def inputFileName: String                = "input.raml"
-  override def outputFileName: String               = "output.json"
-  override def renderShape(shape: AnyShape): String = throw new Exception()
-  // TODO: Shapes - REMOD
-//  override def renderShape(shape: AnyShape): String = shape.toJsonSchema()
+  override def path: String           = "amf-client/shared/src/test/resources/org/raml/json_schema/"
+  override def inputFileName: String  = "input.raml"
+  override def outputFileName: String = "output.json"
+  override def renderShape(shape: AnyShape): String =
+    JsonSchemaBuilder.toJsonSchema(shape, platform.defaultExecutionEnvironment)
 }
 
 class RamlTypeToCompactJsonSchemaTest extends TypeToJsonSchemaTest {
-  override def path: String                         = "amf-client/shared/src/test/resources/org/raml/json_schema/"
-  override def inputFileName: String                = "input.raml"
-  override def outputFileName: String               = "compact-output.json"
-  override def renderShape(shape: AnyShape): String = throw new Exception()
-  // TODO: Shapes - REMOD
-//  override def renderShape(shape: AnyShape): String = shape.buildJsonSchema(ShapeRenderOptions().withCompactedEmission)
+  override def path: String           = "amf-client/shared/src/test/resources/org/raml/json_schema/"
+  override def inputFileName: String  = "input.raml"
+  override def outputFileName: String = "compact-output.json"
+  override def renderShape(shape: AnyShape): String =
+    JsonSchemaBuilder.generateJsonSchema(shape,
+                                         ShapeRenderOptions().withCompactedEmission,
+                                         platform.defaultExecutionEnvironment)
 }
 
 // Uncomment to add suite
@@ -62,11 +63,12 @@ class RamlTypeToCompactJsonSchemaTest extends TypeToJsonSchemaTest {
 //}
 //
 class OasTypeToCompactJsonSchemaTest extends TypeToJsonSchemaTest {
-  override def path: String                         = "amf-client/shared/src/test/resources/org/oas/json_schema/"
-  override def inputFileName: String                = "input.json"
-  override def outputFileName: String               = "compact-output.json"
-  override def hint: Hint                           = OasJsonHint
-  override def renderShape(shape: AnyShape): String = throw new Exception()
-  // TODO: Shapes - REMOD
-  //  override def renderShape(shape: AnyShape): String = shape.buildJsonSchema(ShapeRenderOptions().withCompactedEmission)
+  override def path: String           = "amf-client/shared/src/test/resources/org/oas/json_schema/"
+  override def inputFileName: String  = "input.json"
+  override def outputFileName: String = "compact-output.json"
+  override def hint: Hint             = OasJsonHint
+  override def renderShape(shape: AnyShape): String =
+    JsonSchemaBuilder.generateJsonSchema(shape,
+                                         ShapeRenderOptions().withCompactedEmission,
+                                         platform.defaultExecutionEnvironment)
 }

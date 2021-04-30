@@ -13,11 +13,13 @@ import amf.plugins.document.webapi.contexts.parser.raml.Raml10WebApiContext
 import amf.plugins.document.webapi.parser.spec.domain.{DefaultExampleOptions, RamlExamplesParser}
 import amf.plugins.domain.shapes.models.{AnyShape, Example}
 import org.scalatest.{Assertion, AsyncFunSuite}
-import org.yaml.model.{YDocument, YMap}
+import org.yaml.model.{IllegalTypeHandler, YDocument, YMap}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ExampleToJsonTest extends AsyncFunSuite with FileAssertionTest {
+
+  private implicit val errorHandler: IllegalTypeHandler = IllegalTypeHandler.returnDefault
 
   override implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
   test("Simple yaml scalar example") {

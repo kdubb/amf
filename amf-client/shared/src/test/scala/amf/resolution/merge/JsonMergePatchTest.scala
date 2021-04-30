@@ -22,7 +22,7 @@ import amf.plugins.domain.webapi.models.{Message, Operation}
 import amf.plugins.domain.webapi.parser.spec.declaration.emitters.annotations.DataNodeEmitter
 import org.mulesoft.common.io.Fs
 import org.scalatest.{Assertion, Matchers}
-import org.yaml.model.{YDocument, YMap, YNode}
+import org.yaml.model.{IllegalTypeHandler, YDocument, YMap, YNode}
 import org.yaml.parser.YamlParser
 import org.yaml.render.YamlRender
 
@@ -35,6 +35,8 @@ class JsonMergePatchTest extends MultiJsonldAsyncFunSuite with Matchers with Fil
   val operationBuilder: OperationDocumentHandler           = OperationDocumentHandler()
   val messageBuilder: MessageDocumentHandler               = MessageDocumentHandler()
   val dataNodeBuilder: DataNodeDocumentHandler             = DataNodeDocumentHandler()
+
+  private implicit val errorHandler: IllegalTypeHandler = IllegalTypeHandler.returnDefault
 
   class Fixture(val testName: String,
                 basePath: String,

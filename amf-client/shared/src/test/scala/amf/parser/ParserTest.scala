@@ -15,6 +15,8 @@ import scala.language.postfixOps
 
 class ParserTest extends FunSuite {
 
+  private implicit val errorHandler: IllegalTypeHandler = IllegalTypeHandler.returnDefault
+
   private val `RAML/yaml`: String =
     """#%RAML 1.0
       |a: 1

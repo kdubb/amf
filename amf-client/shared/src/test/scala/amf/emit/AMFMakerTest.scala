@@ -15,9 +15,11 @@ import amf.plugins.syntax.SYamlSyntaxPlugin
 import org.mulesoft.common.test.ListAssertions
 import org.scalatest.Matchers._
 import org.scalatest.{Assertion, FunSuite}
-import org.yaml.model.YMap
+import org.yaml.model.{IllegalTypeHandler, YMap}
 
 class AMFMakerTest extends FunSuite with AMFUnitFixtureTest with ListAssertions {
+
+  private implicit val errorHandler: IllegalTypeHandler = IllegalTypeHandler.returnDefault
 
   test("Test simple Raml generation") {
     val root = ast(`document/api/bare`, Raml)

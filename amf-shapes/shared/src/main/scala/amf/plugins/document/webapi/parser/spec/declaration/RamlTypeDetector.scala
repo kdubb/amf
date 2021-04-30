@@ -36,6 +36,8 @@ case class RamlTypeDetector(parent: String,
                             isExplicit: Boolean = false)(implicit ctx: ShapeParserContext)
     extends RamlTypeSyntax {
 
+  implicit private val eh: IllegalTypeHandler = ctx.eh
+
   def detect(node: YNode): Option[TypeDef] = node.tagType match {
 
     case YType.Seq =>

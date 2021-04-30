@@ -117,7 +117,7 @@ case class Oas20RequestParser(map: YMap, adopt: Request => Unit)(implicit ctx: O
       "queryString".asOasExtension,
       queryEntry => {
         Raml10TypeParser(queryEntry, shape => shape.adopted(request.getOrCreate.id))(
-          WebApiAdapterShapeParserContext(ctx))
+          WebApiAdapterShapeParserContext(ctx).toRamlNext)
           .parse()
           .map(s => request.getOrCreate.withQueryString(tracking(s, request.getOrCreate.id)))
       }

@@ -6,16 +6,20 @@ import amf.core.metamodel.{Field, Obj, Type}
 import amf.core.model.domain.extensions.DomainExtension
 import amf.core.model.domain._
 import amf.core.parser.errorhandler.ParserErrorHandler
-import amf.core.parser.{Annotations, ArrayNode, BaseArrayNode, DefaultScalarNode, ScalarNode, TypedNode}
+import amf.core.parser.{
+  Annotations,
+  ArrayNode,
+  BaseArrayNode,
+  DefaultScalarNode,
+  ParserErrorHandling,
+  ScalarNode,
+  TypedNode
+}
 import amf.plugins.document.webapi.parser.spec.oas.parser.types.ShapeParserContext
 import amf.validations.ShapeParserSideValidations.{DuplicatePropertySpecification, UnexpectedRamlScalarKey}
 import org.yaml.model._
 
 import scala.collection.mutable.ListBuffer
-
-trait ParserErrorHandling {
-  def eh: ParserErrorHandler
-}
 
 trait QuickFieldParsingOps {
   class ObjectField(target: Target, field: Field)(implicit ctx: ParserErrorHandling) extends (YMapEntry => Unit) {
@@ -171,37 +175,36 @@ trait QuickFieldParsingOps {
 }
 
 /** Scalar valued raml node (based on obj node). */
-private case class RamlScalarValuedNode(obj: YMap, scalar: ScalarNode)(implicit ctx: ParserErrorHandling)
-    extends ScalarNode {
+private case class RamlScalarValuedNode(obj: YMap, scalar: ScalarNode) extends ScalarNode {
 
-  override def string(): AmfScalar = as(_.string())
+  override def string()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.string())
 
-  override def text(): AmfScalar = as(_.text())
+  override def text()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.text())
 
-  override def integer(): AmfScalar = as(_.integer())
+  override def integer()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.integer())
 
-  override def double(): AmfScalar = as(_.double())
+  override def double()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.double())
 
-  override def boolean(): AmfScalar = as(_.boolean())
+  override def boolean()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.boolean())
 
-  override def negated(): AmfScalar = as(_.negated())
+  override def negated()(implicit iv: IllegalTypeHandler): AmfScalar = as(_.negated())
 
   private def as(fn: ScalarNode => AmfScalar) = fn(scalar)
 }
 
-private case class RamlSingleArrayNode(node: YNode)(implicit ctx: ParserErrorHandling) extends ArrayNode {
+private case class RamlSingleArrayNode(node: YNode) extends ArrayNode {
 
-  override def string(): AmfArray = as(ScalarNode(node).string())
+  override def string()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).string())
 
-  override def text(): AmfArray = as(ScalarNode(node).text())
+  override def text()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).text())
 
-  override def integer(): AmfArray = as(ScalarNode(node).integer())
+  override def integer()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).integer())
 
-  override def double(): AmfArray = as(ScalarNode(node).double())
+  override def double()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).double())
 
-  override def boolean(): AmfArray = as(ScalarNode(node).boolean())
+  override def boolean()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).boolean())
 
-  override def negated(): AmfArray = as(ScalarNode(node).negated())
+  override def negated()(implicit iv: IllegalTypeHandler): AmfArray = as(ScalarNode(node).negated())
 
   override def obj(fn: YNode => AmfElement): AmfArray = as(fn(node))
 
@@ -211,6 +214,7 @@ private case class RamlSingleArrayNode(node: YNode)(implicit ctx: ParserErrorHan
 
 object SingleArrayNode {
   def apply(node: YNode)(implicit ctx: ParserErrorHandling): ArrayNode = {
+
     node.value match {
       case _: YSequence => ArrayNode(node)
       case _            => RamlSingleArrayNode(node)
@@ -228,7 +232,9 @@ case class MapEntriesArrayNode(obj: YMap)(override implicit val iv: IllegalTypeH
 }
 
 object MapArrayNode {
-  def apply(node: YNode)(implicit ctx: ParserErrorHandling): ArrayNode = MapEntriesArrayNode(node.as[YMap])(ctx.eh)
+  def apply(node: YNode)(implicit ctx: ParserErrorHandling): ArrayNode = {
+    MapEntriesArrayNode(node.as[YMap])
+  }
 }
 
 object RamlScalarNode extends SpecAnnotationCriteria {

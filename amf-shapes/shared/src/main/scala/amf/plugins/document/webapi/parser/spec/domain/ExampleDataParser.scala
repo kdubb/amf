@@ -2,6 +2,7 @@ package amf.plugins.document.webapi.parser.spec.domain
 
 import amf.core.metamodel.domain.ExternalSourceElementModel
 import amf.core.model.domain.AmfScalar
+import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.parser.{Annotations, YNodeLikeOps}
 import amf.core.utils.IdCounter
 import amf.plugins.document.webapi.annotations.ExternalReferenceUrl
@@ -57,7 +58,11 @@ case class ExampleDataParser(node: YNode, example: Example, options: ExampleOpti
   }
 }
 
-case class ExamplesDataParser(seq: YSequence, options: ExampleOptions, parentId: String)(implicit ctx: ShapeParserContext) {
+case class ExamplesDataParser(seq: YSequence, options: ExampleOptions, parentId: String)(
+    implicit ctx: ShapeParserContext) {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
+
   def parse(): Seq[Example] = {
     val counter = new IdCounter()
     seq.nodes.map { n =>

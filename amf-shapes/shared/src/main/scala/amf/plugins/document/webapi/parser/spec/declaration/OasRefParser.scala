@@ -4,6 +4,7 @@ import amf.core.annotations.ExternalFragmentRef
 import amf.core.metamodel.domain.LinkableElementModel
 import amf.core.model.domain.{AmfScalar, Linkable, Shape}
 import amf.core.parser._
+import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.remote.{AsyncApi20, Oas, Oas20, Oas30}
 import amf.core.utils.UriUtils
 import amf.plugins.document.webapi.annotations.ExternalJsonSchemaShape
@@ -23,7 +24,8 @@ class OasRefParser(map: YMap,
                    adopt: Shape => Unit,
                    version: SchemaVersion)(implicit val ctx: ShapeParserContext) {
 
-  private val REF_KEY = "$ref"
+  private val REF_KEY                                   = "$ref"
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   def parse(): Option[AnyShape] = {
     map

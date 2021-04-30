@@ -17,7 +17,7 @@ import amf.core.remote.{Syntax, Vendor}
 import amf.plugins.document.webapi.contexts.{JsonSchemaRefGuide, WebApiContext}
 import amf.plugins.document.webapi.contexts.parser.OasLikeWebApiContext
 import amf.plugins.document.webapi.contexts.parser.async.Async20WebApiContext
-import amf.plugins.document.webapi.contexts.parser.oas.{JsonSchemaWebApiContext, Oas3WebApiContext}
+import amf.plugins.document.webapi.contexts.parser.oas.{JsonSchemaWebApiContext, Oas3WebApiContext, OasWebApiContext}
 import amf.plugins.document.webapi.contexts.parser.raml.{
   Raml08WebApiContext,
   Raml10WebApiContext,
@@ -28,7 +28,9 @@ import amf.plugins.document.webapi.parser.spec.{
   OasLikeWebApiDeclarations,
   OasWebApiDeclarations,
   WebApiDeclarations,
-  toOasDeclarations
+  toOas,
+  toOasDeclarations,
+  toRaml
 }
 import amf.plugins.document.webapi.parser.spec.common.YMapEntryLike
 import amf.plugins.document.webapi.parser.spec.declaration.{JSONSchemaVersion, SchemaVersion}
@@ -48,18 +50,18 @@ import org.yaml.model.{YMap, YNode, YPart}
 
 import scala.collection.mutable
 
-case class WebApiAdapterShapeParserContext(ctx: WebApiContext) extends ShapeParserContext {
+case class WebApiAdapterShapeParserContext(ctx: WebApiContext) extends ShapeParserContext(ctx.eh) {
   override def rootContextDocument: String = ctx.rootContextDocument
 
   override def loc: String = ctx.rootContextDocument
-
-  override def eh: ParserErrorHandler = ctx.eh
 
   override def vendor: Vendor = ctx.vendor
 
   override def refs: Seq[ParsedReference] = ctx.refs
 
   override def fragments: Map[String, FragmentRef] = ctx.declarations.fragments
+
+  override def shapes: Map[String, Shape] = ctx.declarations.shapes
 
   override def maxYamlReferences: Option[Long] = ctx.options.getMaxYamlReferences
 
@@ -199,6 +201,31 @@ case class WebApiAdapterShapeParserContext(ctx: WebApiContext) extends ShapePars
   override def supportsVariables: Boolean = ctx match {
     case ramlCtx: RamlWebApiContext => ramlCtx.contextType != RamlWebApiContextType.DEFAULT
     case _                          => throw new Exception("not valid for something not raml")
+  }
+
+  override def toOasNext: ShapeParserContext  = copy(toOas(ctx))
+  override def toRamlNext: ShapeParserContext = copy(toRaml(ctx))
+
+  def toJsonSchema: ShapeParserContext = {
+    val result = new JsonSchemaWebApiContext(ctx.rootContextDocument,
+                                             ctx.refs,
+                                             ctx,
+                                             Some(toOasDeclarations(ctx.declarations)),
+                                             ctx.options,
+                                             ctx.defaultSchemaVersion)
+    result.indexCache = ctx.indexCache
+    copy(result)
+  }
+
+  def toJsonSchema(root: String, refs: Seq[ParsedReference]): ShapeParserContext = {
+    val result = new JsonSchemaWebApiContext(root,
+                                             refs,
+                                             ctx,
+                                             Some(toOasDeclarations(ctx.declarations)),
+                                             ctx.options,
+                                             ctx.defaultSchemaVersion)
+    result.indexCache = ctx.indexCache
+    copy(result)
   }
 }
 

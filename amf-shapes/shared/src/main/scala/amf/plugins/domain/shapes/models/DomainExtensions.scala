@@ -1,6 +1,7 @@
 package amf.plugins.domain.shapes.models
 
 import amf.core.model.domain.extensions.PropertyShape
+import org.yaml.model.IllegalTypeHandler
 
 import scala.language.implicitConversions
 

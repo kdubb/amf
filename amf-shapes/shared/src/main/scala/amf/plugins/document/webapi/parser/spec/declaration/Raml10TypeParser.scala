@@ -6,6 +6,7 @@ import amf.core.metamodel.domain.{LinkableElementModel, ShapeModel}
 import amf.core.model.DataType
 import amf.core.model.domain.extensions.PropertyShape
 import amf.core.model.domain.{AmfScalar, Shape, _}
+import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.parser.{Annotations, ScalarNode => ParserScalarNode, _}
 import amf.core.remote.Raml08
 import amf.core.utils.{AmfStrings, IdCounter}
@@ -39,12 +40,15 @@ object Raml10TypeParser {
             adopt: Shape => Unit,
             typeInfo: TypeInfo = TypeInfo(),
             defaultType: DefaultType = StringDefaultType)(implicit ctx: ShapeParserContext): Raml10TypeParser = {
+    implicit val errorHandler: ParserErrorHandler = ctx.eh
     new Raml10TypeParser(YMapEntryLike(entry), entry.key, adopt, typeInfo, defaultType)
   }
 
   def apply(node: YNode, name: String, adopt: Shape => Unit, defaultType: DefaultType)(
-      implicit ctx: ShapeParserContext): Raml10TypeParser =
+      implicit ctx: ShapeParserContext): Raml10TypeParser = {
+    implicit val errorHandler: ParserErrorHandler = ctx.eh
     new Raml10TypeParser(YMapEntryLike(node), name, adopt, TypeInfo(), defaultType)
+  }
 
   def apply(entryOrNode: YMapEntryLike,
             name: String,
@@ -55,7 +59,8 @@ object Raml10TypeParser {
 
   def parse(adopt: Shape => Unit, isAnnotation: Boolean = false, defaultType: DefaultType = StringDefaultType)(
       node: YNode)(implicit ctx: ShapeParserContext): Option[Shape] = {
-    val head = node.as[YMap].entries.head
+    implicit val errorHandler: ParserErrorHandler = ctx.eh
+    val head                                      = node.as[YMap].entries.head
     apply(head, adopt, TypeInfo(isAnnotation = isAnnotation), defaultType).parse()
   }
 }
@@ -131,11 +136,14 @@ case class Raml10TypeParser(entryOrNode: YMapEntryLike,
 
 object Raml08TypeParser {
   def apply(node: YNode, name: String, adopt: Shape => Unit, isAnnotation: Boolean, defaultType: DefaultType)(
-      implicit ctx: ShapeParserContext): Raml08TypeParser =
+      implicit ctx: ShapeParserContext): Raml08TypeParser = {
+    implicit val errorHandler: ParserErrorHandler = ctx.eh
     new Raml08TypeParser(YMapEntryLike(node), name, adopt, TypeInfo(isAnnotation = isAnnotation), defaultType)
+  }
 
   def apply(entry: YMapEntry, adopt: Shape => Unit, isAnnotation: Boolean, defaultType: DefaultType)(
       implicit ctx: ShapeParserContext): Raml08TypeParser = {
+    implicit val errorHandler: ParserErrorHandler = ctx.eh
     new Raml08TypeParser(YMapEntryLike(entry), entry.key, adopt, TypeInfo(isAnnotation = isAnnotation), defaultType)
   }
 
@@ -153,6 +161,8 @@ case class Raml08TypeParser(entryOrNode: YMapEntryLike,
                             typeInfo: TypeInfo,
                             defaultType: DefaultType)(implicit override val ctx: ShapeParserContext)
     extends RamlTypeParser(entryOrNode: YMapEntryLike, key: YNode, adopt: Shape => Unit, typeInfo, defaultType) {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   override def parse(): Option[AnyShape] = {
     val shape = ScalarShape(node).withName(name, Annotations(key))
@@ -341,6 +351,8 @@ case class SimpleTypeParser(name: String, adopt: Shape => Unit, map: YMap, defau
     implicit val ctx: ShapeParserContext)
     extends QuickFieldParsingOps {
 
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
+
   def parse(): AnyShape = {
 
     if (map.key("repeat").exists(entry => entry.value.as[Boolean])) {
@@ -472,8 +484,11 @@ sealed abstract class RamlTypeParser(entryOrNode: YMapEntryLike,
                                      key: YNode,
                                      adopt: Shape => Unit,
                                      typeInfo: TypeInfo,
-                                     defaultType: DefaultType)(implicit val ctx: ShapeParserContext) extends RamlShapeParser {
-  val name: String = key.as[YScalar].text
+                                     defaultType: DefaultType)(implicit val ctx: ShapeParserContext)
+    extends RamlShapeParser {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
+  val name: String                                      = key.as[YScalar].text
 
   protected val (ast, node) = (entryOrNode.ast, entryOrNode.value)
 
@@ -796,7 +811,8 @@ sealed abstract class RamlTypeParser(entryOrNode: YMapEntryLike,
 
   case class ScalarShapeParser(typeDef: TypeDef, shape: ScalarShape, map: YMap)
       extends AnyShapeParser
-      with CommonScalarParsingLogic with RamlShapeParser {
+      with CommonScalarParsingLogic
+      with RamlShapeParser {
 
     override lazy val dataNodeParser: YNode => DataNode = ScalarNodeParser(parent = Some(shape.id)).parse
     override lazy val enumParser: YNode => DataNode     = CommonEnumParser(shape.id, enumType = EnumParsing.SCALAR_ENUM)
@@ -995,7 +1011,10 @@ sealed abstract class RamlTypeParser(entryOrNode: YMapEntryLike,
               shape.setArray(ShapeModel.Xone, nodes, Annotations(entry.value))
 
             case _ =>
-              ctx.eh.violation(InvalidXoneType, shape.id, "Xone constraints are built from multiple shape nodes", entry)
+              ctx.eh.violation(InvalidXoneType,
+                               shape.id,
+                               "Xone constraints are built from multiple shape nodes",
+                               entry)
           }
         }
       )

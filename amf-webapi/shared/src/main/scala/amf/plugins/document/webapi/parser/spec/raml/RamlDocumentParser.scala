@@ -474,7 +474,8 @@ abstract class RamlBaseDocumentParser(implicit ctx: RamlWebApiContext)
 
 abstract class RamlSpecParser extends QuickFieldParsingOps with RamlShapeParser {
 
-  case class UsageParser(map: YMap, baseUnit: BaseUnit) {
+  case class UsageParser(map: YMap, baseUnit: BaseUnit)(implicit eh: IllegalTypeHandler) {
+
     def parse(): Unit = {
       map.key(
         "usage",
@@ -492,6 +493,9 @@ abstract class RamlSpecParser extends QuickFieldParsingOps with RamlShapeParser 
 
   case class UserDocumentationsParser(seq: Seq[YNode], declarations: WebApiDeclarations, parent: String)(
       implicit ctx: ShapeParserContext) {
+
+    implicit private val eh: IllegalTypeHandler = ctx.eh
+
     def parse(): Seq[CreativeWork] = {
       val results = ListBuffer[CreativeWork]()
 
@@ -525,7 +529,8 @@ abstract class RamlSpecParser extends QuickFieldParsingOps with RamlShapeParser 
 
   object AnnotationTypesParser extends RamlTypeSyntax {
     def apply(ast: YMapEntry, adopt: CustomDomainProperty => Unit)(
-        implicit ctx: ShapeParserContext): CustomDomainProperty =
+        implicit ctx: ShapeParserContext): CustomDomainProperty = {
+      implicit val eh: IllegalTypeHandler = ctx.eh
       ast.value.tagType match {
         case YType.Map =>
           AnnotationTypesParser(ast, ast.key.as[YScalar].text, ast.value.as[YMap], adopt).parse()
@@ -571,10 +576,13 @@ abstract class RamlSpecParser extends QuickFieldParsingOps with RamlShapeParser 
               }
           }
       }
+    }
   }
 
   case class AnnotationTypesParser(ast: YPart, annotationName: String, map: YMap, adopt: CustomDomainProperty => Unit)(
       implicit ctx: ShapeParserContext) {
+
+    implicit private val eh: IllegalTypeHandler = ctx.eh
 
     def checkValidTarget(entry: YMapEntry, nodeId: String): Unit = {
       val targets = entry.value.value match {

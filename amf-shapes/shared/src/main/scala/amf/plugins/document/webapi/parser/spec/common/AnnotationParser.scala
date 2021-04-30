@@ -5,6 +5,7 @@ import amf.core.metamodel.domain.DomainElementModel.CustomDomainProperties
 import amf.core.metamodel.domain.extensions.DomainExtensionModel
 import amf.core.model.domain.extensions.{CustomDomainProperty, DomainExtension}
 import amf.core.model.domain.{AmfArray, AmfObject}
+import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.parser.{Annotations, _}
 import amf.plugins.document.webapi.parser.spec.common.AnnotationParser.parseExtensions
 import amf.plugins.document.webapi.parser.spec.oas.parser.types.ShapeParserContext
@@ -13,7 +14,11 @@ import amf.plugins.domain.webapi.annotations.OrphanOasExtension
 import amf.validations.ShapeParserSideValidations.InvalidAnnotationTarget
 import org.yaml.model._
 
-case class AnnotationParser(element: AmfObject, map: YMap, target: List[String] = Nil)(implicit val ctx: ShapeParserContext) {
+case class AnnotationParser(element: AmfObject, map: YMap, target: List[String] = Nil)(
+    implicit val ctx: ShapeParserContext) {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
+
   def parse(): Unit = {
     val extensions = parseExtensions(element.id, map, target)
     setExtensions(extensions)
@@ -65,7 +70,8 @@ private case class ExtensionParser(annotation: String, parent: String, entry: YM
     val dataNode        = DataNodeParser(entry.value, parent = Some(propertyId)).parse()
     // TODO
     // throw a parser-side warning validation error if no annotation can be found
-    val customDomainProperty = ctx.findAnnotation(annotation, SearchScope.All)
+    val customDomainProperty = ctx
+      .findAnnotation(annotation, SearchScope.All)
       .getOrElse(
         CustomDomainProperty(Annotations(entry)).withId(propertyId).withName(annotation, Annotations(entry.key)))
     validateAllowedTargets(customDomainProperty)

@@ -1,10 +1,9 @@
 package amf.client.model.domain.shapes
 
 import amf.client.model.domain.{DataNode, DomainElement, Linkable, NamedDomainElement}
-import amf.client.model.{BoolField, StrField}
+import amf.client.model.{Annotations, BoolField, StrField}
 
 import scala.scalajs.js.annotation.{JSExportAll, JSExportTopLevel}
-
 import amf.plugins.domain.shapes.models.{Example => InternalExample}
 import amf.client.convert.shapeconverters.ShapeClientConverters._
 
@@ -13,7 +12,7 @@ import amf.client.convert.shapeconverters.ShapeClientConverters._
   */
 @JSExportAll
 case class Example(override private[amf] val _internal: InternalExample)
-  extends DomainElement
+    extends DomainElement
     with Linkable
     with NamedDomainElement {
 
@@ -37,7 +36,7 @@ case class Example(override private[amf] val _internal: InternalExample)
   def location: ClientOption[String] = _internal.location().asClient
 
   def withName(name: String): this.type = {
-    _internal.withName(name)
+    _internal.withName(name, new Annotations())
     this
   }
 

@@ -6,7 +6,16 @@ import amf.core.client.ParsingOptions
 import amf.core.metamodel.domain.ShapeModel
 import amf.core.model.document.ExternalFragment
 import amf.core.model.domain.{AmfArray, Shape}
-import amf.core.parser.{Annotations, InferredLinkReference, JsonParserFactory, ParsedReference, Reference, ReferenceFragmentPartition, SyamlParsedDocument, YMapOps}
+import amf.core.parser.{
+  Annotations,
+  InferredLinkReference,
+  JsonParserFactory,
+  ParsedReference,
+  Reference,
+  ReferenceFragmentPartition,
+  SyamlParsedDocument,
+  YMapOps
+}
 import amf.core.unsafe.PlatformSecrets
 import amf.core.utils.AmfStrings
 import amf.plugins.document.webapi.annotations._
@@ -164,28 +173,33 @@ case class RamlJsonSchemaExpression(key: YNode,
       // todo: this should be migrated to JsonSchemaParser
       val url               = path.normalizeUrl + (if (!path.endsWith("/")) "/" else "") // alwarys add / to avoid ask if there is any one before add #
       val schemaEntry       = JsonParserFactory.fromCharsWithSource(text, valueAST.sourceName)(ctx.eh).document()
-//      val jsonSchemaContext = toSchemaContext(ctx, valueAST)
-//      jsonSchemaContext.setLocalJSONSchemaContext(schemaEntry.node)
-//      jsonSchemaContext.setJsonSchemaAST(schemaEntry.node)
-
+      val jsonSchemaContext = toSchemaContext(ctx, valueAST)
+      jsonSchemaContext.setLocalJSONSchemaContext(schemaEntry.node)
+      jsonSchemaContext.setJsonSchemaAST(schemaEntry.node)
 
       // TODO: Shapes REMOD. Uncomment
 //      new JsonSchemaParser().parse(
 //        Root(SyamlParsedDocument(schemaEntry), url, "application/json", Nil, InferredLinkReference, text), jsonSchemaContext, ParsingOptions())
 //        .parseTypeDeclarations(schemaEntry.node.as[YMap], url + "#/definitions/", None)(jsonSchemaContext)
-//      val resolvedShapes = jsonSchemaContext.shapes.values.toSeq
-//      val shapesMap      = mutable.Map[String, AnyShape]()
-//      resolvedShapes.map(s => (s, s.annotations.find(classOf[JSONSchemaId]))).foreach {
-//        case (s: AnyShape, Some(a)) if a.id.equals(s.name.value()) =>
-//          shapesMap += s.name.value -> s
-//        case (s: AnyShape, Some(a)) =>
-//          shapesMap += s.name.value() -> s
-//          shapesMap += a.id           -> s
-//        case (s: AnyShape, None) => shapesMap += s.name.value -> s
-//      }
+      val resolvedShapes = jsonSchemaContext.shapes.values.toSeq
+      val shapesMap      = mutable.Map[String, AnyShape]()
+      resolvedShapes.map(s => (s, s.annotations.find(classOf[JSONSchemaId]))).foreach {
+        case (s: AnyShape, Some(a)) if a.id.equals(s.name.value()) =>
+          shapesMap += s.name.value -> s
+        case (s: AnyShape, Some(a)) =>
+          shapesMap += s.name.value() -> s
+          shapesMap += a.id           -> s
+        case (s: AnyShape, None) => shapesMap += s.name.value -> s
+      }
 
-//      ctx.registerExternalLib(path, shapesMap.toMap)
+      ctx.registerExternalLib(path, shapesMap.toMap)
     }
+  }
+
+  private def getContext(valueAST: YNode, schemaEntry: YMapEntry) = {
+    // we set the local schema entry to be able to resolve local $refs
+    ctx.setJsonSchemaAST(schemaEntry.value)
+    toSchemaContext(ctx, valueAST)
   }
 
   private def parseJsonShape(text: String,
@@ -199,14 +213,15 @@ case class RamlJsonSchemaExpression(key: YNode,
       jsonParser(extLocation, text, valueAST).document().node
     }
     val schemaEntry       = YMapEntry(key, node)
+    val jsonSchemaContext = getContext(valueAST, schemaEntry)
     val fullRef           = platform.normalizePath(ctx.rootContextDocument)
 
     val tmpShape: UnresolvedShape =
-      JsonSchemaParsingHelper.createTemporaryShape(shape => adopt(shape), schemaEntry, ctx, fullRef)
+      JsonSchemaParsingHelper.createTemporaryShape(shape => adopt(shape), schemaEntry, jsonSchemaContext, fullRef)
 
-    val s = actualParsing(adopt, value, schemaEntry, ctx, fullRef, tmpShape)
+    val s = actualParsing(adopt, value, schemaEntry, jsonSchemaContext, fullRef, tmpShape)
     cleanGlobalSpace()
-    savePromotedFragmentsFromNestedContext(ctx)
+    savePromotedFragmentsFromNestedContext(jsonSchemaContext)
     s
   }
 
@@ -260,38 +275,37 @@ case class RamlJsonSchemaExpression(key: YNode,
         shape
     }
   }
-//  protected def toSchemaContext(ctx: ShapeParserContext, ast: YNode): ShapeParserContext = {
-//    ast match {
-//      case inlined: MutRef =>
-//        if (inlined.origTag.tagType == YType.Include) {
-//          // JSON schema file we need to update the context
-//          val rawPath            = inlined.origValue.asInstanceOf[YScalar].text
-//          val normalizedFilePath = stripPointsAndFragment(rawPath)
-//          ctx.refs.find(r => r.unit.location().exists(_.endsWith(normalizedFilePath))) match {
-//            case Some(ref) =>
-//              toJsonSchema(
-//                ref.unit.location().get,
-//                ref.unit.references.map(r => ParsedReference(r, Reference(ref.unit.location().get, Nil), None)),
-//                ctx)
-//            case _
-//                if Option(ast.value.sourceName).isDefined => // external fragment from external fragment case. The target value ast has the real source name of the faile. (There is no external fragment because was inlined)
-//              toJsonSchema(ast.value.sourceName, ctx.refs, ctx)
-//            case _ => toJsonSchema(ctx)
-//          }
-//        } else {
-//          // Inlined we don't need to update the context for ths JSON schema file
-//          toJsonSchema(ctx)
-//        }
-//      case _ =>
-//        toJsonSchema(ctx)
-//    }
-//  }
+  protected def toSchemaContext(ctx: ShapeParserContext, ast: YNode): ShapeParserContext = {
+    ast match {
+      case inlined: MutRef =>
+        if (inlined.origTag.tagType == YType.Include) {
+          // JSON schema file we need to update the context
+          val rawPath            = inlined.origValue.asInstanceOf[YScalar].text
+          val normalizedFilePath = stripPointsAndFragment(rawPath)
+          ctx.refs.find(r => r.unit.location().exists(_.endsWith(normalizedFilePath))) match {
+            case Some(ref) =>
+              ctx.toJsonSchema(
+                ref.unit.location().get,
+                ref.unit.references.map(r => ParsedReference(r, Reference(ref.unit.location().get, Nil), None)))
+            case _
+                if Option(ast.value.sourceName).isDefined => // external fragment from external fragment case. The target value ast has the real source name of the faile. (There is no external fragment because was inlined)
+              ctx.toJsonSchema(ast.value.sourceName, ctx.refs)
+            case _ => ctx.toJsonSchema
+          }
+        } else {
+          // Inlined we don't need to update the context for ths JSON schema file
+          ctx.toJsonSchema
+        }
+      case _ =>
+        ctx.toJsonSchema
+    }
+  }
 
   private def stripPointsAndFragment(rawPath: String): String = {
     //    TODO: we need to resolve paths but this conflicts with absolute references to exchange_modules
-    //    val file = rawPath.split("#").head
-    //    val root               = ctx.rootContextDocument
-    //    val normalizedFilePath = ctx.resolvedPath(root, file)
+//        val file = rawPath.split("#").head
+//        val root               = ctx.rootContextDocument
+//        val normalizedFilePath = ctx.resolvedPath(root, file)
     val hashTagIdx = rawPath.indexOf("#")
     val parentIdx  = rawPath.lastIndexOf("../") + 3
     val currentIdx = rawPath.lastIndexOf("./") + 2

@@ -1,6 +1,7 @@
 package amf.plugins.document.webapi.parser.spec.oas.parser.types
 
 import amf.core.model.domain.Shape
+import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.parser.{Annotations, ScalarNode, YMapOps, YNodeLikeOps}
 import amf.plugins.document.webapi.parser.spec.common.YMapEntryLike
 import amf.plugins.document.webapi.parser.spec.declaration.{OasTypeParser, SchemaVersion}
@@ -9,6 +10,9 @@ import org.yaml.model.{YMap, YNode}
 
 case class AllOfParser(array: Seq[YNode], adopt: Shape => Unit, version: SchemaVersion)(
     implicit ctx: ShapeParserContext) {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
+
   def parse(): Seq[Shape] =
     array
       .flatMap(n => {

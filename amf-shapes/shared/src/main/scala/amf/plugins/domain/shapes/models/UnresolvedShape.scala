@@ -36,7 +36,7 @@ case class UnresolvedShape(override val fields: Fields,
     target
       .link(AmfScalar(reference), annotations, Annotations.synthesized())
       .asInstanceOf[Shape]
-      .withName(name.value())
+      .withName(name.value(), Annotations())
 
   override val meta: AnyShapeModel = new AnyShapeModel {
     override def fields: List[Field] = AnyShapeModel.fields

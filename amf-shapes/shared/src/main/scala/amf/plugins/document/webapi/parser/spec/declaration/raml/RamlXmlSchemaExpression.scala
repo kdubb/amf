@@ -3,6 +3,7 @@ package amf.plugins.document.webapi.parser.spec.declaration.raml
 import amf.core.annotations.ExternalFragmentRef
 import amf.core.metamodel.domain.{ExternalSourceElementModel, ShapeModel}
 import amf.core.model.domain.{AmfScalar, Shape}
+import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.parser.{Annotations, ReferenceFragmentPartition, YMapOps}
 import amf.plugins.document.webapi.annotations.ExternalReferenceUrl
 import amf.plugins.document.webapi.parser.spec.domain.NodeDataNodeParser
@@ -17,7 +18,11 @@ case class RamlXmlSchemaExpression(key: YNode,
                                    override val value: YNode,
                                    override val adopt: Shape => Unit,
                                    parseExample: Boolean = false)(override implicit val ctx: ShapeParserContext)
-    extends RamlExternalTypesParser with RamlShapeParser {
+    extends RamlExternalTypesParser
+    with RamlShapeParser {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
+
   override def parseValue(origin: ValueAndOrigin): SchemaShape = {
     val (maybeReferenceId, maybeLocation, maybeFragmentLabel): (Option[String], Option[String], Option[String]) =
       origin.originalUrlText.map(ReferenceFragmentPartition.apply) match {

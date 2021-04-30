@@ -1,5 +1,6 @@
 package amf.plugins.document.webapi.parser.spec.jsonschema
 
+import amf.core.parser.errorhandler.ParserErrorHandler
 import amf.core.utils.AliasCounter
 import amf.plugins.document.webapi.parser.spec.common.YMapEntryLike
 import amf.plugins.document.webapi.parser.spec.declaration._
@@ -11,7 +12,8 @@ import java.net.URI
 import scala.collection.mutable
 
 object AstIndexBuilder {
-  def buildAst(node: YNode, refCounter: AliasCounter, version: SchemaVersion)(implicit ctx: ShapeParserContext): AstIndex = {
+  def buildAst(node: YNode, refCounter: AliasCounter, version: SchemaVersion)(
+      implicit ctx: ShapeParserContext): AstIndex = {
     val locationUri             = getBaseUri(ctx)
     val specificResolutionScope = locationUri.flatMap(loc => getResolutionScope(version, loc)).toSeq
     val scopes                  = Seq(LexicalResolutionScope()) ++ specificResolutionScope
@@ -36,6 +38,8 @@ object AstIndexBuilder {
 }
 
 case class AstIndexBuilder private (private val refCounter: AliasCounter)(implicit ctx: ShapeParserContext) {
+
+  implicit private val errorHandler: ParserErrorHandler = ctx.eh
 
   def build(node: YNode, scopes: Seq[ResolutionScope], resolvers: Seq[ReferenceResolver]): AstIndex = {
     val acc = mutable.Map.empty[String, YMapEntryLike]

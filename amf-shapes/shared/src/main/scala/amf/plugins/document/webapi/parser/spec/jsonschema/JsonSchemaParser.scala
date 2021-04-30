@@ -56,8 +56,6 @@ class JsonSchemaParser {
                 .set(ExternalSourceElementModel.Raw, document.raw, Annotations.synthesized())
                 .set(SchemaShapeModel.MediaType, "application/json", Annotations.synthesized())
           }
-//        val unit = wrapInDataTypeFragment(document, parsed)
-//        unit
         parsed
       case _ => throw UnsupportedParsedDocumentException
     }
@@ -79,11 +77,12 @@ class JsonSchemaParser {
     val inheritedDeclarations = parentContext.getInheritedDeclarations
 
     val schemaContext = parentContext.copyForJsonSchema(url,
-                                                    document.references,
-                                                    cleanNested,
-                                                    inheritedDeclarations,
-                                                    options,
-                                                    parentContext.defaultSchemaVersion, parentContext.indexCache)
+                                                        document.references,
+                                                        cleanNested,
+                                                        inheritedDeclarations,
+                                                        options,
+                                                        parentContext.defaultSchemaVersion,
+                                                        parentContext.indexCache)
     schemaContext
   }
 

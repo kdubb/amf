@@ -3,16 +3,16 @@ package amf.plugins.document.webapi.parser.spec.common
 import amf.core.model.domain.AmfScalar
 import amf.core.parser.{Annotations, ScalarNode}
 import amf.core.resolution.VariableReplacer.VariableRegex
-import org.yaml.model.YNode
+import org.yaml.model.{IllegalTypeHandler, YNode}
 
 import scala.collection.mutable
 
 case class AbstractVariables() {
   private val variables: mutable.Map[String, Annotations] = mutable.Map()
 
-  def parseVariables(node: YNode): this.type = parseVariables(ScalarNode(node))
+  def parseVariables(node: YNode)(implicit iv: IllegalTypeHandler): this.type = parseVariables(ScalarNode(node))
 
-  def parseVariables(scalarNode: ScalarNode): this.type = {
+  def parseVariables(scalarNode: ScalarNode)(implicit iv: IllegalTypeHandler): this.type = {
     VariableRegex
       .findAllMatchIn(scalarNode.text().toString)
       .foreach(m => variables.update(m.group(1), scalarNode.string().annotations))

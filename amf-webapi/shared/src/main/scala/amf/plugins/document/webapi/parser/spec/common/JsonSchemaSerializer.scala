@@ -30,11 +30,13 @@ import org.yaml.model.YDocument.EntryBuilder
 
 import scala.concurrent.ExecutionContext
 
+object JsonSchemaBuilder extends JsonSchemaSerializer
+
 trait JsonSchemaSerializer extends PlatformSecrets {
   // todo, check if its resolved?
   // todo lexical ordering?
 
-  protected def toJsonSchema(element: AnyShape, exec: BaseExecutionEnvironment): String = {
+  def toJsonSchema(element: AnyShape, exec: BaseExecutionEnvironment): String = {
     element.annotations.find(classOf[ParsedJSONSchema]) match {
       case Some(a) => a.rawText
       case _ =>
@@ -45,9 +47,9 @@ trait JsonSchemaSerializer extends PlatformSecrets {
     }
   }
 
-  protected def generateJsonSchema(element: AnyShape,
-                                   options: ShapeRenderOptions = ShapeRenderOptions(),
-                                   exec: BaseExecutionEnvironment): String = {
+  def generateJsonSchema(element: AnyShape,
+                         options: ShapeRenderOptions = ShapeRenderOptions(),
+                         exec: BaseExecutionEnvironment): String = {
     implicit val executionContext: ExecutionContext = exec.executionContext
 
     // TODO: WE SHOULDN'T HAVE TO CREATE A DOCUMENT TO EMIT A SCHEMA!

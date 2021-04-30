@@ -15,7 +15,10 @@ import amf.plugins.document.webapi.annotations.ParsedJSONSchema
 import amf.plugins.domain.shapes.metamodel._
 import amf.plugins.domain.shapes.models._
 import amf.plugins.domain.webapi.parser.RamlShapeTypeBeautifier
-import amf.validations.ShapeResolutionSideValidations.{InvalidTypeInheritanceErrorSpecification, InvalidTypeInheritanceWarningSpecification}
+import amf.validations.ShapeResolutionSideValidations.{
+  InvalidTypeInheritanceErrorSpecification,
+  InvalidTypeInheritanceWarningSpecification
+}
 import org.yaml.model.YError
 
 import scala.collection.mutable
@@ -517,7 +520,7 @@ private[stages] class MinShapeAlgorithm()(implicit val context: NormalizationCon
   }
 
   private def setValuesOfUnionElement(newShape: Shape, superUnionElement: Shape): Unit = {
-    superUnionElement.name.option().foreach(n => newShape.withName(n))
+    superUnionElement.name.option().foreach(n => newShape.withName(n, Annotations()))
     /*
     overrides additionalProperties value of unionElement to newShape to generate consistency with restrictShape method
     that is called when a union type is parsed as AnyShape.

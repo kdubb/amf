@@ -5,7 +5,7 @@ import amf.core.parser.{Annotations, ScalarNode, YMapOps}
 import amf.plugins.document.webapi.parser.spec.oas.parser.types.ShapeParserContext
 import amf.plugins.domain.shapes.metamodel.XMLSerializerModel
 import amf.plugins.domain.shapes.models.XMLSerializer
-import org.yaml.model.{YMap, YNode}
+import org.yaml.model.{IllegalTypeHandler, YMap, YNode}
 
 object XMLSerializerParser {
   def parse(defaultName: String)(node: YNode)(implicit ctx: ShapeParserContext): XMLSerializer =
@@ -13,6 +13,9 @@ object XMLSerializerParser {
 }
 
 case class XMLSerializerParser(defaultName: String, node: YNode)(implicit ctx: ShapeParserContext) {
+
+  implicit private val eh: IllegalTypeHandler = ctx.eh
+
   val map: YMap = node.as[YMap]
   def parse(): XMLSerializer = {
     val serializer = XMLSerializer(node)

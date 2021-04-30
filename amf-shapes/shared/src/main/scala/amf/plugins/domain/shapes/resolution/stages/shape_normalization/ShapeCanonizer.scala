@@ -9,6 +9,7 @@ import amf.core.parser.{Annotations, FieldEntry}
 import amf.plugins.domain.shapes.metamodel._
 import amf.plugins.domain.shapes.models._
 import amf.plugins.features.validation.CoreValidations.ResolutionValidation
+import org.yaml.model.IllegalTypeHandler
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -229,7 +230,7 @@ sealed case class ShapeCanonizer()(implicit val context: NormalizationContext) e
                 name = s"example_$i"
               }
               namesCache.add(name)
-              example.withName(name)
+              example.withName(name, Annotations())
             } else namesCache.add(example.name.value())
           }
         }
@@ -307,7 +308,7 @@ sealed case class ShapeCanonizer()(implicit val context: NormalizationContext) e
               }
               unionItems.setArrayWithoutId(UnionShapeModel.AnyOf, newUnionItems)
               Option(matrix.fields.getValue(ShapeModel.Name)) match {
-                case Some(name) => unionItems.withName(name.toString)
+                case Some(name) => unionItems.withName(name.toString, Annotations())
                 case _          => unionItems
               }
             case a: ArrayShape => matrix.withItems(a)
@@ -353,7 +354,7 @@ sealed case class ShapeCanonizer()(implicit val context: NormalizationContext) e
         }
         val union = UnionShape()
         union.id = tuple.id + "resolved"
-        union.withName(tuple.name.value())
+        union.withName(tuple.name.value(), Annotations())
         union
       }
     }

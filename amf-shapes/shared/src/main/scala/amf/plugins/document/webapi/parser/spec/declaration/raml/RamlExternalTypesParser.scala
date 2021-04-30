@@ -11,13 +11,18 @@ import amf.validations.ShapeParserSideValidations.InvalidExternalTypeType
 import org.yaml.model.YNode.MutRef
 import org.yaml.model._
 
-trait RamlExternalTypesParser extends QuickFieldParsingOps with ExampleParser with RamlTypeSyntax with RamlShapeParser {
+trait RamlExternalTypesParser
+    extends QuickFieldParsingOps
+    with ExampleParser
+    with RamlTypeSyntax
+    with RamlShapeParser {
 
   val value: YNode
   val adopt: Shape => Unit
   val externalType: String
   def parseValue(origin: ValueAndOrigin): AnyShape
   protected val ctx: ShapeParserContext
+  implicit protected val eh: IllegalTypeHandler = ctx.eh
 
   def parse(): AnyShape = {
     val origin = buildTextAndOrigin()
@@ -28,9 +33,9 @@ trait RamlExternalTypesParser extends QuickFieldParsingOps with ExampleParser wi
   }
 
   protected def getOrigin(node: YNode): Option[String] = (node, ctx) match {
-    case (ref: MutRef, _)        => Some(ref.origValue.toString)
+    case (ref: MutRef, _)             => Some(ref.origValue.toString)
     case (_, wac: ShapeParserContext) => wac.nodeRefIds.get(node)
-    case _                       => None
+    case _                            => None
   }
 
   protected case class ValueAndOrigin(text: String,

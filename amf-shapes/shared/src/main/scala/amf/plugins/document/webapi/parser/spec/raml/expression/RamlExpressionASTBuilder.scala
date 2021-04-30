@@ -136,7 +136,7 @@ private[expression] class RamlExpressionASTBuilder(
   }
 
   private def unresolved(token: Token, annotations: Annotations): AnyShape = {
-    val shape = UnresolvedShape(token.value, annotations).withName(token.value)
+    val shape = UnresolvedShape(token.value, annotations).withName(token.value, Annotations())
     unresolvedRegister.register(shape)
     shape
   }

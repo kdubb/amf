@@ -52,19 +52,19 @@ case class NodeShape(override val fields: Fields, override val annotations: Anno
   }
 
   def withProperty(name: String): PropertyShape = {
-    val result = PropertyShape().withName(name)
+    val result = PropertyShape().withName(name, Annotations())
     add(Properties, result)
     result
   }
 
   def withInheritsObject(name: String): NodeShape = {
-    val result = NodeShape().withName(name)
+    val result = NodeShape().withName(name, Annotations())
     add(Inherits, result)
     result
   }
 
   def withInheritsScalar(name: String): ScalarShape = {
-    val result = ScalarShape().withName(name)
+    val result = ScalarShape().withName(name, Annotations())
     add(Inherits, result)
     result
   }

@@ -6,7 +6,6 @@ import amf.core.remote.{Payload, Vendor}
 import amf.plugins.document.webapi.contexts.WebApiContext
 import amf.plugins.document.webapi.contexts.parser.raml.RamlWebApiContextType.RamlWebApiContextType
 import amf.plugins.document.webapi.parser.spec.RamlWebApiDeclarations
-import amf.plugins.document.webapi.parser.spec.common.ParserErrorHandling
 import amf.plugins.document.webapi.parser.spec.domain.ParsingHelpers
 import amf.plugins.domain.webapi.parser.RamlShapeTypeBeautifier
 import amf.plugins.domain.webapi.parser.spec.SpecSyntax
@@ -24,8 +23,7 @@ abstract class RamlWebApiContext(override val loc: String,
                                  private val ds: Option[RamlWebApiDeclarations] = None,
                                  var contextType: RamlWebApiContextType = RamlWebApiContextType.DEFAULT)
     extends WebApiContext(loc, refs, options, wrapped, ds)
-    with RamlSpecAwareContext
-    with ParserErrorHandling {
+    with RamlSpecAwareContext {
 
   var globalMediatype: Boolean                                  = false
   val operationContexts: mutable.Map[String, RamlWebApiContext] = mutable.Map()

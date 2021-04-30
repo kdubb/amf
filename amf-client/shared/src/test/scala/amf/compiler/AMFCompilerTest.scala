@@ -15,7 +15,7 @@ import amf.plugins.domain.webapi.models.api.WebApi
 import amf.{RAMLStyle, RamlProfile}
 import org.scalatest.Matchers._
 import org.scalatest.{Assertion, AsyncFunSuite}
-import org.yaml.model.{YMap, YMapEntry}
+import org.yaml.model.{IllegalTypeHandler, YMap, YMapEntry}
 
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
@@ -23,6 +23,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AMFCompilerTest extends AsyncFunSuite with CompilerTestBuilder {
 
   override implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
+  private implicit val errorHandler: IllegalTypeHandler    = IllegalTypeHandler.returnDefault
 
   test("Api (raml)") {
     build("file://amf-client/shared/src/test/resources/tck/raml-1.0/Api/test003/api.raml", RamlYamlHint) map assertDocument
