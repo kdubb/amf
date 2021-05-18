@@ -23,14 +23,14 @@ class MediaTypeResolutionStage(profile: ProfileName,
                                isValidation: Boolean = false,
                                val keepEditingInfo: Boolean = false)
     extends TransformationStep() {
-  override def transform(model: BaseUnit, errorHandler: ErrorHandler): BaseUnit = {
+  override def transform[T <: BaseUnit](model: T, errorHandler: ErrorHandler): T = {
     model match {
       case doc: Document if doc.encodes.isInstanceOf[Api] =>
         propagatePayloads(doc.encodes.asInstanceOf[Api])
         resolveMediaTypes(doc.encodes.asInstanceOf[Api])(errorHandler)
       case _ =>
     }
-    model
+    model.asInstanceOf[T]
   }
 
   def propagatePayloads(api: Api): Unit = {

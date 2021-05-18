@@ -35,13 +35,13 @@ import scala.collection.mutable.ListBuffer
 class ExtensionsResolutionStage(val profile: ProfileName, val keepEditingInfo: Boolean)
     extends TransformationStep()
     with PlatformSecrets {
-  override def transform(model: BaseUnit, errorHandler: ErrorHandler): BaseUnit = {
+  override def transform[T <: BaseUnit](model: T, errorHandler: ErrorHandler): T = {
     val extendsStage = new ExtendsResolutionStage(profile, keepEditingInfo)
     val resolvedModel = model match {
       case overlay: Overlay =>
-        new OverlayResolutionStage(profile, keepEditingInfo)(errorHandler).resolve(model, overlay)
+        new OverlayResolutionStage(profile, keepEditingInfo)(errorHandler).resolve(model, overlay).asInstanceOf[T]
       case extension: Extension =>
-        new ExtensionResolutionStage(profile, keepEditingInfo)(errorHandler).resolve(model, extension)
+        new ExtensionResolutionStage(profile, keepEditingInfo)(errorHandler).resolve(model, extension).asInstanceOf[T]
       case _ => extendsStage.transform(model, errorHandler)
     }
     assignNewRoot(resolvedModel)

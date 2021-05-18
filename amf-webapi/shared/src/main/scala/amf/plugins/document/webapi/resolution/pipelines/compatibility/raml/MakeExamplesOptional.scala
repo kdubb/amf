@@ -7,7 +7,7 @@ import amf.plugins.domain.shapes.models.Example
 
 class MakeExamplesOptional() extends TransformationStep {
 
-  override def transform(model: BaseUnit, errorHandler: ErrorHandler): BaseUnit = {
+  override def transform[T <: BaseUnit](model: T, errorHandler: ErrorHandler): T = {
     try {
       model.iterator().foreach {
         case example: Example =>

@@ -10,7 +10,7 @@ import amf.plugins.domain.webapi.models.api.Api
 
 class CleanSchemes() extends TransformationStep {
 
-  override def transform(model: BaseUnit, errorHandler: ErrorHandler): BaseUnit =
+  override def transform[T <: BaseUnit](model: T, errorHandler: ErrorHandler): T =
     try {
       model
         .iterator()

@@ -10,11 +10,11 @@ import amf.plugins.domain.webapi.resolution.stages.common.ExamplePropagationHelp
 
 class AsyncExamplePropagationResolutionStage() extends TransformationStep with ExamplePropagationHelper {
 
-  override def transform(model: BaseUnit, errorHandler: ErrorHandler): BaseUnit = model match {
+  override def transform[T <: BaseUnit](model: T, errorHandler: ErrorHandler): T = model match {
     case doc: Document if doc.encodes.isInstanceOf[Api] =>
       propagateExamples(doc.encodes.asInstanceOf[Api])
-      doc
-    case _ => model
+      doc.asInstanceOf[T]
+    case _ => model.asInstanceOf[T]
   }
 
   private def propagateExamples(api: Api): Unit = {

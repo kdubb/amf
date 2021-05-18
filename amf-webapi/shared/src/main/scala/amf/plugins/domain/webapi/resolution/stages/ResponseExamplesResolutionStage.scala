@@ -16,9 +16,9 @@ import amf.validations.ResolutionSideValidations.{ExamplesWithInvalidMimeType, E
   * for mutate each payload schema
   */
 class ResponseExamplesResolutionStage() extends TransformationStep() {
-  override def transform(model: BaseUnit, errorHandler: ErrorHandler): BaseUnit = model match {
+  override def transform[T <: BaseUnit](model: T, errorHandler: ErrorHandler): T = model match {
     case d: Document if d.encodes.isInstanceOf[Api] =>
-      d.withEncodes(resolveApi(d.encodes.asInstanceOf[Api])(errorHandler))
+      d.withEncodes(resolveApi(d.encodes.asInstanceOf[Api])(errorHandler)).asInstanceOf[T]
     case _ => model
   }
 
