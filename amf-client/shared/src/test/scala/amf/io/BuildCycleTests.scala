@@ -1,16 +1,14 @@
 package amf.io
 
-import amf.client.parse.DefaultErrorHandler
+import amf.client.environment.{AMFConfiguration, AsyncAPIConfiguration, WebAPIConfiguration}
+import amf.client.parse.IgnoringErrorHandler
 import amf.client.remod.AMFGraphConfiguration
 import amf.client.remod.amfcore.config.RenderOptions
-import amf.core.client.ParsingOptions
-import amf.core.errorhandling.{AMFErrorHandler, UnhandledErrorHandler}
+import amf.core.errorhandling.AMFErrorHandler
 import amf.core.model.document.BaseUnit
 import amf.core.rdf.RdfModel
 import amf.core.remote.Syntax.Syntax
 import amf.core.remote.{Amf, Hint, Vendor}
-import amf.emit.AMFRenderer
-import amf.facades.{AMFCompiler, Validation}
 import amf.plugins.document.graph.{EmbeddedForm, FlattenedForm, JsonLdDocumentForm}
 import org.scalactic.Fail
 import org.scalatest.{Assertion, AsyncFunSuite}
@@ -125,36 +123,26 @@ trait BuildCycleTestCommon extends FileAssertionTest {
   }
 
   /** Method to parse unit. Override if necessary. */
-  def build(config: CycleConfig, eh: Option[AMFErrorHandler], useAmfJsonldSerialisation: Boolean): Future[BaseUnit] = {
-    Validation(platform).flatMap { _ =>
-      var options =
-        if (!useAmfJsonldSerialisation) ParsingOptions().withoutAmfJsonLdSerialization
-        else ParsingOptions().withAmfJsonLdSerialization
-
-      options = options.withBaseUnitUrl("file://" + config.goldenPath)
-
-      AMFCompiler(s"file://${config.sourcePath}",
-                  platform,
-                  config.hint,
-                  eh = eh.getOrElse(UnhandledErrorHandler),
-                  parsingOptions = options).build()
-    }
+  def build(config: CycleConfig, amfConfig: AMFGraphConfiguration): Future[BaseUnit] = {
+    amfConfig
+      .withParsingOptions(amfConfig.options.parsingOptions.withBaseUnitUrl("file://" + config.goldenPath))
+      .createClient()
+      .parse(s"file://${config.sourcePath}")
+      .map(_.bu)
   }
 
   /** Method to render parsed unit. Override if necessary. */
-  def render(unit: BaseUnit, config: CycleConfig, useAmfJsonldSerialization: Boolean): Future[String] = {
-    val target  = config.target
-    var options = RenderOptions().withSourceMaps.withPrettyPrint
-    options =
-      if (!useAmfJsonldSerialization) options.withoutAmfJsonLdSerialization else options.withAmfJsonLdSerialization
-    new AMFRenderer(unit, target, options, config.syntax).renderToString
+  def render(unit: BaseUnit, config: CycleConfig, amfConfig: AMFConfiguration): Future[String] = {
+    amfConfig.createClient().render(unit, config.target.mediaType)
   }
 
-  /** Method to render parsed unit. Override if necessary. */
-  def render(unit: BaseUnit, config: CycleConfig, options: RenderOptions): Future[String] = {
-    val target = config.target
-    new AMFRenderer(unit, target, options, config.syntax).renderToString
+  protected def buildConfig(renderOptions: Option[RenderOptions], eh: Option[AMFErrorHandler]): AMFConfiguration = {
+    val amfConfig: AMFConfiguration      = WebAPIConfiguration.WebAPI().merge(AsyncAPIConfiguration.Async20())
+    val renderedConfig: AMFConfiguration = renderOptions.fold(amfConfig)(r => { amfConfig.withRenderOptions(r) })
+    eh.fold(renderedConfig.withErrorHandlerProvider(() => IgnoringErrorHandler))(e =>
+      renderedConfig.withErrorHandlerProvider(() => e))
   }
+
 }
 
 trait BuildCycleTests extends BuildCycleTestCommon {
@@ -181,24 +169,20 @@ trait BuildCycleTests extends BuildCycleTestCommon {
                   target: Vendor,
                   directory: String = basePath,
                   renderOptions: Option[RenderOptions] = None,
-                  useAmfJsonldSerialization: Boolean = true,
                   syntax: Option[Syntax] = None,
                   pipeline: Option[String] = None,
                   transformWith: Option[Vendor] = None,
                   eh: Option[AMFErrorHandler] = None): Future[Assertion] = {
 
-    val config                 = CycleConfig(source, golden, hint, target, directory, syntax, pipeline, transformWith)
-    val amfJsonLdSerialization = renderOptions.map(_.isAmfJsonLdSerialization).getOrElse(useAmfJsonldSerialization)
+    val config    = CycleConfig(source, golden, hint, target, directory, syntax, pipeline, transformWith)
+    val amfConfig = buildConfig(renderOptions, eh)
 
     for {
-      parsed   <- build(config, eh.orElse(Some(DefaultErrorHandler())), amfJsonLdSerialization)
-      resolved <- Future.successful(transform(parsed, config))
-      actualString <- renderOptions match {
-        case Some(options) => render(resolved, config, options)
-        case None          => render(resolved, config, useAmfJsonldSerialization)
-      }
-      actualFile <- writeTemporaryFile(golden)(actualString)
-      assertion  <- assertDifferences(actualFile, config.goldenPath)
+      parsed       <- build(config, amfConfig)
+      resolved     <- Future.successful(transform(parsed, config))
+      actualString <- render(resolved, config, amfConfig)
+      actualFile   <- writeTemporaryFile(golden)(actualString)
+      assertion    <- assertDifferences(actualFile, config.goldenPath)
     } yield {
       assertion
     }
@@ -219,16 +203,11 @@ trait BuildCycleRdfTests extends BuildCycleTestCommon {
                    syntax: Option[Syntax] = None,
                    pipeline: Option[String] = None): Future[Assertion] = {
 
-    val config = CycleConfig(source, golden, hint, target, directory, syntax, pipeline, None)
-
-    build(config, None, useAmfJsonldSerialisation = true)
+    val config    = CycleConfig(source, golden, hint, target, directory, syntax, pipeline, None)
+    val amfConfig = buildConfig(renderOptions, None)
+    build(config, amfConfig)
       .map(transformThroughRdf(_, config))
-      .flatMap {
-        renderOptions match {
-          case Some(options) => render(_, config, options)
-          case None          => render(_, config, useAmfJsonldSerialization = true)
-        }
-      }
+      .flatMap { render(_, config, amfConfig) }
       .flatMap(writeTemporaryFile(golden))
       .flatMap(assertDifferences(_, config.goldenPath))
   }
@@ -243,9 +222,9 @@ trait BuildCycleRdfTests extends BuildCycleTestCommon {
                pipeline: Option[String] = None,
                transformWith: Option[Vendor] = None): Future[Assertion] = {
 
-    val config = CycleConfig(source, golden, hint, target, directory, syntax, pipeline, transformWith)
-
-    build(config, None, useAmfJsonldSerialisation = true)
+    val config    = CycleConfig(source, golden, hint, target, directory, syntax, pipeline, transformWith)
+    val amfConfig = buildConfig(None, None)
+    build(config, amfConfig)
       .map(transformRdf(_, config))
       .flatMap(renderRdf(_, config))
       .flatMap(writeTemporaryFile(golden))

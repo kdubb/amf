@@ -1,12 +1,12 @@
 package amf.resolution
 
+import amf.client.remod.AMFGraphConfiguration
 import amf.client.remod.amfcore.config.RenderOptions
-import amf.core.errorhandling.{AMFErrorHandler, UnhandledErrorHandler}
+import amf.core.errorhandling.UnhandledErrorHandler
 import amf.core.metamodel.document.DocumentModel
 import amf.core.model.document.BaseUnit
 import amf.core.remote._
 import amf.core.resolution.stages.ReferenceResolutionStage
-import amf.facades.{AMFCompiler, Validation}
 import org.scalatest.Assertion
 
 import scala.concurrent.Future
@@ -20,12 +20,9 @@ import scala.concurrent.Future
   * */
 class ProductionServiceTest extends RamlResolutionTest {
 
-  override def build(config: CycleConfig,
-                     eh: Option[AMFErrorHandler],
-                     useAmfJsonldSerialization: Boolean): Future[BaseUnit] = {
-    Validation(platform).flatMap { _ =>
-      AMFCompiler(s"file://${config.sourcePath}", platform, config.hint, eh = UnhandledErrorHandler).build()
-    }
+  override def build(config: CycleConfig, amfConfig: AMFGraphConfiguration): Future[BaseUnit] = {
+    super.build(config, amfConfig.withErrorHandlerProvider(() => UnhandledErrorHandler))
+
   }
   private def dummyFunc: (BaseUnit, CycleConfig) => BaseUnit =
     (u: BaseUnit, _: CycleConfig) => u
@@ -112,18 +109,11 @@ class ProductionServiceTest extends RamlResolutionTest {
           tFn: (BaseUnit, CycleConfig) => BaseUnit,
           renderOptions: Option[RenderOptions] = None): Future[Assertion] = {
 
-    val config = CycleConfig(source, golden, hint, target, basePath, None, None)
-
-    build(config, None, renderOptions.forall(_.isAmfJsonLdSerialization))
+    val config    = CycleConfig(source, golden, hint, target, basePath, None, None)
+    val amfConfig = buildConfig(renderOptions, None)
+    build(config, amfConfig)
       .map(tFn(_, config))
-      .flatMap {
-        renderOptions match {
-          case Some(options) =>
-            render(_, config, options)
-          case None =>
-            render(_, config, useAmfJsonldSerialization = true)
-        }
-      }
+      .flatMap { render(_, config, amfConfig) }
       .flatMap(writeTemporaryFile(golden))
       .flatMap(assertDifferences(_, config.goldenPath))
   }

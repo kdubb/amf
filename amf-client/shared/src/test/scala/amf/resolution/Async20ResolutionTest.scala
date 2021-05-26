@@ -191,8 +191,4 @@ class Async20ResolutionTest extends ResolutionTest {
 
   override def defaultRenderOptions: RenderOptions =
     RenderOptions().withSourceMaps.withRawSourceMaps.withCompactUris.withPrettyPrint
-
-  override def render(unit: BaseUnit, config: CycleConfig, options: RenderOptions): Future[String] = {
-    new AMFRenderer(unit, config.target, options, config.syntax).renderToString
-  }
 }

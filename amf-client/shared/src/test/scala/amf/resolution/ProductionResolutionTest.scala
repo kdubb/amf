@@ -185,15 +185,15 @@ class ProductionResolutionTest extends RamlResolutionTest {
 
     val config                    = CycleConfig(source, golden, hint, target, directory, syntax, None)
     val useAmfJsonldSerialization = true
-
+    val amfConfig                 = buildConfig(None, None)
     for {
-      simpleModel <- build(config, validation, useAmfJsonldSerialization).map(
+      simpleModel <- build(config, amfConfig).map(
         TransformationPipelineRunner(UnhandledErrorHandler).run(_, AmfEditingPipeline()))
-      a <- render(simpleModel, config, useAmfJsonldSerialization)
-      doubleModel <- build(config, validation, useAmfJsonldSerialization).map(
+      a <- render(simpleModel, config, amfConfig)
+      doubleModel <- build(config, amfConfig).map(
         TransformationPipelineRunner(UnhandledErrorHandler).run(_, AmfEditingPipeline()))
-      _ <- render(doubleModel, config, useAmfJsonldSerialization)
-      b <- render(doubleModel, config, useAmfJsonldSerialization)
+      _ <- render(doubleModel, config, amfConfig)
+      b <- render(doubleModel, config, amfConfig)
     } yield {
       val simpleDeclares =
         simpleModel.asInstanceOf[Document].declares

@@ -1,6 +1,7 @@
 package amf.convert
 
-import amf.client.environment.{AsyncAPIConfiguration, WebAPIConfiguration}
+import amf.client.environment.{AMFConfiguration, AsyncAPIConfiguration, WebAPIConfiguration}
+import amf.client.remod.AMFRenderer
 import amf.client.remod.amfcore.config.RenderOptions
 import amf.core.AMFSerializer
 import amf.core.errorhandling.UnhandledErrorHandler
@@ -45,10 +46,9 @@ abstract class DocBuilderTest extends FunSuiteCycleTests {
 
 class YDocumentBuilderTest extends DocBuilderTest {
 
-  override def render(unit: BaseUnit, config: CycleConfig, options: RenderOptions): Future[String] = {
+  override def render(unit: BaseUnit, config: CycleConfig, amfConfig: AMFConfiguration): Future[String] = {
     val builder: YDocumentBuilder = new YDocumentBuilder()
-    val config                    = WebAPIConfiguration.WebAPI().merge(AsyncAPIConfiguration.Async20()).withRenderOptions(options)
-    val renderer                  = new AMFSerializer(unit, "application/graph+ldjson", config.renderConfiguration)
+    val renderer                  = new AMFSerializer(unit, "application/graph+ldjson", amfConfig.renderConfiguration)
     renderer
       .renderToBuilder(builder)
       .map(_ => {

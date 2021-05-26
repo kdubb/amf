@@ -43,8 +43,4 @@ class ExtensionResolutionTest extends ResolutionTest {
   }
 
   override def defaultRenderOptions: RenderOptions = RenderOptions().withSourceMaps.withPrettyPrint
-
-  override def render(unit: BaseUnit, config: CycleConfig, options: RenderOptions): Future[String] = {
-    new AMFRenderer(unit, config.target, options, config.syntax).renderToString
-  }
 }

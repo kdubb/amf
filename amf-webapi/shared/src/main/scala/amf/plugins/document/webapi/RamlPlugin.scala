@@ -148,21 +148,6 @@ sealed trait RamlPlugin extends BaseWebApiPlugin with CrossSpecRestriction {
       }
     }
   }
-
-  /**
-    * List of media types used to encode serialisations of
-    * this domain
-    */
-  override def documentSyntaxes: Seq[String] = Seq(
-    "application/raml",
-    "application/raml+json",
-    "application/raml+yaml",
-    "text/yaml",
-    "text/x-yaml",
-    "application/yaml",
-    "application/x-yaml",
-    "text/vnd.yaml"
-  )
 }
 
 object Raml08Plugin extends RamlPlugin {
@@ -230,6 +215,15 @@ object Raml08Plugin extends RamlPlugin {
   override def domainValidationProfiles: Seq[ValidationProfile] = Seq(Raml08ValidationProfile)
 
   override val vendors: Seq[String] = Seq(vendor.name)
+
+  /**
+    * List of media types used to encode serialisations of
+    * this domain
+    */
+  override def documentSyntaxes: Seq[String] = Seq(
+    "application/raml08",
+    "application/raml08+yaml"
+  )
 }
 
 object Raml10Plugin extends RamlPlugin {
@@ -298,4 +292,15 @@ object Raml10Plugin extends RamlPlugin {
   override def domainValidationProfiles: Seq[ValidationProfile] = Seq(Raml10ValidationProfile, AmfValidationProfile)
 
   override val vendors: Seq[String] = Seq(vendor.name)
+
+  /**
+    * List of media types used to encode serialisations of
+    * this domain
+    */
+  override def documentSyntaxes: Seq[String] = Seq(
+    "application/raml10",
+    "application/raml10+yaml",
+    "application/raml",
+    "application/raml+yaml",
+  )
 }

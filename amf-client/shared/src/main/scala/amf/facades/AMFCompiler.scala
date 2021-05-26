@@ -63,6 +63,7 @@ class AMFCompiler private (val url: String,
 
 object AMFCompiler {
   // interface that is used by all testing classes
+  // TODO ARM NOT use anymore, remove
   def apply(
       url: String,
       remote: Platform,

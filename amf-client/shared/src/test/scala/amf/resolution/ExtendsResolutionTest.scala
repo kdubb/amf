@@ -246,9 +246,4 @@ trait ExtendsResolutionTest extends ResolutionTest {
   }
 
   override def defaultRenderOptions: RenderOptions = RenderOptions().withSourceMaps.withPrettyPrint
-
-  override def render(unit: BaseUnit, config: CycleConfig, useAmfJsonldSerialization: Boolean): Future[String] = {
-    val target = config.target
-    new AMFRenderer(unit, target, defaultRenderOptions, config.syntax).renderToString
-  }
 }

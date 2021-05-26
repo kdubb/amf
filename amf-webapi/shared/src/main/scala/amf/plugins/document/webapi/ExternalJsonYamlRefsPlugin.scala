@@ -94,7 +94,8 @@ class ExternalJsonYamlRefsPlugin extends JsonSchemaPlugin {
     * List of media types used to encode serialisations of
     * this domain
     */
-  override def documentSyntaxes: Seq[String] = Seq("application/json", "application/yaml")
+  override def documentSyntaxes: Seq[String] =
+    Seq("application/json", "application/refs+json", "application/yaml", "application/refs+yaml")
 
   /**
     * Parses an accepted document returning an optional BaseUnit

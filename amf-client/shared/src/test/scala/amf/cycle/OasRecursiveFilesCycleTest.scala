@@ -30,27 +30,4 @@ class OasRecursiveFilesCycleTest extends FunSuiteCycleTests {
   test("YAML OAS 3.0 with recursive file dependency doesn't output unresolved shape starting from ref") {
     cycle("oas-3-ref.yaml", "oas-3-ref.jsonld", Oas30YamlHint, Amf)
   }
-
-  /** Method to parse unit. Override if necessary. */
-  override def build(config: CycleConfig,
-                     eh: Option[AMFErrorHandler],
-                     useAmfJsonldSerialisation: Boolean): Future[BaseUnit] = {
-    Validation(platform).flatMap { _ =>
-      implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
-      val finalPath =
-        if (config.sourcePath.startsWith("file://")) config.sourcePath else s"file://${config.sourcePath}"
-      val compilerContextBuilder =
-        new CompilerContextBuilder(finalPath,
-                                   platform,
-                                   ParseConfiguration(AMFGraphConfiguration.fromEH(UnhandledErrorHandler)))
-
-      RuntimeCompiler
-        .forContext(
-          compilerContextBuilder.build(),
-          None,
-          UnspecifiedReference
-        )
-        .map(m => m)
-    }
-  }
 }

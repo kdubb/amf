@@ -66,7 +66,7 @@ class ErrorHandlingResolutionTest extends FunSuiteCycleTests {
 
     for {
       _ <- Validation(platform)
-      u <- build(config, Some(eh), useAmfJsonldSerialisation = true)
+      u <- build(config, buildConfig(None, Some(eh)))
       _ <- {
         Future { transform(u, config, eh) }
       }
