@@ -70,8 +70,8 @@ sealed trait AMFValidationReportGenTest extends AsyncFunSuite with FileAssertion
                                     new ValidationConfiguration(AMFGraphConfiguration.fromEH(eh)))
       r <- {
         val finalReport =
-          if (!parseResult.conforms) parseResult.result
-          else parseResult.result.merge(report)
+          if (!parseResult.conforms) parseResult.report
+          else parseResult.report.merge(report)
         handleReport(finalReport, golden.map(processGolden))
       }
     } yield {
@@ -81,7 +81,7 @@ sealed trait AMFValidationReportGenTest extends AsyncFunSuite with FileAssertion
 
   protected def parse(path: String, eh: AMFErrorHandler, finalHint: Hint): Future[AMFResult] = {
     val client = WebAPIConfiguration.WebAPI().merge(AsyncAPIConfiguration.Async20()).createClient()
-    client.parse(path)
+    client.parse(path, finalHint.vendor.mediaType)
   }
 
   protected def processGolden(g: String): String
