@@ -57,17 +57,15 @@ sealed trait AMFValidationReportGenTest extends AsyncFunSuite with FileAssertion
                          profileFile: Option[String] = None,
                          overridedHint: Option[Hint] = None,
                          directory: String = basePath): Future[Assertion] = {
-    val eh        = DefaultErrorHandler()
-    val finalHint = overridedHint.getOrElse(hint)
+    val initialConfig = WebAPIConfiguration.WebAPI().merge(AsyncAPIConfiguration.Async20())
+    val finalHint     = overridedHint.getOrElse(hint)
     for {
       validation <- Validation(platform)
-      _ <- if (profileFile.isDefined)
-        validation.loadValidationProfile(directory + profileFile.get, DefaultErrorHandler())
-      else Future.unit
-      parseResult <- parse(directory + api, eh, finalHint)
-      report <- validation.validate(parseResult.bu,
-                                    profile,
-                                    new ValidationConfiguration(AMFGraphConfiguration.fromEH(eh)))
+      withProfile <- if (profileFile.isDefined)
+        initialConfig.withCustomValidationsEnabled.flatMap(_.withCustomProfile(directory + profileFile.get))
+      else Future.successful(initialConfig)
+      parseResult <- parse(directory + api, withProfile, finalHint)
+      report      <- withProfile.createClient().validate(parseResult.bu, profile)
       r <- {
         val finalReport =
           if (!parseResult.conforms) parseResult.report
@@ -79,8 +77,8 @@ sealed trait AMFValidationReportGenTest extends AsyncFunSuite with FileAssertion
     }
   }
 
-  protected def parse(path: String, eh: AMFErrorHandler, finalHint: Hint): Future[AMFResult] = {
-    val client = WebAPIConfiguration.WebAPI().merge(AsyncAPIConfiguration.Async20()).createClient()
+  protected def parse(path: String, conf: AMFGraphConfiguration, finalHint: Hint): Future[AMFResult] = {
+    val client = conf.createClient()
     client.parse(path, finalHint.vendor.mediaType)
   }
 
