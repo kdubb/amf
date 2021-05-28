@@ -6,18 +6,14 @@ import amf.client.remod.amfcore.config.RenderOptions
 import amf.client.remod.amfcore.resolution.PipelineName
 import amf.client.remod.{AMFGraphConfiguration, ParseConfiguration}
 import amf.core.client.ParserConfig
-import amf.core.errorhandling.UnhandledErrorHandler
 import amf.core.model.document.BaseUnit
 import amf.core.registries.AMFPluginsRegistry
 import amf.core.remote._
 import amf.core.resolution.pipelines.TransformationPipeline
-import amf.core.services.{RuntimeCompiler, RuntimeResolver, RuntimeSerializer}
-import amf.plugins.document.Vocabularies
-import amf.plugins.document.vocabularies.AMLPlugin
-import amf.plugins.document.webapi.validation.PayloadValidatorPlugin
+import amf.core.services.RuntimeCompiler
 import amf.plugins.document.webapi._
+import amf.plugins.document.webapi.validation.PayloadValidatorPlugin
 import amf.plugins.domain.VocabulariesRegister
-import amf.plugins.features.validation.custom.AMFValidatorPlugin
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -28,13 +24,11 @@ trait CommandHelper {
     implicit val context: ExecutionContext = configuration.getExecutionContext
     WebApiRegister.register(platform)
     VocabulariesRegister.register(platform) // validation dialect was not being parsed by static config.
-    amf.core.AMF.registerPlugin(AMLPlugin)
     amf.core.AMF.registerPlugin(Raml10Plugin)
     amf.core.AMF.registerPlugin(Raml08Plugin)
     amf.core.AMF.registerPlugin(Oas20Plugin)
     amf.core.AMF.registerPlugin(Oas30Plugin)
     amf.core.AMF.registerPlugin(Async20Plugin)
-    amf.core.AMF.registerPlugin(AMFValidatorPlugin)
     amf.core.AMF.registerPlugin(PayloadValidatorPlugin)
     amf.core.AMF.init()
   }
@@ -46,10 +40,10 @@ trait CommandHelper {
 
   protected def processDialects(config: ParserConfig, configuration: AMLConfiguration): Future[AMLConfiguration] = {
     implicit val context: ExecutionContext = configuration.getExecutionContext
-    val dialectFutures                     = config.dialects.map(dialect => AMLPlugin().registry.registerDialect(dialect))
-    Future.sequence(dialectFutures) map (dialects =>
-      dialects.foldLeft(configuration) {
-        case (conf, dialect) => conf.withDialect(dialect)
+    val dialectFutures                     = config.dialects.map(dialect => configuration.withDialect(dialect))
+    Future.sequence(dialectFutures) map (configs =>
+      configs.foldLeft(configuration) {
+        case (accumulated, currentConfig) => accumulated.merge(currentConfig)
       })
   }
 
